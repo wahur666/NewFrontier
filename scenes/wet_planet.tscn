@@ -1,6 +1,7 @@
-[gd_scene load_steps=67 format=3 uid="uid://1t4s5btcems5"]
+[gd_scene load_steps=69 format=3 uid="uid://1t4s5btcems5"]
 
 [ext_resource type="Texture2D" uid="uid://cn4yrl4amdien" path="res://gfx/wet-planet.png" id="1_rg5fr"]
+[ext_resource type="Script" path="res://scripts/PlanetBuildingScheme.cs" id="2_5foyr"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_udpkb"]
 atlas = ExtResource("1_rg5fr")
@@ -458,9 +459,21 @@ animations = [{
 "speed": 1.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_q541v"]
+radius = 64.2806
+
 [node name="WetPlanet" type="Node2D"]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_mom51")
 autoplay = "default"
-frame_progress = 0.47569
+frame_progress = 0.317065
+
+[node name="PlanetBuildingScheme" type="Node2D" parent="."]
+script = ExtResource("2_5foyr")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("CircleShape2D_q541v")
