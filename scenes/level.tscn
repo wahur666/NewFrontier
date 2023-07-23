@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bt2rj4k835nj0"]
+
+[ext_resource type="PackedScene" uid="uid://1t4s5btcems5" path="res://scenes/wet_planet.tscn" id="1_ljihc"]
+
+[node name="Level" type="Node2D"]
+
+[node name="WetPlanet" parent="." instance=ExtResource("1_ljihc")]
+position = Vector2(537, 320)
