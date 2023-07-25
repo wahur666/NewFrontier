@@ -1,8 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://bt2rj4k835nj0"]
+[gd_scene load_steps=3 format=3 uid="uid://bt2rj4k835nj0"]
 
 [ext_resource type="PackedScene" uid="uid://1t4s5btcems5" path="res://scenes/wet_planet.tscn" id="1_ljihc"]
+[ext_resource type="PackedScene" uid="uid://bq8kik2f2pim3" path="res://scenes/map_grid.tscn" id="2_pn7aa"]
 
 [node name="Level" type="Node2D"]
 
+[node name="MapGrid" parent="." instance=ExtResource("2_pn7aa")]
+
 [node name="WetPlanet" parent="." instance=ExtResource("1_ljihc")]
+visible = false
 position = Vector2(537, 320)
