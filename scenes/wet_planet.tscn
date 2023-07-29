@@ -1,7 +1,8 @@
-[gd_scene load_steps=69 format=3 uid="uid://1t4s5btcems5"]
+[gd_scene load_steps=70 format=3 uid="uid://1t4s5btcems5"]
 
 [ext_resource type="Texture2D" uid="uid://cn4yrl4amdien" path="res://gfx/wet-planet.png" id="1_rg5fr"]
 [ext_resource type="Script" path="res://scripts/PlanetBuildingScheme.cs" id="2_5foyr"]
+[ext_resource type="PackedScene" uid="uid://dvtyhnum5sp0y" path="res://scenes/base_1.tscn" id="3_pyh8t"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_udpkb"]
 atlas = ExtResource("1_rg5fr")
@@ -464,13 +465,50 @@ radius = 64.2806
 
 [node name="WetPlanet" type="Node2D"]
 
+[node name="Buildings1" type="Node2D" parent="."]
+
+[node name="Base1" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+
+[node name="Base2" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 0.523599
+
+[node name="Base3" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 1.0472
+
+[node name="Base4" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 1.5708
+
+[node name="Base5" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 2.0944
+
+[node name="Base6" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 2.61799
+
+[node name="Base7" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 3.14159
+
+[node name="Base8" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 3.66519
+
+[node name="Base9" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 4.18879
+
+[node name="Base10" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 4.71239
+
+[node name="Base11" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 5.23599
+
+[node name="Base12" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+rotation = 5.75959
+
+[node name="PlanetBuildingScheme" type="Node2D" parent="."]
+script = ExtResource("2_5foyr")
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_mom51")
 autoplay = "default"
 frame_progress = 0.317065
-
-[node name="PlanetBuildingScheme" type="Node2D" parent="."]
-script = ExtResource("2_5foyr")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 visible = false

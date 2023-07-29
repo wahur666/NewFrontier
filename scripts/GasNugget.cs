@@ -5,7 +5,6 @@ using NewFrontier.scripts.helpers;
 namespace NewFrontier.scripts;
 
 public partial class GasNugget : ResourceNode2D {
-
 	private AnimationPlayer _animationPlayer;
 
 	public GasNugget() {

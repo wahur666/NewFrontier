@@ -5,9 +5,8 @@ using NewFrontier.scripts.helpers;
 namespace NewFrontier.scripts;
 
 public partial class Asteroid : ResourceNode2D {
-	
 	private AnimatedSprite2D _animatedSprite2D;
-	
+
 	public Asteroid() {
 		Resource = ResourceType.Ore;
 	}
