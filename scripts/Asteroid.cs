@@ -13,7 +13,7 @@ public partial class Asteroid : ResourceNode2D {
 	}
 
 	public override void _Ready() {
-		CurrentResource = MaxResource;
+		base._Ready();
 		_animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		_animatedSprite2D.RotationDegrees = GD.RandRange(0, 360);
 	}
