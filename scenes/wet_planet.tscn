@@ -1,7 +1,8 @@
-[gd_scene load_steps=70 format=3 uid="uid://1t4s5btcems5"]
+[gd_scene load_steps=71 format=3 uid="uid://1t4s5btcems5"]
 
 [ext_resource type="Texture2D" uid="uid://cn4yrl4amdien" path="res://gfx/wet-planet.png" id="1_rg5fr"]
 [ext_resource type="Script" path="res://scripts/PlanetBuildingScheme.cs" id="2_5foyr"]
+[ext_resource type="PackedScene" uid="uid://38lsy3c311jh" path="res://scenes/base_2.tscn" id="2_w88r0"]
 [ext_resource type="PackedScene" uid="uid://dvtyhnum5sp0y" path="res://scenes/base_1.tscn" id="3_pyh8t"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_udpkb"]
@@ -466,6 +467,7 @@ radius = 64.2806
 [node name="WetPlanet" type="Node2D"]
 
 [node name="Buildings1" type="Node2D" parent="."]
+visible = false
 
 [node name="Base1" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 
@@ -501,6 +503,26 @@ rotation = 5.23599
 
 [node name="Base12" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 5.75959
+
+[node name="Buildings2" type="Node2D" parent="."]
+
+[node name="Base2" parent="Buildings2" instance=ExtResource("2_w88r0")]
+rotation = 0.279253
+
+[node name="Base3" parent="Buildings2" instance=ExtResource("2_w88r0")]
+rotation = 1.32645
+
+[node name="Base4" parent="Buildings2" instance=ExtResource("2_w88r0")]
+rotation = 2.37365
+
+[node name="Base5" parent="Buildings2" instance=ExtResource("2_w88r0")]
+rotation = 3.42085
+
+[node name="Base6" parent="Buildings2" instance=ExtResource("2_w88r0")]
+rotation = 4.46804
+
+[node name="Base7" parent="Buildings2" instance=ExtResource("2_w88r0")]
+rotation = 5.51524
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
 script = ExtResource("2_5foyr")
