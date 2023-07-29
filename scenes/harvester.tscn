@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://dihes1xsb3asa"]
+
+[ext_resource type="Script" path="res://scripts/Harvester.cs" id="1_ybyge"]
+[ext_resource type="Texture2D" uid="uid://dy1ps31o4d1ck" path="res://gfx/Fabgal.tga" id="2_xgk4u"]
+
+[node name="Harvester" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1_ybyge")
+
+[node name="Base" type="Sprite2D" parent="."]
+texture = ExtResource("2_xgk4u")
+hframes = 2
+vframes = 2
+frame = 2
+
+[node name="Stripe" type="Sprite2D" parent="."]
+texture = ExtResource("2_xgk4u")
+hframes = 2
+vframes = 2
+frame = 3
