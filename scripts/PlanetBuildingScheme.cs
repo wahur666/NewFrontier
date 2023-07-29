@@ -4,12 +4,13 @@ using System;
 namespace NewFrontier.scripts;
 
 public partial class PlanetBuildingScheme : Node2D {
-	[Export] public int Radius = 80;
+	[Export] public int Radius = 83;
 	[Export] public int Width = 8;
 	[Export] public Color SchemeColor = Color.FromHtml("#87cefa");
 
 	private readonly float _slice = Mathf.DegToRad(30);
-	private readonly float _sliceOffset = Mathf.DegToRad(2.5f);
+	// private readonly float _sliceOffset = Mathf.DegToRad(2.5f);
+	private readonly float _sliceOffset = Mathf.DegToRad(15 + 2f);
 	private readonly float _sliceLength = Mathf.DegToRad(25);
 
 
