@@ -465,41 +465,41 @@ radius = 64.2806
 
 [node name="WetPlanet" type="Node2D"]
 
-[node name="Buildings" type="Node2D" parent="."]
+[node name="Buildings1" type="Node2D" parent="."]
 
-[node name="Base1" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base1" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 
-[node name="Base2" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base2" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 0.523599
 
-[node name="Base3" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base3" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 1.0472
 
-[node name="Base4" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base4" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 1.5708
 
-[node name="Base5" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base5" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 2.0944
 
-[node name="Base6" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base6" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 2.61799
 
-[node name="Base7" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base7" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 3.14159
 
-[node name="Base8" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base8" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 3.66519
 
-[node name="Base9" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base9" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 4.18879
 
-[node name="Base10" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base10" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 4.71239
 
-[node name="Base11" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base11" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 5.23599
 
-[node name="Base12" parent="Buildings" instance=ExtResource("3_pyh8t")]
+[node name="Base12" parent="Buildings1" instance=ExtResource("3_pyh8t")]
 rotation = 5.75959
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
