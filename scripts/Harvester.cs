@@ -1,5 +1,4 @@
 using System;
-using System.Text.RegularExpressions;
 using Godot;
 using NewFrontier.scripts.helpers;
 
@@ -9,7 +8,9 @@ public partial class Harvester : Node2D {
 	[Export] public int MaxCargo = 500;
 	private int _currentGasCargo = 0;
 	private int _currentOreCargo = 0;
-	[Export] public int CurrentCargo {
+
+	[Export]
+	public int CurrentCargo {
 		get => _currentGasCargo + _currentOreCargo;
 		private set { throw new NotImplementedException(); }
 	}
@@ -30,11 +31,11 @@ public partial class Harvester : Node2D {
 
 	public void Harvest(ResourceNode2D resourceNode2D, int amount) {
 		var transferAmount =
-			Math.Min(Math.Min((MaxCargo - (_currentGasCargo + _currentOreCargo)), resourceNode2D.CurrentResource),
+			Math.Min(Math.Min((MaxCargo - CurrentCargo), resourceNode2D.CurrentResource),
 				amount);
 		resourceNode2D.CurrentResource -= transferAmount;
 
-		
+
 		if (resourceNode2D.Resource == ResourceType.Gas) {
 			_currentGasCargo += transferAmount;
 		} else {
