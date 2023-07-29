@@ -1,8 +1,9 @@
-[gd_scene load_steps=71 format=3 uid="uid://1t4s5btcems5"]
+[gd_scene load_steps=72 format=3 uid="uid://1t4s5btcems5"]
 
 [ext_resource type="Texture2D" uid="uid://cn4yrl4amdien" path="res://gfx/wet-planet.png" id="1_rg5fr"]
 [ext_resource type="Script" path="res://scripts/PlanetBuildingScheme.cs" id="2_5foyr"]
 [ext_resource type="PackedScene" uid="uid://38lsy3c311jh" path="res://scenes/base_2.tscn" id="2_w88r0"]
+[ext_resource type="PackedScene" uid="uid://di3lq3dpt5hlp" path="res://scenes/base_3.tscn" id="3_kbk0t"]
 [ext_resource type="PackedScene" uid="uid://dvtyhnum5sp0y" path="res://scenes/base_1.tscn" id="3_pyh8t"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_udpkb"]
@@ -505,6 +506,7 @@ rotation = 5.23599
 rotation = 5.75959
 
 [node name="Buildings2" type="Node2D" parent="."]
+visible = false
 
 [node name="Base2" parent="Buildings2" instance=ExtResource("2_w88r0")]
 rotation = 0.279253
@@ -523,6 +525,20 @@ rotation = 4.46804
 
 [node name="Base7" parent="Buildings2" instance=ExtResource("2_w88r0")]
 rotation = 5.51524
+
+[node name="Buildings3" type="Node2D" parent="."]
+visible = false
+
+[node name="Base3" parent="Buildings3" instance=ExtResource("3_kbk0t")]
+
+[node name="Base4" parent="Buildings3" instance=ExtResource("3_kbk0t")]
+rotation = 1.5708
+
+[node name="Base5" parent="Buildings3" instance=ExtResource("3_kbk0t")]
+rotation = 3.14159
+
+[node name="Base6" parent="Buildings3" instance=ExtResource("3_kbk0t")]
+rotation = 4.71239
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
 script = ExtResource("2_5foyr")

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://di3lq3dpt5hlp"]
+
+[ext_resource type="Texture2D" uid="uid://ctq84pytljkb2" path="res://gfx/aseprite/3slot.png" id="1_dipq8"]
+
+[node name="Base3" type="Node2D"]
+scale = Vector2(2.5, 2.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_dipq8")
+offset = Vector2(0, 32)
