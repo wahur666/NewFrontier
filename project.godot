@@ -15,6 +15,10 @@ run/main_scene="res://scenes/level.tscn"
 config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+PlayerControler="*res://scenes/player_controler.tscn"
+
 [display]
 
 window/stretch/mode="viewport"
