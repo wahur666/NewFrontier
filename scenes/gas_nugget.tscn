@@ -41,7 +41,7 @@ _data = {
 "pulse": SubResource("Animation_2ddbe")
 }
 
-[node name="GasNugget" type="Node2D"]
+[node name="GasNugget" type="Node2D" groups=["gas", "resource"]]
 texture_filter = 1
 script = ExtResource("1_miqrq")
 
