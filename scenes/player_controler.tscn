@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" path="res://scripts/PlayerControler.cs" id="1_prcdx"]
 
-[node name="PlayerControler" type="Node"]
+[node name="PlayerControler" type="Node" groups=["player"]]
 script = ExtResource("1_prcdx")

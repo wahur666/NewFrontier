@@ -13,30 +13,36 @@
 [node name="WetPlanet" parent="." instance=ExtResource("1_ljihc")]
 position = Vector2(112, 341)
 
-[node name="Asteroid" parent="." instance=ExtResource("3_x4j80")]
-position = Vector2(308, 228)
-BaseScale = 0.5
-
-[node name="Asteroid3" parent="." instance=ExtResource("3_x4j80")]
-position = Vector2(446, 95)
-
-[node name="Asteroid4" parent="." instance=ExtResource("3_x4j80")]
-position = Vector2(219, 99)
-
-[node name="Asteroid2" parent="." instance=ExtResource("3_x4j80")]
-position = Vector2(557, 237)
-
 [node name="Harvester" parent="." instance=ExtResource("4_ras2k")]
 position = Vector2(643, 118)
 
-[node name="GasNugget" parent="." instance=ExtResource("5_vqw1s")]
+[node name="Resources" type="Node" parent="."]
+
+[node name="Gas" type="Node" parent="Resources"]
+
+[node name="GasNugget" parent="Resources/Gas" instance=ExtResource("5_vqw1s")]
 position = Vector2(364, 370)
 
-[node name="GasNugget2" parent="." instance=ExtResource("5_vqw1s")]
+[node name="GasNugget2" parent="Resources/Gas" instance=ExtResource("5_vqw1s")]
 position = Vector2(448, 360)
 
-[node name="GasNugget3" parent="." instance=ExtResource("5_vqw1s")]
+[node name="GasNugget3" parent="Resources/Gas" instance=ExtResource("5_vqw1s")]
 position = Vector2(567, 353)
 
-[node name="GasNugget4" parent="." instance=ExtResource("5_vqw1s")]
+[node name="GasNugget4" parent="Resources/Gas" instance=ExtResource("5_vqw1s")]
 position = Vector2(749, 313)
+
+[node name="Ore" type="Node" parent="Resources"]
+
+[node name="Asteroid" parent="Resources/Ore" instance=ExtResource("3_x4j80")]
+position = Vector2(333, 288)
+BaseScale = 0.5
+
+[node name="Asteroid3" parent="Resources/Ore" instance=ExtResource("3_x4j80")]
+position = Vector2(446, 95)
+
+[node name="Asteroid4" parent="Resources/Ore" instance=ExtResource("3_x4j80")]
+position = Vector2(219, 99)
+
+[node name="Asteroid2" parent="Resources/Ore" instance=ExtResource("3_x4j80")]
+position = Vector2(557, 237)

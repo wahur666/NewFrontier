@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using NewFrontier.scripts.helpers;
 
@@ -22,27 +24,17 @@ public partial class Harvester : Node2D {
 	private bool _harvesting = false;
 
 	private ResourceNode2D _currentResourceNode2D = null;
+	private PlayerControler _playerController = null;
 
 	public override void _Ready() {
 		_currentHarvest = HarvestRate;
-		_currentResourceNode2D = GetParent().GetNode<ResourceNode2D>("Asteroid");
+		_playerController = GetTree().Root.GetNode<PlayerControler>("PlayerControler");
+		GD.Print("palyer conroller" + _playerController);
+		List<ResourceNode2D> resources =
+			GetTree().GetNodesInGroup("resource").Select(node => node as ResourceNode2D).ToList();
+		_currentResourceNode2D = resources[0];
 		GD.Print(_currentResourceNode2D);
-	}
-
-	public void Harvest(ResourceNode2D resourceNode2D, int amount) {
-		var transferAmount =
-			Math.Min(Math.Min((MaxCargo - CurrentCargo), resourceNode2D.CurrentResource),
-				amount);
-		resourceNode2D.CurrentResource -= transferAmount;
-
-
-		if (resourceNode2D.Resource == ResourceType.Gas) {
-			_currentGasCargo += transferAmount;
-		} else {
-			_currentOreCargo += transferAmount;
-		}
-
-		resourceNode2D.UpdateScale();
+		GD.Print(resources, resources.Count);
 	}
 
 	public override void _Process(double delta) {
@@ -59,6 +51,39 @@ public partial class Harvester : Node2D {
 			GD.Print("harvesting");
 			Harvest(_currentResourceNode2D, HarvestAmount);
 			CheckResourceToFree();
+		}
+
+		if (Input.IsActionJustPressed("unload") && _playerController is not null) {
+			GD.Print("unloading");
+			Unload(_playerController, HarvestAmount);
+		}
+	}
+
+	public void Harvest(ResourceNode2D resourceNode2D, int amount) {
+		var transferAmount = Math.Min(Math.Min((MaxCargo - CurrentCargo), resourceNode2D.CurrentResource), amount);
+		resourceNode2D.CurrentResource -= transferAmount;
+
+
+		if (resourceNode2D.Resource == ResourceType.Gas) {
+			_currentGasCargo += transferAmount;
+		} else {
+			_currentOreCargo += transferAmount;
+		}
+
+		resourceNode2D.UpdateScale();
+	}
+
+	private void Unload(PlayerControler playerController, int harvestAmount) {
+		if (_currentOreCargo > 0 && playerController.AvailableOreStorage() > 0) {
+			var transferAmount = Math.Min(Math.Min(playerController.AvailableOreStorage(), _currentOreCargo), harvestAmount);
+			_currentOreCargo -= transferAmount;
+			playerController.CurrentOre += transferAmount;
+		}
+
+		if (_currentGasCargo > 0 && playerController.AvailableGasStorage() > 0) {
+			var transferAmount = Math.Min(Math.Min(playerController.AvailableGasStorage(), _currentGasCargo), harvestAmount);
+			_currentGasCargo -= transferAmount;
+			playerController.CurrentGas += transferAmount;
 		}
 	}
 

@@ -459,7 +459,7 @@ animations = [{
 "speed": 6.0
 }]
 
-[node name="Asteroid" type="Node2D"]
+[node name="Asteroid" type="Node2D" groups=["ore", "resource"]]
 script = ExtResource("1_kgcp7")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

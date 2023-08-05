@@ -3,15 +3,15 @@ using System;
 
 public partial class PlayerControler : Node {
 
-	private int _maxCrew = 2500;
-	private int _maxOre = 5500;
-	private int _maxGas = 4500;
-	private int _maxSupply = 0;
+	public int MaxCrew = 2500;
+	public int MaxOre = 5500;
+	public int MaxGas = 4500;
+	public int MaxSupply = 0;
 
-	private int _currentCrew;
-	private int _currentOre;
-	private int _currentGas;
-	private int _currentSupply;
+	public int CurrentCrew = 0;
+	[Export]public int CurrentOre = 0;
+	[Export]public int CurrentGas = 0;
+	public int CurrentSupply = 0;
 
 	private Variant[] buildings;
 	private Variant[] units;
@@ -23,4 +23,8 @@ public partial class PlayerControler : Node {
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
 	}
+
+	public int AvailableOreStorage() => MaxOre - CurrentOre;
+	public int AvailableGasStorage() => MaxGas - CurrentGas;
+	public int AvailableCrewStorage() => MaxCrew - CurrentCrew;
 }
