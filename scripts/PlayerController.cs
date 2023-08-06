@@ -1,7 +1,9 @@
 using Godot;
 using System;
 
-public partial class PlayerControler : Node {
+namespace NewFrontier.scripts;
+
+public partial class PlayerController : Node {
 
 	public int MaxCrew = 2500;
 	public int MaxOre = 5500;

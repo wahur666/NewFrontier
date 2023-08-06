@@ -24,12 +24,12 @@ public partial class Harvester : Node2D {
 	private bool _harvesting = false;
 
 	private ResourceNode2D _currentResourceNode2D = null;
-	private PlayerControler _playerController = null;
+	private PlayerController _playerController = null;
 
 	public override void _Ready() {
 		_currentHarvest = HarvestRate;
-		_playerController = GetTree().Root.GetNode<PlayerControler>("PlayerControler");
-		GD.Print("palyer conroller" + _playerController);
+		_playerController = GetTree().GetFirstNodeInGroup("player") as PlayerController;
+		GD.Print("Player Controller" + _playerController);
 		List<ResourceNode2D> resources =
 			GetTree().GetNodesInGroup("resource").Select(node => node as ResourceNode2D).ToList();
 		_currentResourceNode2D = resources[0];
@@ -73,7 +73,7 @@ public partial class Harvester : Node2D {
 		resourceNode2D.UpdateScale();
 	}
 
-	private void Unload(PlayerControler playerController, int harvestAmount) {
+	private void Unload(PlayerController playerController, int harvestAmount) {
 		if (_currentOreCargo > 0 && playerController.AvailableOreStorage() > 0) {
 			var transferAmount = Math.Min(Math.Min(playerController.AvailableOreStorage(), _currentOreCargo), harvestAmount);
 			_currentOreCargo -= transferAmount;

@@ -1,12 +1,15 @@
-[gd_scene load_steps=6 format=3 uid="uid://bt2rj4k835nj0"]
+[gd_scene load_steps=7 format=3 uid="uid://bt2rj4k835nj0"]
 
 [ext_resource type="PackedScene" uid="uid://1t4s5btcems5" path="res://scenes/wet_planet.tscn" id="1_ljihc"]
+[ext_resource type="PackedScene" uid="uid://dwkcq78ovc6d8" path="res://scenes/game_controller.tscn" id="1_ox2q5"]
 [ext_resource type="PackedScene" uid="uid://bq8kik2f2pim3" path="res://scenes/map_grid.tscn" id="2_pn7aa"]
 [ext_resource type="PackedScene" uid="uid://crhg0jwfq7jtu" path="res://scenes/asteroid.tscn" id="3_x4j80"]
 [ext_resource type="PackedScene" uid="uid://dihes1xsb3asa" path="res://scenes/harvester.tscn" id="4_ras2k"]
 [ext_resource type="PackedScene" uid="uid://ddkn0wk5cvsm" path="res://scenes/gas_nugget.tscn" id="5_vqw1s"]
 
 [node name="Level" type="Node2D"]
+
+[node name="GameController" parent="." instance=ExtResource("1_ox2q5")]
 
 [node name="MapGrid" parent="." instance=ExtResource("2_pn7aa")]
 
