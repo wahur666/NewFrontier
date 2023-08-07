@@ -3,8 +3,8 @@ using System;
 using NewFrontier.scripts;
 
 public partial class BuildingNode2D : Node2D {
-	private int wide = 3;
-	private int baseAngle = 17;
+	[Export] public int Wide = 1;
+	private int baseAngle = 30;
 	private Planet _planet;
 
 	// Called when the node enters the scene tree for the first time.
@@ -37,29 +37,31 @@ public partial class BuildingNode2D : Node2D {
 		double angle = Math.Atan2(y - planet.GlobalPosition.Y, x - planet.GlobalPosition.X);
 		double a = angle * (180 / Math.PI);
 		double b = a > 0 ? a : 360 + a;
-		int place = (int)((b + (wide % 2 == 0 ? 0 : 15)) / 30) % 12;
-		double diff = wide % 2 == 0 ? 0 : baseAngle / 2;
-		double posX = planet.GlobalPosition.X + Math.Cos(place * baseAngle + diff) * planet.Radius;
-		double posY = planet.GlobalPosition.Y + Math.Sin(place * baseAngle + diff) * planet.Radius;
+		int place = (int)((b + (Wide % 2 == 0 ? 0 : 15)) / 30) % 12;
+		double diff = Wide % 2 == 0 ? baseAngle / 2 : 0;
+		double posX = planet.GlobalPosition.X;
+		double posY = planet.GlobalPosition.Y;
+		RotationDegrees = place * 30 - 90 + (Wide % 2 == 0 ? 16 : 0);
 		GlobalPosition = new Vector2((float)posX, (float)posY);
+		GD.Print(GlobalPosition);
 
 		int[] hoverPos;
-		switch (wide) {
+		switch (Wide) {
 			case 1:
 				hoverPos = new[] { place };
 				break;
 			case 2: {
-				int prev = place - 1 < 0 ? 11 : place - 1;
-				int next = place > 11 ? 0 : place;
-				hoverPos = new[] { prev, next };
-				break;
-			}
+					int prev = place - 1 < 0 ? 11 : place - 1;
+					int next = place > 11 ? 0 : place;
+					hoverPos = new[] { prev, next };
+					break;
+				}
 			case 3: {
-				int prev = place - 1 < 0 ? 11 : place - 1;
-				int next = place + 1 > 11 ? 0 : place + 1;
-				hoverPos = new[] { prev, place, next };
-				break;
-			}
+					int prev = place - 1 < 0 ? 11 : place - 1;
+					int next = place + 1 > 11 ? 0 : place + 1;
+					hoverPos = new[] { prev, place, next };
+					break;
+				}
 			default:
 				hoverPos = Array.Empty<int>();
 				break;

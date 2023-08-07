@@ -473,59 +473,76 @@ script = ExtResource("1_1nk8g")
 visible = false
 
 [node name="Base1" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
+z_index = 100
 
 [node name="Base2" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 0.523599
 
 [node name="Base3" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 1.0472
 
 [node name="Base4" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 1.5708
 
 [node name="Base5" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 2.0944
 
 [node name="Base6" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 2.61799
 
 [node name="Base7" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 3.14159
 
 [node name="Base8" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 3.66519
 
 [node name="Base9" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 4.18879
 
 [node name="Base10" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 4.71239
 
 [node name="Base11" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 5.23599
 
 [node name="Base12" parent="Buildings1" instance=ExtResource("3_pyh8t")]
+visible = false
 rotation = 5.75959
 
 [node name="Buildings2" type="Node2D" parent="."]
-visible = false
 
 [node name="Base2" parent="Buildings2" instance=ExtResource("2_w88r0")]
 rotation = 0.279253
 
 [node name="Base3" parent="Buildings2" instance=ExtResource("2_w88r0")]
+visible = false
 rotation = 1.32645
 
 [node name="Base4" parent="Buildings2" instance=ExtResource("2_w88r0")]
+visible = false
 rotation = 2.37365
 
 [node name="Base5" parent="Buildings2" instance=ExtResource("2_w88r0")]
+visible = false
 rotation = 3.42085
 
 [node name="Base6" parent="Buildings2" instance=ExtResource("2_w88r0")]
+visible = false
 rotation = 4.46804
 
 [node name="Base7" parent="Buildings2" instance=ExtResource("2_w88r0")]
+visible = false
 rotation = 5.51524
 
 [node name="Buildings3" type="Node2D" parent="."]
@@ -534,12 +551,15 @@ visible = false
 [node name="Base3" parent="Buildings3" instance=ExtResource("3_kbk0t")]
 
 [node name="Base4" parent="Buildings3" instance=ExtResource("3_kbk0t")]
+visible = false
 rotation = 1.5708
 
 [node name="Base5" parent="Buildings3" instance=ExtResource("3_kbk0t")]
+visible = false
 rotation = 3.14159
 
 [node name="Base6" parent="Buildings3" instance=ExtResource("3_kbk0t")]
+visible = false
 rotation = 4.71239
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
