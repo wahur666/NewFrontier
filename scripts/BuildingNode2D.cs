@@ -6,10 +6,13 @@ public partial class BuildingNode2D : Node2D {
 	[Export] public int Wide = 1;
 	private int baseAngle = 30;
 	private Planet _planet;
-
+	private bool _snapToPlanet = false;
+	private Sprite2D _sprite;
+	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_planet = GetTree().CurrentScene.GetNode<Planet>("WetPlanet");
+		_sprite = GetNode<Sprite2D>("Sprite2D");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -28,9 +31,17 @@ public partial class BuildingNode2D : Node2D {
 		// 		this.buildingShade.setPosition(npos.x, npos.y);
 		// 	}
 		// }
+
 		var pos = GetGlobalMousePosition();
-		var place = CalculatePlace(_planet, pos.X, pos.Y);
-		GD.Print(place.Join(", "));
+		var distance = pos.DistanceTo(_planet.GlobalPosition);
+		if (Math.Abs(distance - _planet.Radius) < 20) {
+			var place = CalculatePlace(_planet, pos.X, pos.Y);
+			GD.Print(place.Join());
+		} else {
+			GlobalPosition = pos - (_sprite.Offset * new Vector2(2.5f, 2.5f));
+			RotationDegrees = 0;
+		}
+
 	}
 
 	public int[] CalculatePlace(Planet planet, double x, double y) {

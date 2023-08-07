@@ -521,6 +521,7 @@ visible = false
 rotation = 5.75959
 
 [node name="Buildings2" type="Node2D" parent="."]
+visible = false
 
 [node name="Base2" parent="Buildings2" instance=ExtResource("2_w88r0")]
 rotation = 0.279253
@@ -546,9 +547,9 @@ visible = false
 rotation = 5.51524
 
 [node name="Buildings3" type="Node2D" parent="."]
-visible = false
 
 [node name="Base3" parent="Buildings3" instance=ExtResource("3_kbk0t")]
+visible = false
 
 [node name="Base4" parent="Buildings3" instance=ExtResource("3_kbk0t")]
 visible = false
