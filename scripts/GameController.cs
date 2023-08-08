@@ -10,9 +10,9 @@ public partial class GameController : Node {
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		_playerControllerScene = GD.Load<PackedScene>("res://scenes/player_controler.tscn");
+		_playerControllerScene = GD.Load<PackedScene>("res://scenes/player_controller.tscn");
 		var player = _playerControllerScene.Instantiate();
-		GetTree().Root.AddChild(player);
+		AddChild(player);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
