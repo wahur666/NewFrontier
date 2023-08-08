@@ -7,14 +7,14 @@ using NewFrontier.scripts;
 public partial class BuildingNode2D : Node2D {
 	[Export] public int Wide = 1;
 	private int baseAngle = 30;
-	// private Planet _planet;
-	private bool _snapToPlanet = false;
+	private Planet _planet;
+	private int[] _place = Array.Empty<int>();
 	private Sprite2D _sprite;
 	private List<Planet> _planets;
+	public bool BuildingShade = true;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		// _planet = GetTree().CurrentScene.GetNode<Planet>("WetPlanet");
 		_planets = GetTree().GetNodesInGroup("planet").Select(planet => planet as Planet).ToList();
 		_sprite = GetNode<Sprite2D>("Sprite2D");
 	}
@@ -35,26 +35,36 @@ public partial class BuildingNode2D : Node2D {
 		// 		this.buildingShade.setPosition(npos.x, npos.y);
 		// 	}
 		// }
+		if (!BuildingShade) {
+			return;
+		}
+		if (Input.IsActionJustPressed("LMB")) {
+			if (_planet is not null && _place.Length > 0) {
+				_planet.BuildBuilding(this, _place);
+			}
+		}
 
 		var pos = GetGlobalMousePosition();
 		if (_planets.Any(planet => DistanceFn(pos, planet))) {
-			var planet = _planets.First(planet => DistanceFn(pos, planet));
-			var place = CalculatePlace(planet, pos.X, pos.Y);
-			GD.Print(place.Join());
+			_planet = _planets.First(planet => DistanceFn(pos, planet));
+			_place = CalculatePlace(_planet, pos.X, pos.Y);
+			GD.Print(_place.Join());
 		} else {
+			_planet = null;
+			_place = Array.Empty<int>();
 			GlobalPosition = pos - (_sprite.Offset * new Vector2(2.5f, 2.5f));
 			RotationDegrees = 0;
 		}
 	}
 
-	private static bool DistanceFn(Vector2 mousePos, Planet planet) => Math.Abs(mousePos.DistanceTo(planet.GlobalPosition) - planet.Radius) < 20;
+	private static bool DistanceFn(Vector2 mousePos, Planet planet) =>
+		Math.Abs(mousePos.DistanceTo(planet.GlobalPosition) - planet.Radius) < 20;
 
 	public int[] CalculatePlace(Planet planet, double x, double y) {
 		double angle = Math.Atan2(y - planet.GlobalPosition.Y, x - planet.GlobalPosition.X);
 		double a = angle * (180 / Math.PI);
 		double b = a > 0 ? a : 360 + a;
 		int place = (int)((b + (Wide % 2 == 0 ? 0 : 15)) / 30) % 12;
-		double diff = Wide % 2 == 0 ? baseAngle / 2 : 0;
 		double posX = planet.GlobalPosition.X;
 		double posY = planet.GlobalPosition.Y;
 		RotationDegrees = place * 30 - 90 + (Wide % 2 == 0 ? 16 : 0);

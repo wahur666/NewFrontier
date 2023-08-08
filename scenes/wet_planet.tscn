@@ -479,3 +479,5 @@ visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("CircleShape2D_q541v")
+
+[node name="BuildingsContainer" type="Node" parent="."]
