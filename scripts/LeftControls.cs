@@ -14,9 +14,9 @@ public partial class LeftControls : Control {
 	public override void _Ready() {
 		_playerController = GetTree().GetFirstNodeInGroup("player") as PlayerController;
 		_buttonPanel = GetNode<Panel>("Panel");
-		_button1 = GetNode<Button>("Panel/Button");
-		_button2 = GetNode<Button>("Panel/Button2");
-		_button3 = GetNode<Button>("Panel/Button3");
+		_button1 = GetNode<Button>("Panel/Container/Button");
+		_button2 = GetNode<Button>("Panel/Container/Button2");
+		_button3 = GetNode<Button>("Panel/Container/Button3");
 
 		_button1.Pressed += _playerController.CreateBuilding1;
 		_button2.Pressed += _playerController.CreateBuilding2;

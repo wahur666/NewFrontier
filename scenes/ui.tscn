@@ -1,52 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://puh55sbrd833"]
+[gd_scene load_steps=2 format=3 uid="uid://puh55sbrd833"]
 
-[ext_resource type="Script" path="res://scripts/LeftControls.cs" id="1_ji70d"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6gscy"]
-bg_color = Color(0.298039, 0.458824, 0.921569, 1)
-corner_radius_top_right = 20
+[ext_resource type="PackedScene" uid="uid://dsq1lag3r7s8o" path="res://scenes/left_controls.tscn" id="1_mnjuk"]
 
 [node name="Ui" type="CanvasLayer"]
 
-[node name="LeftControls" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_ji70d")
-
-[node name="Panel" type="Panel" parent="LeftControls"]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -130.0
-offset_right = 126.0
-grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_6gscy")
-
-[node name="Button" type="Button" parent="LeftControls/Panel"]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 10.0
-offset_right = 105.0
-offset_bottom = 41.0
-text = "Building 1"
-
-[node name="Button2" type="Button" parent="LeftControls/Panel"]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 50.0
-offset_right = 105.0
-offset_bottom = 81.0
-text = "Building 2"
-
-[node name="Button3" type="Button" parent="LeftControls/Panel"]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 90.0
-offset_right = 105.0
-offset_bottom = 121.0
-text = "Building 3"
+[node name="LeftControls" parent="." instance=ExtResource("1_mnjuk")]
