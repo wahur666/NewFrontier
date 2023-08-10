@@ -6,7 +6,7 @@ using NewFrontier.scripts.helpers;
 
 namespace NewFrontier.scripts;
 
-public partial class Harvester : Node2D {
+public partial class Harvester : UnitNode2D {
 	[Export] public int MaxCargo = 500;
 	private int _currentGasCargo = 0;
 	private int _currentOreCargo = 0;

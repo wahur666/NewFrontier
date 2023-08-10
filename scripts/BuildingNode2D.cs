@@ -13,6 +13,8 @@ public partial class BuildingNode2D : Node2D {
 	private List<Planet> _planets;
 	public bool BuildingShade = true;
 
+	private PlayerController _playerController;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_planets = GetTree().GetNodesInGroup("planet").Select(planet => planet as Planet).ToList();
@@ -39,8 +41,8 @@ public partial class BuildingNode2D : Node2D {
 			return;
 		}
 		if (Input.IsActionJustPressed("LMB")) {
-			if (_planet is not null && _place.Length > 0) {
-				_planet.BuildBuilding(this, _place);
+			if (_playerController is not null && _planet is not null && _place.Length > 0) {
+				_playerController.BuildBuilding(this, _planet, _place);
 			}
 		}
 
@@ -57,6 +59,10 @@ public partial class BuildingNode2D : Node2D {
 		}
 	}
 
+	public void SetPlayer(PlayerController playerController) {
+		_playerController = playerController;
+	}
+	
 	private static bool DistanceFn(Vector2 mousePos, Planet planet) =>
 		Math.Abs(mousePos.DistanceTo(planet.GlobalPosition) - planet.Radius) < 20;
 
@@ -76,8 +82,8 @@ public partial class BuildingNode2D : Node2D {
 				hoverPos = new[] { place };
 				break;
 			case 2: {
-				int prev = place - 1 < 0 ? 11 : place - 1;
-				int next = place > 11 ? 0 : place;
+				int prev = place > 11 ? 0 : place;
+				int next = place + 1 > 11 ? 0 : place + 1;
 				hoverPos = new[] { prev, next };
 				break;
 			}
