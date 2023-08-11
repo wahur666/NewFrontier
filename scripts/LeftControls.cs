@@ -4,7 +4,7 @@ using System;
 namespace NewFrontier.scripts;
 
 public partial class LeftControls : Control {
-	private Panel _buttonPanel;
+	private Control _buttonContainer;
 	private Button _button1;
 	private Button _button2;
 	private Button _button3;
@@ -13,7 +13,7 @@ public partial class LeftControls : Control {
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_playerController = GetTree().GetFirstNodeInGroup("player") as PlayerController;
-		_buttonPanel = GetNode<Panel>("Panel");
+		_buttonContainer = GetNode<Control>("Panel/Container");
 		_button1 = GetNode<Button>("Panel/Container/Button");
 		_button2 = GetNode<Button>("Panel/Container/Button2");
 		_button3 = GetNode<Button>("Panel/Container/Button3");
@@ -22,8 +22,8 @@ public partial class LeftControls : Control {
 		_button2.Pressed += _playerController.CreateBuilding2;
 		_button3.Pressed += _playerController.CreateBuilding3;
 		
-		_buttonPanel.MouseEntered += MouseEnteredPanelElement;
-		_buttonPanel.MouseExited += MouseExitedPanelElement;
+		_buttonContainer.MouseEntered += MouseEnteredPanelElement;
+		_buttonContainer.MouseExited += MouseExitedPanelElement;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
