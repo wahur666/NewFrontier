@@ -21,6 +21,10 @@ public partial class LeftControls : Control {
 		_button1.Pressed += _playerController.CreateBuilding1;
 		_button2.Pressed += _playerController.CreateBuilding2;
 		_button3.Pressed += _playerController.CreateBuilding3;
+		_button1.MouseEntered += MouseEnteredPanelElement;
+		_button2.MouseEntered += MouseEnteredPanelElement;
+		_button3.MouseEntered += MouseEnteredPanelElement;
+		
 		
 		_buttonContainer.MouseEntered += MouseEnteredPanelElement;
 		_buttonContainer.MouseExited += MouseExitedPanelElement;
