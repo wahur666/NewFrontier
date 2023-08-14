@@ -50,7 +50,6 @@ public partial class BuildingNode2D : Node2D {
 		if (_planets.Any(planet => DistanceFn(pos, planet))) {
 			_planet = _planets.First(planet => DistanceFn(pos, planet));
 			_place = CalculatePlace(_planet, pos.X, pos.Y);
-			GD.Print(_place.Join());
 		} else {
 			_planet = null;
 			_place = Array.Empty<int>();

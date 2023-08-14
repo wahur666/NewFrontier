@@ -3,7 +3,7 @@ using System;
 
 namespace NewFrontier.scripts;
 
-public partial class UnitNode2D : Node2D {
+public partial class UnitNode2D : CharacterBody2D {
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 	}
