@@ -7,9 +7,14 @@
 [ext_resource type="PackedScene" uid="uid://dihes1xsb3asa" path="res://scenes/harvester.tscn" id="4_ras2k"]
 [ext_resource type="PackedScene" uid="uid://ddkn0wk5cvsm" path="res://scenes/gas_nugget.tscn" id="5_vqw1s"]
 [ext_resource type="PackedScene" uid="uid://puh55sbrd833" path="res://scenes/ui.tscn" id="8_5nm4l"]
-[ext_resource type="Script" path="res://scripts/CameraController.cs" id="8_7iei8"]
+[ext_resource type="Script" path="res://scripts/CameraController.cs" id="8_puijt"]
 
 [node name="Level" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+script = ExtResource("8_puijt")
+EnableEdgePanning = false
 
 [node name="GameController" parent="." instance=ExtResource("1_ox2q5")]
 
@@ -22,9 +27,6 @@ position = Vector2(676, 484)
 
 [node name="WetPlanet2" parent="." instance=ExtResource("1_ljihc")]
 position = Vector2(908, 202)
-
-[node name="Harvester" parent="." instance=ExtResource("4_ras2k")]
-position = Vector2(643, 118)
 
 [node name="Resources" type="Node" parent="."]
 
@@ -57,6 +59,24 @@ position = Vector2(219, 99)
 [node name="Asteroid2" parent="Resources/Ore" instance=ExtResource("3_x4j80")]
 position = Vector2(557, 237)
 
-[node name="Camera2D" type="Camera2D" parent="."]
-anchor_mode = 0
-script = ExtResource("8_7iei8")
+[node name="Units" type="Node" parent="."]
+
+[node name="Harvester" parent="Units" instance=ExtResource("4_ras2k")]
+position = Vector2(643, 118)
+Selected = true
+
+[node name="Harvester2" parent="Units" instance=ExtResource("4_ras2k")]
+position = Vector2(122, 260)
+Selected = true
+
+[node name="Harvester3" parent="Units" instance=ExtResource("4_ras2k")]
+position = Vector2(240, 500)
+Selected = true
+
+[node name="Harvester4" parent="Units" instance=ExtResource("4_ras2k")]
+position = Vector2(516, 498)
+Selected = true
+
+[node name="Harvester5" parent="Units" instance=ExtResource("4_ras2k")]
+position = Vector2(431, 242)
+Selected = true

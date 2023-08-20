@@ -1,7 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://puh55sbrd833"]
+[gd_scene load_steps=3 format=3 uid="uid://puh55sbrd833"]
 
 [ext_resource type="PackedScene" uid="uid://dsq1lag3r7s8o" path="res://scenes/left_controls.tscn" id="1_mnjuk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6hh77"]
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 0.2)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0.501961, 0.12549, 1)
 
 [node name="Ui" type="CanvasLayer"]
 
 [node name="LeftControls" parent="." instance=ExtResource("1_mnjuk")]
+
+[node name="Panel" type="Panel" parent="."]
+theme_override_styles/panel = SubResource("StyleBoxFlat_6hh77")
