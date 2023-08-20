@@ -31,6 +31,7 @@ public partial class GameController : Node {
 		foreach (var unit in _units) {
 			unit.Selected = AreaHelper.InRect(unit.Position, start, end);
 		}
+		UpdateUI();
 	}
 
 	public void SelectUnitNearPoint(Vector2 point) {
@@ -40,6 +41,11 @@ public partial class GameController : Node {
 		if (unitNode2D is not null) {
 			unitNode2D.Selected = true;
 		}
+		UpdateUI();
+	}
+
+	private void UpdateUI() {
+		// TODO implement it based on what units are selected
 	}
 	
 }
