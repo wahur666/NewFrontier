@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsq1lag3r7s8o"]
+
+[ext_resource type="Script" path="res://scripts/LeftControls.cs" id="1_gw5hu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6gscy"]
+bg_color = Color(0.298039, 0.458824, 0.921569, 1)
+corner_radius_top_right = 20
+
+[node name="LeftControls" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_gw5hu")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -130.0
+offset_right = 126.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6gscy")
+
+[node name="Container" type="Control" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="Panel/Container"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 11.0
+offset_right = 105.0
+offset_bottom = 42.0
+text = "Building 1"
+
+[node name="Button2" type="Button" parent="Panel/Container"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 51.0
+offset_right = 105.0
+offset_bottom = 82.0
+text = "Building 2"
+
+[node name="Button3" type="Button" parent="Panel/Container"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 91.0
+offset_right = 105.0
+offset_bottom = 122.0
+text = "Building 3"

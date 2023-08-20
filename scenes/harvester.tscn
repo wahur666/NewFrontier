@@ -1,11 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://dihes1xsb3asa"]
+[gd_scene load_steps=5 format=3 uid="uid://dihes1xsb3asa"]
 
 [ext_resource type="Script" path="res://scripts/Harvester.cs" id="1_ybyge"]
 [ext_resource type="Texture2D" uid="uid://dy1ps31o4d1ck" path="res://gfx/Fabgal.tga" id="2_xgk4u"]
+[ext_resource type="Script" path="res://scripts/SelectionRect.cs" id="3_auyxh"]
 
-[node name="Harvester" type="Node2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_jwm4m"]
+radius = 37.0
+
+[node name="Harvester" type="CharacterBody2D" groups=["harvester", "unit"]]
 texture_filter = 1
 script = ExtResource("1_ybyge")
+
+[node name="SelectionRect" type="TextureRect" parent="."]
+offset_left = -20.0
+offset_top = -35.0
+offset_right = 20.0
+offset_bottom = 35.0
+script = ExtResource("3_auyxh")
 
 [node name="Base" type="Sprite2D" parent="."]
 texture = ExtResource("2_xgk4u")
@@ -18,3 +29,7 @@ texture = ExtResource("2_xgk4u")
 hframes = 2
 vframes = 2
 frame = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_jwm4m")

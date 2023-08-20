@@ -26,11 +26,10 @@ public partial class Planet : Node2D {
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
 	}
-	
-	public bool BuildBuilding(BuildingNode2D building, int[] slots) {
-		if (slots.Any(slot => _slots[slot] == SlotStatus.Occupied))
-		{
-			return false;
+
+	public BuildingNode2D BuildBuilding(BuildingNode2D building, int[] slots) {
+		if (slots.Any(slot => _slots[slot] == SlotStatus.Occupied)) {
+			return null;
 		}
 
 		foreach (var slot in slots) {
@@ -40,8 +39,7 @@ public partial class Planet : Node2D {
 		var newBuilding = building.Duplicate() as BuildingNode2D;
 		newBuilding.BuildingShade = false;
 		_buildings.Add(newBuilding);
-		_buildingsContainer.AddChild(newBuilding) ;
-		return true;
+		_buildingsContainer.AddChild(newBuilding);
+		return newBuilding;
 	}
-	
 }
