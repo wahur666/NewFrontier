@@ -35,7 +35,8 @@ public partial class GameController : Node {
 
 	public void SelectUnitNearPoint(Vector2 point) {
 		_units.ForEach(x => x.Selected = false);
-		var unitNode2D = _units.Find(x => x.Position.DistanceTo(point) < 30);
+		// TODO refactor to only include unit if its inside its selected area
+		var unitNode2D = _units.Find(x => x.Position.DistanceTo(point) < 30); 
 		if (unitNode2D is not null) {
 			unitNode2D.Selected = true;
 		}

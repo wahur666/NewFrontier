@@ -26,21 +26,10 @@ public partial class Harvester : UnitNode2D {
 	private ResourceNode2D _currentResourceNode2D = null;
 	private PlayerController _playerController = null;
 
-	private SelectionRect _selectionRect;
-
-	public override bool Selected {
-		set {
-			base.Selected = value;
-			if (_selectionRect is not null) {
-				_selectionRect.Selected = value;
-			}
-		}
-	}
-
 	public override void _Ready() {
+		base._Ready();
 		_currentHarvest = HarvestRate;
 		_playerController = GetTree().GetFirstNodeInGroup("player") as PlayerController;
-		_selectionRect = GetNode<SelectionRect>("SelectionRect");
 		GD.Print("Player Controller" + _playerController);
 		List<ResourceNode2D> resources =
 			GetTree().GetNodesInGroup("resource").Select(node => node as ResourceNode2D).ToList();

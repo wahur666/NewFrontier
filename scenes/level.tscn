@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bt2rj4k835nj0"]
+[gd_scene load_steps=10 format=3 uid="uid://bt2rj4k835nj0"]
 
 [ext_resource type="PackedScene" uid="uid://1t4s5btcems5" path="res://scenes/wet_planet.tscn" id="1_ljihc"]
 [ext_resource type="PackedScene" uid="uid://dwkcq78ovc6d8" path="res://scenes/game_controller.tscn" id="1_ox2q5"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://ddkn0wk5cvsm" path="res://scenes/gas_nugget.tscn" id="5_vqw1s"]
 [ext_resource type="PackedScene" uid="uid://puh55sbrd833" path="res://scenes/ui.tscn" id="8_5nm4l"]
 [ext_resource type="Script" path="res://scripts/CameraController.cs" id="8_puijt"]
+[ext_resource type="PackedScene" uid="uid://cd4ok3k787pu5" path="res://scenes/fabricator.tscn" id="9_klppl"]
 
 [node name="Level" type="Node2D"]
 
@@ -80,3 +81,9 @@ Selected = true
 [node name="Harvester5" parent="Units" instance=ExtResource("4_ras2k")]
 position = Vector2(431, 242)
 Selected = true
+
+[node name="Fabricator" parent="Units" instance=ExtResource("9_klppl")]
+position = Vector2(77, 124)
+
+[node name="Fabricator2" parent="Units" instance=ExtResource("9_klppl")]
+position = Vector2(333, 104)
