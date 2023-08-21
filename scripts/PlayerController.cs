@@ -1,6 +1,9 @@
 using Godot;
+using NewFrontier.scripts.helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 
 namespace NewFrontier.scripts;
 
@@ -16,9 +19,15 @@ public partial class PlayerController : Node {
 	[Export]public int CurrentGas = 0;
 	public int CurrentSupply = 0;
 
+	public LeftControls LeftControls;
+
+
+	private CameraController _camera;
+	
 	private List<BuildingNode2D> _buildings = new();
 	private List<UnitNode2D> _units = new();
 	private BuildingNode2D _buildingShade = null;
+
 
 	private PackedScene _base1;
 	private PackedScene _base2;
@@ -30,6 +39,11 @@ public partial class PlayerController : Node {
 		_base2 = GD.Load<PackedScene>("res://scenes/base_2.tscn");
 		_base3 = GD.Load<PackedScene>("res://scenes/base_3.tscn");
 		GD.Print("Player controller loaded to scene");
+
+		_camera = GetNode<CameraController>("../../Camera2D");
+		_camera.AreaSelected += SelectUnitsInArea;
+		_camera.PointSelected += SelectUnitNearPoint;
+		_units = GetNode("../../Units").GetChildren().Select(x => x as UnitNode2D).ToList();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -91,4 +105,26 @@ public partial class PlayerController : Node {
 			_buildings.Add(building);
 		}
 	}
+
+	public void SelectUnitsInArea(Vector2 start, Vector2 end) {
+		foreach (var unit in _units) {
+			unit.Selected = AreaHelper.InRect(unit.Position, start, end);
+		}
+		UpdateUI();
+	}
+
+	public void SelectUnitNearPoint(Vector2 point) {
+		_units.ForEach(x => x.Selected = false);
+		// TODO refactor to only include unit if its inside its selected area
+		var unitNode2D = _units.Find(x => x.Position.DistanceTo(point) < 30); 
+		if (unitNode2D is not null) {
+			unitNode2D.Selected = true;
+		}
+		UpdateUI();
+	}
+
+	private void UpdateUI() {
+		// TODO implement it based on what units are selected
+	}
+
 }

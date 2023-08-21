@@ -28,6 +28,7 @@ public partial class LeftControls : Control {
 		
 		_buttonContainer.MouseEntered += MouseEnteredPanelElement;
 		_buttonContainer.MouseExited += MouseExitedPanelElement;
+		_playerController.LeftControls = this;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
