@@ -28,11 +28,15 @@ public partial class PlayerController : Node {
 	private List<UnitNode2D> _units = new();
 	private BuildingNode2D _buildingShade = null;
 
-
 	private PackedScene _base1;
 	private PackedScene _base2;
 	private PackedScene _base3;
 	
+	public bool BuildingMode {
+		get;
+		private set;
+	}
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_base1 = GD.Load<PackedScene>("res://scenes/base_1.tscn");
@@ -43,6 +47,7 @@ public partial class PlayerController : Node {
 		_camera = GetNode<CameraController>("../../Camera2D");
 		_camera.AreaSelected += SelectUnitsInArea;
 		_camera.PointSelected += SelectUnitNearPoint;
+		_camera.PlayerControllerInstance = this;
 		_units = GetNode("../../Units").GetChildren().Select(x => x as UnitNode2D).ToList();
 	}
 
@@ -50,6 +55,7 @@ public partial class PlayerController : Node {
 	public override void _Process(double delta) {
 		if (Input.IsActionJustPressed("RMB")) {
 			FreeBuildingShade();
+			BuildingMode = false;
 		}
 	}
 
@@ -68,7 +74,9 @@ public partial class PlayerController : Node {
 		}
 	}
 	
+
 	public void CreateBuilding1() {
+		BuildingMode = true;
 		if (_buildingShade?.Wide == 1) {
 			return;
 		}
@@ -79,6 +87,7 @@ public partial class PlayerController : Node {
 	}
 	
 	public void CreateBuilding2() {
+		BuildingMode = true;
 		if (_buildingShade?.Wide == 2) {
 			return;
 		}
@@ -90,6 +99,7 @@ public partial class PlayerController : Node {
 	}
 	
 	public void CreateBuilding3() {
+		BuildingMode = true;
 		if (_buildingShade?.Wide == 3) {
 			return;
 		}
@@ -107,6 +117,7 @@ public partial class PlayerController : Node {
 	}
 
 	public void SelectUnitsInArea(Vector2 start, Vector2 end) {
+		BuildingMode = false;
 		foreach (var unit in _units) {
 			unit.Selected = AreaHelper.InRect(unit.Position, start, end);
 		}
@@ -114,6 +125,9 @@ public partial class PlayerController : Node {
 	}
 
 	public void SelectUnitNearPoint(Vector2 point) {
+		if (BuildingMode) {
+			return;
+		}
 		_units.ForEach(x => x.Selected = false);
 		// TODO refactor to only include unit if its inside its selected area
 		var unitNode2D = _units.Find(x => x.Position.DistanceTo(point) < 30); 
@@ -124,7 +138,7 @@ public partial class PlayerController : Node {
 	}
 
 	private void UpdateUI() {
-		// TODO implement it based on what units are selected
+		LeftControls.SetBuildingContainerVisibility(_units.Where(x => x.Selected && x is Fabricator).Count() == 1);
 	}
 
 }

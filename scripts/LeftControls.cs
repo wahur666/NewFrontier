@@ -9,6 +9,10 @@ public partial class LeftControls : Control {
 	private Button _button2;
 	private Button _button3;
 	private PlayerController _playerController;
+	public bool OverUiElement {
+		get;
+		private set;
+	}
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
@@ -36,11 +40,17 @@ public partial class LeftControls : Control {
 	}
 
 	private void MouseEnteredPanelElement() {
+		OverUiElement = true;
 		_playerController.SetBuildingShadeVisibility(false);
 	}
 
 	private void MouseExitedPanelElement() {
+		OverUiElement = false;
 		_playerController.SetBuildingShadeVisibility(true);
 	}
+
+	public void SetBuildingContainerVisibility(bool visible) {
+		_buttonContainer.Visible = visible;
+	}	
 
 }
