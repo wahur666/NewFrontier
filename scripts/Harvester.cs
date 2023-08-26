@@ -39,6 +39,7 @@ public partial class Harvester : UnitNode2D {
 	}
 
 	public override void _Process(double delta) {
+		base._Process(delta);
 		if (_currentResourceNode2D is not null && _harvesting) {
 			if (_currentHarvest == 0) {
 				Harvest(_currentResourceNode2D, HarvestAmount);

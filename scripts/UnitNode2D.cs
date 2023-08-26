@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using NewFrontier.scripts.helpers;
 
 namespace NewFrontier.scripts;
 
@@ -12,15 +13,20 @@ public partial class UnitNode2D : CharacterBody2D {
 		get { return _selected; }
 		set {
 			_selected = value;
-			if (_selectionRect is not null) {
-				_selectionRect.Selected = value;
+			if (SelectionRect is not null) {
+				SelectionRect.Selected = value;
 			}
 		}
 	}
 
-	private SelectionRect _selectionRect;
+	protected SelectionRect SelectionRect;
 
 	public override void _Ready() {
-		_selectionRect = GetNode<SelectionRect>("SelectionRect");
+		SelectionRect = GetNode<SelectionRect>("SelectionRect");
+	}
+
+	public bool InsideSelectionRect(Vector2 position) {
+		var size = SelectionRect.Size;
+		return AreaHelper.InRect(position, Position + size * new Vector2(.5f, .5f), Position - size * new Vector2(.5f, .5f));
 	}
 }

@@ -115,9 +115,9 @@ public partial class CameraController : Camera2D {
 			}
 		}
 
-		// var inpx = (Input.IsActionPressed("ui_right") ? 1 : 0) 
+		// inpx = (Input.IsActionPressed("ui_right") ? 1 : 0) 
 		// 		   - (Input.IsActionPressed("ui_left") ? 1 : 0);
-		// var inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
+		// inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
 		// 		   - (Input.IsActionPressed("ui_up") ? 1 : 0);
 
 		Position += new Vector2(inpx * Speed, inpy * Speed);

@@ -121,7 +121,7 @@ public partial class PlayerController : Node {
 		foreach (var unit in _units) {
 			unit.Selected = AreaHelper.InRect(unit.Position, start, end);
 		}
-		UpdateUI();
+		UpdateUi();
 	}
 
 	public void SelectUnitNearPoint(Vector2 point) {
@@ -129,16 +129,15 @@ public partial class PlayerController : Node {
 			return;
 		}
 		_units.ForEach(x => x.Selected = false);
-		// TODO refactor to only include unit if its inside its selected area
-		var unitNode2D = _units.Find(x => x.Position.DistanceTo(point) < 30); 
+		var unitNode2D = _units.Find(x => x.InsideSelectionRect(point)); 
 		if (unitNode2D is not null) {
 			unitNode2D.Selected = true;
 		}
-		UpdateUI();
+		UpdateUi();
 	}
 
-	private void UpdateUI() {
-		LeftControls.SetBuildingContainerVisibility(_units.Where(x => x.Selected && x is Fabricator).Count() == 1);
+	private void UpdateUi() {
+		LeftControls.SetBuildingContainerVisibility(_units.Count(x => x.Selected && x is Fabricator) == 1);
 	}
 
 }
