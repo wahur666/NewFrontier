@@ -1,0 +1,66 @@
+[gd_scene load_steps=6 format=3 uid="uid://desjnoc545tf0"]
+
+[ext_resource type="Texture2D" uid="uid://dy1ps31o4d1ck" path="res://gfx/Fabgal.tga" id="1_a4hic"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oeckg"]
+atlas = ExtResource("1_a4hic")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_76874"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3hev"]
+bg_color = Color(1, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qt56f"]
+bg_color = Color(0, 0, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="FabricatorIcon" type="TextureButton"]
+offset_right = 64.0
+offset_bottom = 64.0
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+
+[node name="TextureRect" type="TextureRect" parent="Panel"]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+texture = SubResource("AtlasTexture_oeckg")
+
+[node name="ProgressBar" type="ProgressBar" parent="Panel"]
+layout_mode = 0
+offset_left = 4.0
+offset_right = 61.0
+offset_bottom = 7.0
+theme_override_styles/background = SubResource("StyleBoxFlat_76874")
+theme_override_styles/fill = SubResource("StyleBoxFlat_r3hev")
+step = 1.0
+value = 55.0
+show_percentage = false
+
+[node name="ProgressBar2" type="ProgressBar" parent="Panel"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 57.0
+offset_right = 60.0
+offset_bottom = 64.0
+theme_override_styles/background = SubResource("StyleBoxFlat_76874")
+theme_override_styles/fill = SubResource("StyleBoxFlat_qt56f")
+step = 1.0
+value = 55.0
+show_percentage = false
