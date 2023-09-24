@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3 uid="uid://dfemoxdev0adp"]
+
+[ext_resource type="Texture2D" uid="uid://dy1ps31o4d1ck" path="res://gfx/Fabgal.tga" id="1_6iy8j"]
+[ext_resource type="Script" path="res://scripts/UnitIcon.cs" id="1_hcdo7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oeckg"]
+atlas = ExtResource("1_6iy8j")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3hev"]
+bg_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qt56f"]
+bg_color = Color(0, 0, 1, 1)
+
+[node name="HarvesterIcon" type="Button"]
+offset_right = 32.0
+offset_bottom = 32.0
+script = ExtResource("1_hcdo7")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 67.0
+offset_bottom = 67.0
+scale = Vector2(0.4, 0.4)
+texture = SubResource("AtlasTexture_oeckg")
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_right = 29.0
+offset_bottom = 4.0
+mouse_filter = 1
+theme_override_styles/fill = SubResource("StyleBoxFlat_r3hev")
+step = 1.0
+value = 55.0
+show_percentage = false
+
+[node name="ProgressBar2" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 28.0
+offset_right = 29.0
+offset_bottom = 32.0
+mouse_filter = 1
+theme_override_styles/fill = SubResource("StyleBoxFlat_qt56f")
+step = 1.0
+value = 55.0
+show_percentage = false

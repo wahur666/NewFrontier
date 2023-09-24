@@ -1,6 +1,9 @@
 using Godot;
+using NewFrontier.scripts.helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 
 namespace NewFrontier.scripts;
 
@@ -16,26 +19,52 @@ public partial class PlayerController : Node {
 	[Export]public int CurrentGas = 0;
 	public int CurrentSupply = 0;
 
+	public LeftControls LeftControls;
+
+
+	private CameraController _camera;
+	
 	private List<BuildingNode2D> _buildings = new();
 	private List<UnitNode2D> _units = new();
 	private BuildingNode2D _buildingShade = null;
 
+	public bool OverGui {
+		get => _overGui;
+		set {
+			GD.Print("setting over gui ", value);
+			_overGui = value;
+		}
+	}
+
 	private PackedScene _base1;
 	private PackedScene _base2;
 	private PackedScene _base3;
-	
+	private bool _overGui;
+
+	public bool BuildingMode {
+		get;
+		private set;
+	}
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_base1 = GD.Load<PackedScene>("res://scenes/base_1.tscn");
 		_base2 = GD.Load<PackedScene>("res://scenes/base_2.tscn");
 		_base3 = GD.Load<PackedScene>("res://scenes/base_3.tscn");
 		GD.Print("Player controller loaded to scene");
+
+		_camera = GetNode<CameraController>("../../Camera2D");
+		_camera.AreaSelected += SelectUnitsInArea;
+		_camera.PointSelected += SelectUnitNearPoint;
+		_camera.PlayerControllerInstance = this;
+		_units = GetNode("../../Units").GetChildren().Select(x => x as UnitNode2D).ToList();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
 		if (Input.IsActionJustPressed("RMB")) {
 			FreeBuildingShade();
+			BuildingMode = false;
 		}
 	}
 
@@ -54,7 +83,9 @@ public partial class PlayerController : Node {
 		}
 	}
 	
+
 	public void CreateBuilding1() {
+		BuildingMode = true;
 		if (_buildingShade?.Wide == 1) {
 			return;
 		}
@@ -65,6 +96,7 @@ public partial class PlayerController : Node {
 	}
 	
 	public void CreateBuilding2() {
+		BuildingMode = true;
 		if (_buildingShade?.Wide == 2) {
 			return;
 		}
@@ -76,6 +108,7 @@ public partial class PlayerController : Node {
 	}
 	
 	public void CreateBuilding3() {
+		BuildingMode = true;
 		if (_buildingShade?.Wide == 3) {
 			return;
 		}
@@ -90,5 +123,41 @@ public partial class PlayerController : Node {
 		if (building is not null) {
 			_buildings.Add(building);
 		}
+	}
+
+	public void SelectUnitsInArea(Vector2 start, Vector2 end) {
+		if (OverGui) return;
+		GD.Print("this is running SelectUnitsInArea");
+		BuildingMode = false;
+		foreach (var unit in _units) {
+			unit.Selected = AreaHelper.InRect(unit.Position, start, end);
+		}
+		UpdateUi();
+	}
+
+	public void SelectUnitNearPoint(Vector2 point) {
+		if (OverGui) return;
+		GD.Print("this is running SelectUnitNearPoint");
+		if (BuildingMode) {
+			return;
+		}
+		_units.ForEach(x => x.Selected = false);
+		var unitNode2D = _units.Find(x => x.InsideSelectionRect(point)); 
+		if (unitNode2D is not null) {
+			unitNode2D.Selected = true;
+		}
+		UpdateUi();
+	}
+
+	private void UpdateUi() {
+		var units = _units.Where(x => x.Selected).ToList();
+		LeftControls.SetBuildingContainerVisibility(units.Count == 1 && units[0] is Fabricator);
+		LeftControls.CalculateSelectedUnits(_units.Where(x => x.Selected).ToList());
+	}
+
+	public void SelectUnit(UnitNode2D unit) {
+		GD.Print("this is running SelectUnit");
+		_units.ForEach(x => x.Selected = x == unit);
+		UpdateUi();
 	}
 }

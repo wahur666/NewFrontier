@@ -17,6 +17,8 @@ public partial class CameraController : Camera2D {
 	private Vector2 startV;
 	private Vector2 end;
 	private Vector2 endV;	
+	private UiController _uiController;
+	public PlayerController PlayerControllerInstance;
 	
 	[Signal]
 	public delegate void AreaSelectedEventHandler(Vector2 start, Vector2 end);		
@@ -32,6 +34,7 @@ public partial class CameraController : Camera2D {
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_windowSize = DisplayServer.WindowGetSize();
+		_uiController = GetNode<UiController>("../Ui");
 	}
 
 	public override void _Input(InputEvent @event) {
@@ -56,6 +59,17 @@ public partial class CameraController : Camera2D {
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
+		if (Input.IsActionJustPressed("RMB")) {
+			start = GetGlobalMousePosition();
+			startV = mousePosition;
+			_dragging = false;
+			DrawArea(false);
+		}
+		
+		if (PlayerControllerInstance is not null && PlayerControllerInstance.BuildingMode) {
+			return;
+		}
+
 		if (Input.IsActionJustPressed("LMB")) {
 			start = GetGlobalMousePosition();
 			startV = mousePosition;
@@ -75,10 +89,13 @@ public partial class CameraController : Camera2D {
 			DrawArea(false);
 			if (start.DistanceTo(end) > 10) {
 				EmitSignal(SignalName.AreaSelected, start, end);
-			} else {
+			} else if (!OverUiElement(start)) {
 				EmitSignal(SignalName.PointSelected, start);
 			}
+			
 		}
+
+		
 
 		var inpx = 0;
 		var inpy = 0;
@@ -98,11 +115,15 @@ public partial class CameraController : Camera2D {
 			}
 		}
 
-		// var inpx = (Input.IsActionPressed("ui_right") ? 1 : 0) 
+		// inpx = (Input.IsActionPressed("ui_right") ? 1 : 0) 
 		// 		   - (Input.IsActionPressed("ui_left") ? 1 : 0);
-		// var inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
+		// inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
 		// 		   - (Input.IsActionPressed("ui_up") ? 1 : 0);
 
 		Position += new Vector2(inpx * Speed, inpy * Speed);
+	}
+
+	private bool OverUiElement(Vector2 position) {
+		return _uiController.OverUiElement(position);
 	}
 }
