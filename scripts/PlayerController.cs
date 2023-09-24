@@ -28,10 +28,19 @@ public partial class PlayerController : Node {
 	private List<UnitNode2D> _units = new();
 	private BuildingNode2D _buildingShade = null;
 
+	public bool OverGui {
+		get => _overGui;
+		set {
+			GD.Print("setting over gui ", value);
+			_overGui = value;
+		}
+	}
+
 	private PackedScene _base1;
 	private PackedScene _base2;
 	private PackedScene _base3;
-	
+	private bool _overGui;
+
 	public bool BuildingMode {
 		get;
 		private set;
@@ -117,6 +126,8 @@ public partial class PlayerController : Node {
 	}
 
 	public void SelectUnitsInArea(Vector2 start, Vector2 end) {
+		if (OverGui) return;
+		GD.Print("this is running SelectUnitsInArea");
 		BuildingMode = false;
 		foreach (var unit in _units) {
 			unit.Selected = AreaHelper.InRect(unit.Position, start, end);
@@ -125,6 +136,8 @@ public partial class PlayerController : Node {
 	}
 
 	public void SelectUnitNearPoint(Vector2 point) {
+		if (OverGui) return;
+		GD.Print("this is running SelectUnitNearPoint");
 		if (BuildingMode) {
 			return;
 		}
@@ -137,7 +150,14 @@ public partial class PlayerController : Node {
 	}
 
 	private void UpdateUi() {
-		LeftControls.SetBuildingContainerVisibility(_units.Count(x => x.Selected && x is Fabricator) == 1);
+		var units = _units.Where(x => x.Selected).ToList();
+		LeftControls.SetBuildingContainerVisibility(units.Count == 1 && units[0] is Fabricator);
+		LeftControls.CalculateSelectedUnits(_units.Where(x => x.Selected).ToList());
 	}
 
+	public void SelectUnit(UnitNode2D unit) {
+		GD.Print("this is running SelectUnit");
+		_units.ForEach(x => x.Selected = x == unit);
+		UpdateUi();
+	}
 }

@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://dsq1lag3r7s8o"]
+[gd_scene load_steps=3 format=3 uid="uid://dsq1lag3r7s8o"]
 
 [ext_resource type="Script" path="res://scripts/LeftControls.cs" id="1_gw5hu"]
-[ext_resource type="PackedScene" uid="uid://desjnoc545tf0" path="res://scenes/fabricator_icon.tscn" id="2_m84wg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6gscy"]
 bg_color = Color(0.686275, 0.686275, 0.686275, 1)
@@ -21,10 +20,18 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -130.0
-offset_right = 374.0
+offset_top = -176.0
+offset_right = 304.0
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_6gscy")
+
+[node name="Cont2" type="Control" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Container" type="Control" parent="Panel"]
 visible = false
@@ -58,51 +65,3 @@ offset_top = 91.0
 offset_right = 105.0
 offset_bottom = 122.0
 text = "Building 3"
-
-[node name="HBoxContainer" type="VBoxContainer" parent="Panel"]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -129.0
-offset_right = 289.0
-grow_vertical = 0
-theme_override_constants/separation = 65
-
-[node name="VBoxContainer" type="HBoxContainer" parent="Panel/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 65
-
-[node name="FabricatorIcon" parent="Panel/HBoxContainer/VBoxContainer" instance=ExtResource("2_m84wg")]
-layout_mode = 2
-
-[node name="FabricatorIcon2" parent="Panel/HBoxContainer/VBoxContainer" instance=ExtResource("2_m84wg")]
-layout_mode = 2
-
-[node name="FabricatorIcon3" parent="Panel/HBoxContainer/VBoxContainer" instance=ExtResource("2_m84wg")]
-layout_mode = 2
-
-[node name="FabricatorIcon4" parent="Panel/HBoxContainer/VBoxContainer" instance=ExtResource("2_m84wg")]
-layout_mode = 2
-
-[node name="FabricatorIcon5" parent="Panel/HBoxContainer/VBoxContainer" instance=ExtResource("2_m84wg")]
-layout_mode = 2
-
-[node name="VBoxContainer2" type="HBoxContainer" parent="Panel/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 65
-
-[node name="FabricatorIcon" parent="Panel/HBoxContainer/VBoxContainer2" instance=ExtResource("2_m84wg")]
-layout_mode = 2
-
-[node name="FabricatorIcon2" parent="Panel/HBoxContainer/VBoxContainer2" instance=ExtResource("2_m84wg")]
-layout_mode = 2
-
-[node name="FabricatorIcon3" parent="Panel/HBoxContainer/VBoxContainer2" instance=ExtResource("2_m84wg")]
-layout_mode = 2
-
-[node name="FabricatorIcon4" parent="Panel/HBoxContainer/VBoxContainer2" instance=ExtResource("2_m84wg")]
-layout_mode = 2
-
-[node name="FabricatorIcon5" parent="Panel/HBoxContainer/VBoxContainer2" instance=ExtResource("2_m84wg")]
-layout_mode = 2
