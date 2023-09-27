@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Controllers;
 
 public partial class GameController : Node {
 

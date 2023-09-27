@@ -3,9 +3,11 @@ using NewFrontier.scripts.helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NewFrontier.scripts.Entities;
+using NewFrontier.scripts.UI;
 
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Controllers;
 
 public partial class PlayerController : Node {
 

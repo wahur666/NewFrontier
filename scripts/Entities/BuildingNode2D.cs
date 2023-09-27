@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NewFrontier.scripts;
+using NewFrontier.scripts.Controllers;
+
+namespace NewFrontier.scripts.Entities;
 
 public partial class BuildingNode2D : Node2D {
 	[Export] public int Wide = 1;

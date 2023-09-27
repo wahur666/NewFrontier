@@ -2,7 +2,7 @@ using Godot;
 using System;
 using NewFrontier.scripts.helpers;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Model;
 
 public partial class MapGrid : Node2D {
 	[Export(PropertyHint.Range, "21,63,2")]

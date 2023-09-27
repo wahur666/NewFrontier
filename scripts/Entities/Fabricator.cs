@@ -1,22 +1,16 @@
 using Godot;
 using System;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Entities;
 
-public partial class UnitIcon : Button {
-	public UnitNode2D Unit;
-	public PlayerController PlayerController;
-
+public partial class Fabricator : UnitNode2D {
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		Pressed += SelectUnit;
-	}
-
-	private void SelectUnit() {
-		PlayerController.SelectUnit(Unit);
+		base._Ready();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
+		base._Process(delta);
 	}
 }

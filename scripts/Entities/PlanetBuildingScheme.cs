@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Entities;
 
 public partial class PlanetBuildingScheme : Node2D {
 	[Export] public int Radius = 83;

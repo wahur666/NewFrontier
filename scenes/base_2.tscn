@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://38lsy3c311jh"]
 
 [ext_resource type="Texture2D" uid="uid://c4ei8ngr18fkk" path="res://gfx/aseprite/2slot.png" id="1_6dawp"]
-[ext_resource type="Script" path="res://scripts/BuildingNode2D.cs" id="1_a8cgs"]
+[ext_resource type="Script" path="res://scripts/Entities/BuildingNode2D.cs" id="1_a8cgs"]
 
 [node name="Base2" type="Node2D"]
 script = ExtResource("1_a8cgs")

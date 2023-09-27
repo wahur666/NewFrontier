@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://ddkn0wk5cvsm"]
 
 [ext_resource type="Texture2D" uid="uid://c23vejt5tn0gr" path="res://gfx/gas-nugget.png" id="1_d63vg"]
-[ext_resource type="Script" path="res://scripts/GasNugget.cs" id="1_miqrq"]
+[ext_resource type="Script" path="res://scripts/Entities/GasNugget.cs" id="1_miqrq"]
 
 [sub_resource type="Animation" id="Animation_2t67g"]
 length = 0.001

@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.helpers;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Entities;
 
 public partial class Harvester : UnitNode2D {
 	[Export] public int MaxCargo = 500;

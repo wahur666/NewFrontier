@@ -1,8 +1,9 @@
 using Godot;
 using System;
 using NewFrontier.scripts.helpers;
+using NewFrontier.scripts.UI;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Entities;
 
 public partial class UnitNode2D : CharacterBody2D {
 

@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Controllers;
 
 public partial class CameraController : Camera2D {
 	[Export] public float Speed = 10.0f;

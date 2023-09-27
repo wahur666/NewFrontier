@@ -2,8 +2,10 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NewFrontier.scripts.Controllers;
+using NewFrontier.scripts.Entities;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.UI;
 
 public partial class LeftControls : Control {
 	private Control _buttonContainer;

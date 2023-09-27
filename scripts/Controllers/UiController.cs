@@ -2,7 +2,9 @@ using Godot;
 using NewFrontier.scripts;
 using System;
 using System.Collections.Generic;
+using NewFrontier.scripts.UI;
 
+namespace NewFrontier.scripts.Controllers;
 
 public partial class UiController : CanvasLayer
 {

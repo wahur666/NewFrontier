@@ -2,7 +2,7 @@ using Godot;
 using System;
 using NewFrontier.scripts.helpers;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Entities;
 
 public partial class Asteroid : ResourceNode2D {
 	private AnimatedSprite2D _animatedSprite2D;

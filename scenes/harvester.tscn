@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://dihes1xsb3asa"]
 
-[ext_resource type="Script" path="res://scripts/Harvester.cs" id="1_ybyge"]
+[ext_resource type="Script" path="res://scripts/Entities/Harvester.cs" id="1_ybyge"]
 [ext_resource type="Texture2D" uid="uid://dy1ps31o4d1ck" path="res://gfx/Fabgal.tga" id="2_xgk4u"]
-[ext_resource type="Script" path="res://scripts/SelectionRect.cs" id="3_auyxh"]
+[ext_resource type="Script" path="res://scripts/UI/SelectionRect.cs" id="3_auyxh"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jwm4m"]
 radius = 37.0

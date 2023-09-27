@@ -1,8 +1,8 @@
 [gd_scene load_steps=70 format=3 uid="uid://1t4s5btcems5"]
 
-[ext_resource type="Script" path="res://scripts/Planet.cs" id="1_1nk8g"]
+[ext_resource type="Script" path="res://scripts/Entities/Planet.cs" id="1_1nk8g"]
 [ext_resource type="Texture2D" uid="uid://cn4yrl4amdien" path="res://gfx/wet-planet.png" id="1_rg5fr"]
-[ext_resource type="Script" path="res://scripts/PlanetBuildingScheme.cs" id="2_5foyr"]
+[ext_resource type="Script" path="res://scripts/Entities/PlanetBuildingScheme.cs" id="2_5foyr"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_udpkb"]
 atlas = ExtResource("1_rg5fr")

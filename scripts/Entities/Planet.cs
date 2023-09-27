@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Entities;
 
 enum SlotStatus {
 	Free,
