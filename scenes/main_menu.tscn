@@ -1,4 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://cu5fulqucf14o"]
+[gd_scene load_steps=5 format=3 uid="uid://cu5fulqucf14o"]
+
+[ext_resource type="Script" path="res://scripts/UI/MainMenu.cs" id="1_w86cs"]
 
 [sub_resource type="SystemFont" id="SystemFont_wikoy"]
 
@@ -15,6 +17,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_w86cs")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
@@ -30,7 +33,7 @@ text = "New Frontier"
 label_settings = SubResource("LabelSettings_4jy4h")
 horizontal_alignment = 1
 
-[node name="Button" type="Button" parent="."]
+[node name="PlayButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
