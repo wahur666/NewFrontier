@@ -29,6 +29,8 @@ public partial class CameraController : Camera2D {
 	[Signal]
 	public delegate void StartMoveSelectionEventHandler();
 
+	[Signal]
+	public delegate void MoveToPointEventHandler(Vector2 point);
 
 
 	// Called when the node enters the scene tree for the first time.
@@ -64,6 +66,7 @@ public partial class CameraController : Camera2D {
 			startV = mousePosition;
 			_dragging = false;
 			DrawArea(false);
+			EmitSignal(SignalName.MoveToPoint, start);
 		}
 		
 		if (PlayerControllerInstance is not null && PlayerControllerInstance.BuildingMode) {

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NewFrontier.scripts.Entities;
+using NewFrontier.scripts.Model;
 using NewFrontier.scripts.UI;
 
 
@@ -23,7 +24,7 @@ public partial class PlayerController : Node {
 
 	public LeftControls LeftControls;
 
-
+	private MapGrid _mapGrid;
 	private CameraController _camera;
 	
 	private List<BuildingNode2D> _buildings = new();
@@ -58,8 +59,11 @@ public partial class PlayerController : Node {
 		_camera = GetNode<CameraController>("../../Camera2D");
 		_camera.AreaSelected += SelectUnitsInArea;
 		_camera.PointSelected += SelectUnitNearPoint;
+		_camera.MoveToPoint += MoveToPoint;
 		_camera.PlayerControllerInstance = this;
 		_units = GetNode("../../Units").GetChildren().Select(x => x as UnitNode2D).ToList();
+		_mapGrid = GetNode<MapGrid>("../../MapGrid");
+		GD.Print("MapGrid: " + _mapGrid);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -127,7 +131,7 @@ public partial class PlayerController : Node {
 		}
 	}
 
-	public void SelectUnitsInArea(Vector2 start, Vector2 end) {
+	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
 		if (OverGui) return;
 		GD.Print("this is running SelectUnitsInArea");
 		BuildingMode = false;
@@ -137,7 +141,7 @@ public partial class PlayerController : Node {
 		UpdateUi();
 	}
 
-	public void SelectUnitNearPoint(Vector2 point) {
+	private void SelectUnitNearPoint(Vector2 point) {
 		if (OverGui) return;
 		GD.Print("this is running SelectUnitNearPoint");
 		if (BuildingMode) {
@@ -161,5 +165,9 @@ public partial class PlayerController : Node {
 		GD.Print("this is running SelectUnit");
 		_units.ForEach(x => x.Selected = x == unit);
 		UpdateUi();
+	}
+	
+	private void MoveToPoint(Vector2 point) {
+		_units.Where(x => x.Selected).ToList().ForEach(node2D => node2D.TargetDestination = point);
 	}
 }

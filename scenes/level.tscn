@@ -17,11 +17,11 @@ anchor_mode = 0
 script = ExtResource("8_puijt")
 EnableEdgePanning = false
 
+[node name="MapGrid" parent="." instance=ExtResource("2_pn7aa")]
+
 [node name="GameController" parent="." instance=ExtResource("1_ox2q5")]
 
 [node name="Ui" parent="." instance=ExtResource("8_5nm4l")]
-
-[node name="MapGrid" parent="." instance=ExtResource("2_pn7aa")]
 
 [node name="WetPlanet" parent="." instance=ExtResource("1_ljihc")]
 position = Vector2(676, 484)

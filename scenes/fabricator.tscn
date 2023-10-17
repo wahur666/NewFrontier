@@ -8,6 +8,7 @@
 radius = 41.0122
 
 [node name="Fabricator" type="CharacterBody2D"]
+collision_mask = 2
 script = ExtResource("1_60k43")
 
 [node name="SelectionRect" type="TextureRect" parent="."]

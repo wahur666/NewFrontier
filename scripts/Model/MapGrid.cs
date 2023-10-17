@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using NewFrontier.scripts.helpers;
 
 namespace NewFrontier.scripts.Model;
@@ -11,15 +12,15 @@ public partial class MapGrid : Node2D {
 	private int _radius;
 	private int _diameter;
 	private const int Size = 20;
-	private MapMoveLayer[,] _passiveGridLayer;
+	public GameNode[,] PassiveGridLayer;
 	private MapMoveLayer[,] _staticGridLayer;
 	private MapMoveLayer[,] _activeGridLayer;
 
 	public override void _Ready() {
 		_radius = (MapSize - 1) / 2;
 		_diameter = MapSize - 1;
-		_passiveGridLayer = new MapMoveLayer[MapSize, MapSize];
-		GD.Print(_passiveGridLayer[0, 0]);
+		PassiveGridLayer = new GameNode[MapSize, MapSize];
+		GD.Print(PassiveGridLayer[0, 0]);
 	}
 
 	public override void _Draw() {
@@ -39,11 +40,30 @@ public partial class MapGrid : Node2D {
 		}
 	}
 
+	private static void Vec2ToArray(Vector2 vector2, out int x, out int y) {
+		x = (int)vector2.X;
+		y = (int)vector2.Y;
+	}
+
+	private Vector2 GridToPos(Vector2 gridCoordinate) => gridCoordinate * Size + new Vector2(Size / 2, Size / 2);
+	private Vector2 NodeToPos(GameNode node) => node.Position * Size + new Vector2(Size / 2, Size / 2);
+	private Vector2 PosToGrid(Vector2 pos) => new((int)pos.X / Size, (int)pos.Y / Size);
+	public List<GameNode> NodeNeighbours(GameNode node) {
+		var neighbours = new List<GameNode>();
+		foreach (var neighboursKey in node.Neighbours.Keys) {
+			int x, y;
+			Vec2ToArray(neighboursKey.Position, out x, out y);
+			neighbours.Add(this.PassiveGridLayer[x, y]);
+		}
+		return neighbours;
+	}
+	
 	public override void _Process(double delta) {
 		if (Input.IsMouseButtonPressed(MouseButton.Left)) {
 			var pos = GetGlobalMousePosition();
-			var gridPos = new Vector2((int)pos.X / Size, (int)pos.Y / Size);
-			GD.Print(gridPos);
+			var gridPos = PosToGrid(pos);
+			GD.Print("Grid pos: " +  gridPos);
+			GD.Print("Grid pos back to coordiante: " +  GridToPos(gridPos));
 		}
 	}
 }
