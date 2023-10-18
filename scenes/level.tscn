@@ -65,20 +65,5 @@ position = Vector2(557, 237)
 [node name="Harvester" parent="Units" instance=ExtResource("4_ras2k")]
 position = Vector2(643, 118)
 
-[node name="Harvester2" parent="Units" instance=ExtResource("4_ras2k")]
-position = Vector2(122, 260)
-
-[node name="Harvester3" parent="Units" instance=ExtResource("4_ras2k")]
-position = Vector2(240, 500)
-
-[node name="Harvester4" parent="Units" instance=ExtResource("4_ras2k")]
-position = Vector2(516, 498)
-
-[node name="Harvester5" parent="Units" instance=ExtResource("4_ras2k")]
-position = Vector2(431, 242)
-
 [node name="Fabricator" parent="Units" instance=ExtResource("9_klppl")]
 position = Vector2(77, 124)
-
-[node name="Fabricator2" parent="Units" instance=ExtResource("9_klppl")]
-position = Vector2(333, 104)

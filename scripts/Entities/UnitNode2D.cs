@@ -9,7 +9,6 @@ public partial class UnitNode2D : CharacterBody2D {
 
 	private bool _selected;
 	private int _speed = 300;
-	private int _acceleration = 7;
 	
 	[Export]
 	public virtual bool Selected {
@@ -43,7 +42,41 @@ public partial class UnitNode2D : CharacterBody2D {
 
 		var direction = TargetDestination - GlobalPosition;
 		direction = direction.Normalized();
-		Velocity = Velocity.Lerp(direction * _speed, (float)(_acceleration * delta));
-		MoveAndSlide();
+    
+		// Calculate the angle between the current rotation and the direction vector
+		float targetRotation = Mathf.Atan2(direction.Y, direction.X);
+    
+		// Ensure the angle is between -PI and PI
+		while (targetRotation - Rotation > Mathf.Pi) {
+			targetRotation -= 2 * Mathf.Pi;
+		}
+		while (targetRotation - Rotation < -Mathf.Pi) {
+			targetRotation += 2 * Mathf.Pi;
+		}
+    
+		// Define a constant rotation speed
+		float rotationSpeed = 2.0f; // You can adjust this value as needed
+    
+		// Calculate the rotation difference
+		float rotationDifference = targetRotation - Rotation + Mathf.Pi / 2;
+    
+		// Determine the shortest path to the target rotation
+		if (rotationDifference > Mathf.Pi) {
+			rotationDifference -= 2 * Mathf.Pi;
+		} else if (rotationDifference < -Mathf.Pi) {
+			rotationDifference += 2 * Mathf.Pi;
+		}
+    
+		// Rotate at a constant speed
+		if (Mathf.Abs(rotationDifference) > 0.03) {
+			float rotationDirection = Mathf.Sign(rotationDifference);
+			Rotation += rotationDirection * rotationSpeed * (float)delta;
+		} else {
+			// When the rotation aligns with the direction vector, assign the velocity
+			Velocity = direction * _speed * (float)delta * 20;
+			MoveAndSlide();
+		}
 	}
+
+
 }

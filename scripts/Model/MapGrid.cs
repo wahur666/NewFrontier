@@ -11,7 +11,7 @@ public partial class MapGrid : Node2D {
 
 	private int _radius;
 	private int _diameter;
-	private const int Size = 20;
+	public const int Size = 80;
 	public GameNode[,] PassiveGridLayer;
 	private MapMoveLayer[,] _staticGridLayer;
 	private MapMoveLayer[,] _activeGridLayer;
@@ -45,9 +45,7 @@ public partial class MapGrid : Node2D {
 		y = (int)vector2.Y;
 	}
 
-	private Vector2 GridToPos(Vector2 gridCoordinate) => gridCoordinate * Size + new Vector2(Size / 2, Size / 2);
-	private Vector2 NodeToPos(GameNode node) => node.Position * Size + new Vector2(Size / 2, Size / 2);
-	private Vector2 PosToGrid(Vector2 pos) => new((int)pos.X / Size, (int)pos.Y / Size);
+	
 	public List<GameNode> NodeNeighbours(GameNode node) {
 		var neighbours = new List<GameNode>();
 		foreach (var neighboursKey in node.Neighbours.Keys) {
@@ -61,9 +59,9 @@ public partial class MapGrid : Node2D {
 	public override void _Process(double delta) {
 		if (Input.IsMouseButtonPressed(MouseButton.Left)) {
 			var pos = GetGlobalMousePosition();
-			var gridPos = PosToGrid(pos);
+			var gridPos = MapHelpers.PosToGrid(pos, Size);
 			GD.Print("Grid pos: " +  gridPos);
-			GD.Print("Grid pos back to coordiante: " +  GridToPos(gridPos));
+			GD.Print("Grid pos back to coordiante: " +  MapHelpers.GridCoordToGridCenterPos(gridPos, Size));
 		}
 	}
 }

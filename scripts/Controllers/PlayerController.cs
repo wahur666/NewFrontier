@@ -42,6 +42,7 @@ public partial class PlayerController : Node {
 	private PackedScene _base1;
 	private PackedScene _base2;
 	private PackedScene _base3;
+	private PackedScene _harvester;
 	private bool _overGui;
 
 	public bool BuildingMode {
@@ -54,6 +55,7 @@ public partial class PlayerController : Node {
 		_base1 = GD.Load<PackedScene>("res://scenes/base_1.tscn");
 		_base2 = GD.Load<PackedScene>("res://scenes/base_2.tscn");
 		_base3 = GD.Load<PackedScene>("res://scenes/base_3.tscn");
+		_harvester = GD.Load<PackedScene>("res://scenes/harvester.tscn");
 		GD.Print("Player controller loaded to scene");
 
 		_camera = GetNode<CameraController>("../../Camera2D");
@@ -64,6 +66,10 @@ public partial class PlayerController : Node {
 		_units = GetNode("../../Units").GetChildren().Select(x => x as UnitNode2D).ToList();
 		_mapGrid = GetNode<MapGrid>("../../MapGrid");
 		GD.Print("MapGrid: " + _mapGrid);
+		var harvester = _harvester.Instantiate<Harvester>();
+		harvester.Position = MapHelpers.GridCoordToGridCenterPos(new Vector2(5, 5), MapGrid.Size);
+		AddChild(harvester);
+		_units.Add(harvester);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
