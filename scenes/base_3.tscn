@@ -5,7 +5,6 @@
 
 [node name="Base3" type="Node2D"]
 z_index = 100
-scale = Vector2(2.5, 2.5)
 script = ExtResource("1_d5es8")
 Wide = 3
 

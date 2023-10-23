@@ -11,16 +11,19 @@ enum SlotStatus {
 }
 
 public partial class Planet : Node2D {
-	public int Radius = 83;
+	public static readonly int Radius = 80;
 
 	private List<BuildingNode2D> _buildings = new();
 	private SlotStatus[] _slots = new SlotStatus[12];
 	private Node _buildingsContainer;
+	private PlanetBuildingScheme _planetBuildingScheme;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_buildingsContainer = GetNode<Node>("BuildingsContainer");
 		GD.Print("slots: " + _slots);
+		_planetBuildingScheme = GetNode<PlanetBuildingScheme>("PlanetBuildingScheme");
+		_planetBuildingScheme.Radius = Radius;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -5,7 +5,6 @@
 
 [node name="Base1" type="Node2D"]
 texture_filter = 1
-scale = Vector2(2.5, 2.5)
 script = ExtResource("1_mhap6")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

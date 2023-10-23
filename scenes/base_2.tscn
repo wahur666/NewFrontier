@@ -8,6 +8,5 @@ script = ExtResource("1_a8cgs")
 Wide = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(2.5, 2.5)
 texture = ExtResource("1_6dawp")
 offset = Vector2(0, 32)
