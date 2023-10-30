@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NewFrontier.scripts.helpers;
 
 namespace NewFrontier.scripts.Model;
@@ -11,31 +12,41 @@ public partial class MapGrid : Node2D {
 
 	private int _radius;
 	private int _diameter;
-	public const int Size = 80;
 	public GameNode[,] PassiveGridLayer;
 	private MapMoveLayer[,] _staticGridLayer;
 	private MapMoveLayer[,] _activeGridLayer;
+	public Navigation Navigation;
+	private List<WormholeObject> _wormholes = new();
+
 
 	public override void _Ready() {
 		_radius = (MapSize - 1) / 2;
 		_diameter = MapSize - 1;
 		PassiveGridLayer = new GameNode[MapSize, MapSize];
+		Navigation = new(this);
 		GD.Print(PassiveGridLayer[0, 0]);
+		GenerateMap();
+		GenerateNeighbours();
+	}
+
+	private void GenerateMap() {
+		var center = new Vector2(_radius + 0.5f, _radius + 0.5f);
+
+		for (int i = 0; i < _diameter + 1; i++) {
+			for (int j = 0; j < _diameter + 1; j++) {
+				if (AreaHelper.IsVector2InsideCircle(new(i + 0.5f, j + 0.5f), center, _radius + 0.5f)) {
+					PassiveGridLayer[i, j] = new(new(i, j));
+				}
+			}
+		}
 	}
 
 	public override void _Draw() {
 		var center = new Vector2(_radius + 0.5f, _radius + 0.5f);
 		for (int i = 0; i < _diameter + 1; i++) {
 			for (int j = 0; j < _diameter + 1; j++) {
-				DrawRect(new Rect2(i * Size, j * Size, Size, Size), Color.FromHtml("#FF0000"), false, 2);
-			}
-		}
-
-		for (int i = 0; i < _diameter + 1; i++) {
-			for (int j = 0; j < _diameter + 1; j++) {
-				if (AreaHelper.IsVector2InsideCircle(new Vector2(i + 0.5f, j + 0.5f), center, _radius + 0.5f)) {
-					DrawRect(new Rect2(i * Size, j * Size, Size, Size), Color.FromHtml("#0000FF"), false, 2);
-				}
+				DrawRect(new(i * MapHelpers.Size, j * MapHelpers.Size, MapHelpers.Size, MapHelpers.Size),
+					PassiveGridLayer[i, j] is null ? Color.FromHtml("#FF0000") : Color.FromHtml("#0000FF"), false, 2);
 			}
 		}
 	}
@@ -45,23 +56,83 @@ public partial class MapGrid : Node2D {
 		y = (int)vector2.Y;
 	}
 
-	
+
 	public List<GameNode> NodeNeighbours(GameNode node) {
 		var neighbours = new List<GameNode>();
 		foreach (var neighboursKey in node.Neighbours.Keys) {
-			int x, y;
-			Vec2ToArray(neighboursKey.Position, out x, out y);
+			Vec2ToArray(neighboursKey.Position, out var x, out var y);
 			neighbours.Add(this.PassiveGridLayer[x, y]);
 		}
+
 		return neighbours;
 	}
-	
+
+	private void setupNeighbours(GameNode node) {
+		List<Vector2> directions = new() {
+			new(-1, -1),
+			new(-1, 0),
+			new(-1, 1),
+			new(0, -1),
+			new(0, 1),
+			new(1, -1),
+			new(1, 0),
+			new(1, 1),
+		};
+
+		foreach (var direction in directions) {
+			var newPos = node.Position + direction;
+			if (newPos.X < 0 || newPos.Y < 0 || newPos.X > _diameter - 1 || newPos.Y > _diameter - 1) {
+				continue;
+			}
+
+			var newNeighbour = PassiveGridLayer[(int)newPos.X, (int)newPos.Y];
+			if (newNeighbour is not null) {
+				node.AddNeighbour(newNeighbour, direction.Length());
+			}
+		}
+
+		_wormholes.Where(wormhole => wormhole.IsConnected(node))
+			.ToList()
+			.ForEach(wormhole => node.AddNeighbour(wormhole.GetOtherNode(node), wormhole.Distance));
+	}
+
+	private void GenerateNeighbours() {
+	    for (var i = 0; i < _diameter; i++) {
+	        for (var j = 0; j < _diameter; j++) {
+	            var item = PassiveGridLayer[i, j];
+	            if (item is not null) {
+	                this.setupNeighbours(item);
+	            }
+	        }
+	    }
+	}
+	//
+	// private createSector(x: number, y: number, size: number): void {
+	//     for (let i = x; i < Math.min(this.size, x + size); i++) {
+	//         for (let j = y; j < Math.min(this.size, y + size); j++) {
+	//             this.sectorNodeMap[i][j] = new GameNode(new Vector2(i, j));
+	//         }
+	//     }
+	// }
+	// getNode = (x: number, y: number): GameNode => this.sectorNodeMap[x][y] as GameNode;
+	//
+	// private generateWormholes() {
+	//     this.wormholes.push(new WormholeObject(this.getNode(8, 6), this.getNode(22, 10), 1));
+	//     this.wormholes.push(new WormholeObject(this.getNode(26, 9), this.getNode(37, 14), 1));
+	//     this.wormholes.push(new WormholeObject(this.getNode(25, 13), this.getNode(10, 25), 1));
+	//     this.wormholes.push(new WormholeObject(this.getNode(40, 18), this.getNode(30, 30), 1));
+	//     this.wormholes.push(new WormholeObject(this.getNode(16, 28), this.getNode(27, 31), 1));
+	//     this.wormholes.push(new WormholeObject(this.getNode(32, 37), this.getNode(46, 32), 1));
+	//     // this.wormholes.push(new WormholeObject(this.getNode(12, 20), this.getNode(12, 14), 1));
+	//     // this.wormholes.push(new WormholeObject(this.getNode(20, 20), this.getNode(14, 14), 1));
+	// }
+
 	public override void _Process(double delta) {
 		if (Input.IsMouseButtonPressed(MouseButton.Left)) {
 			var pos = GetGlobalMousePosition();
-			var gridPos = MapHelpers.PosToGrid(pos, Size);
-			GD.Print("Grid pos: " +  gridPos);
-			GD.Print("Grid pos back to coordiante: " +  MapHelpers.GridCoordToGridCenterPos(gridPos, Size));
+			var gridPos = MapHelpers.PosToGrid(pos);
+			GD.Print("Grid pos: " + gridPos);
+			GD.Print("Grid pos back to coordiante: " + MapHelpers.GridCoordToGridCenterPos(gridPos));
 		}
 	}
 }

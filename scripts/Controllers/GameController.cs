@@ -17,12 +17,8 @@ public partial class GameController : Node {
 		var player = _playerControllerScene.Instantiate();
 		AddChild(player);
 		_planetScene = GD.Load<PackedScene>("res://scenes/wet_planet.tscn");
-		var planet = _planetScene.Instantiate<Planet>();
-		planet.Position = MapHelpers.GridCoordToGridCenterPos(new Vector2(5, 5), MapGrid.Size);
-		AddChild(planet);
-
 		var planet2 = _planetScene.Instantiate<Planet>();
-		planet2.Position = MapHelpers.GridCoordToGridPointPos(new Vector2(8, 5), MapGrid.Size);
+		planet2.Position = MapHelpers.GridCoordToGridPointPos(new Vector2(8, 5));
 		AddChild(planet2);
 	}
 

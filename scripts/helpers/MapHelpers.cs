@@ -5,16 +5,18 @@ using NewFrontier.scripts.Model;
 namespace NewFrontier.scripts.helpers;
 
 public class MapHelpers {
-	public static Vector2 GridCoordToGridPointPos(Vector2 gridCoordinate, float size) => gridCoordinate * size;
-	public static Vector2 GridCoordToGridCenterPos(Vector2 gridCoordinate, float size) => gridCoordinate * size + new Vector2(size / 2, size / 2);
-	public static Vector2 GridCoordToGridRandomPos(Vector2 gridCoordinate, float size) {
+	public const int Size = 80;
+
+	public static Vector2 GridCoordToGridPointPos(Vector2 gridCoordinate) => gridCoordinate * Size;
+	public static Vector2 GridCoordToGridCenterPos(Vector2 gridCoordinate) => gridCoordinate * Size + new Vector2(Size / 2f, Size / 2f);
+	public static Vector2 GridCoordToGridRandomPos(Vector2 gridCoordinate) {
 		var rand = new Random();
-		return gridCoordinate * size + 
-			new Vector2(size / 4 + size / 2 * (float)rand.NextDouble(), 
-						size / 4 + size / 2 * (float)rand.NextDouble());
+		return gridCoordinate * Size + 
+			new Vector2(Size / 4f + Size / 2f * (float)rand.NextDouble(), 
+						Size / 4f + Size / 2f * (float)rand.NextDouble());
 	}
 
 
-	public static Vector2 NodeToPos(GameNode node, float size) => node.Position * size + new Vector2(size / 2, size / 2);
-	public static Vector2 PosToGrid(Vector2 pos, float size) => new((int)pos.X / size, (int)pos.Y / size);
+	public static Vector2 NodeToPos(GameNode node) => node.Position * Size + new Vector2(Size / 2f, Size / 2f);
+	public static Vector2 PosToGrid(Vector2 pos) => new((int)pos.X / Size, (int)pos.Y / Size);
 }
