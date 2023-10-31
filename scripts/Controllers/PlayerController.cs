@@ -29,6 +29,7 @@ public partial class PlayerController : Node {
 	private List<BuildingNode2D> _buildings = new();
 	private List<UnitNode2D> _units = new();
 	private BuildingNode2D _buildingShade = null;
+	public UiController UiController;
 
 	public bool OverGui {
 		get => _overGui;
@@ -63,7 +64,8 @@ public partial class PlayerController : Node {
 		_camera.MoveToPoint += MoveToPoint;
 		_camera.PlayerControllerInstance = this;
 		_mapGrid = GetNode<MapGrid>("../../MapGrid");
-
+		UiController = GetNode<UiController>("../../Ui");
+		UiController.Init(this);
 		CreateStartingUnits();
 	}
 
@@ -71,12 +73,11 @@ public partial class PlayerController : Node {
 	private void CreateStartingUnits() {
 		_units = new();
 		var harvester = _harvester.Instantiate<Harvester>();
-		harvester.Position = MapHelpers.GridCoordToGridCenterPos(new Vector2(5, 5));
+		harvester.Init(new Vector2(10, 10), this, UiController);
 		_units.Add(harvester);
 		var fabricator = _fabricator.Instantiate<Fabricator>();
-		fabricator.Position = MapHelpers.GridCoordToGridCenterPos(new Vector2(6, 7));
+		fabricator.Init(new Vector2(12, 17), this, UiController);
 		_units.Add(fabricator);
-
 		_units.ForEach(e => AddChild(e));
 	}
 
@@ -190,14 +191,16 @@ public partial class PlayerController : Node {
 	}
 
 	private void MoveToPoint(Vector2 point) {
-		_units.Where(x => x.Selected).ToList().ForEach(node2D => node2D.TargetDestination = point);
+		// _units.Where(x => x.Selected).ToList().ForEach(node2D => node2D.TargetDestination = point);
 		_units.Where(x => x.Selected).ToList().ForEach(a => {
 			var currGrid = MapHelpers.PosToGrid(a.Position);
 			var targetGrid = MapHelpers.PosToGrid(point);
 			GD.Print("Moving from", currGrid, targetGrid);
 			var path = _mapGrid.Navigation.FindPath(currGrid, targetGrid);
-			var ab = path.Select(x => x.Position).Select(x => $"({x.X}, {x.Y})");
+			var gameNodes = path.ToList();
+			var ab = gameNodes.Select(x => x.Position).Select(x => $"({x.X}, {x.Y})");
 			GD.Print("Path", ab.ToArray().Stringify());
+			a.SetNavigation(gameNodes.Select(x => MapHelpers.GridCoordToGridCenterPos(x.Position)).ToList());
 		});
 	}
 }

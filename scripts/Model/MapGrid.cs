@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.helpers;
 
 namespace NewFrontier.scripts.Model;
@@ -17,16 +18,26 @@ public partial class MapGrid : Node2D {
 	private MapMoveLayer[,] _activeGridLayer;
 	public Navigation Navigation;
 	private List<WormholeObject> _wormholes = new();
+	private CameraController _cameraController;
 
+	private int RealMapSize {
+		get { return MapSize * 2; }
+	} 
 
 	public override void _Ready() {
-		_radius = (MapSize - 1) / 2;
-		_diameter = MapSize - 1;
-		PassiveGridLayer = new GameNode[MapSize, MapSize];
+		_radius = (RealMapSize - 1) / 2;
+		_diameter = RealMapSize - 1;
+		PassiveGridLayer = new GameNode[RealMapSize, RealMapSize];
 		Navigation = new(this);
 		GD.Print(PassiveGridLayer[0, 0]);
 		GenerateMap();
 		GenerateNeighbours();
+		_cameraController = GetNode<CameraController>("../Camera2D");
+		_cameraController.LimitLeft = 0;
+		_cameraController.LimitTop = 0;
+		_cameraController.LimitRight = _diameter * MapHelpers.Size;
+		_cameraController.LimitBottom = _diameter * MapHelpers.Size;
+		GD.Print("Camera Controller", _cameraController);
 	}
 
 	private void GenerateMap() {
@@ -45,8 +56,9 @@ public partial class MapGrid : Node2D {
 		var center = new Vector2(_radius + 0.5f, _radius + 0.5f);
 		for (int i = 0; i < _diameter + 1; i++) {
 			for (int j = 0; j < _diameter + 1; j++) {
+				var valid = PassiveGridLayer[i, j] is null || PassiveGridLayer[i, j].Blocking;
 				DrawRect(new(i * MapHelpers.Size, j * MapHelpers.Size, MapHelpers.Size, MapHelpers.Size),
-					PassiveGridLayer[i, j] is null ? Color.FromHtml("#FF0000") : Color.FromHtml("#0000FF"), false, 2);
+					 valid ? Color.FromHtml("#FF00001A") : Color.FromHtml("#0000FF"), valid, valid ? -1 : 2);
 			}
 		}
 	}
@@ -97,14 +109,14 @@ public partial class MapGrid : Node2D {
 	}
 
 	private void GenerateNeighbours() {
-	    for (var i = 0; i < _diameter; i++) {
-	        for (var j = 0; j < _diameter; j++) {
-	            var item = PassiveGridLayer[i, j];
-	            if (item is not null) {
-	                this.setupNeighbours(item);
-	            }
-	        }
-	    }
+		for (var i = 0; i < _diameter; i++) {
+			for (var j = 0; j < _diameter; j++) {
+				var item = PassiveGridLayer[i, j];
+				if (item is not null) {
+					this.setupNeighbours(item);
+				}
+			}
+		}
 	}
 	//
 	// private createSector(x: number, y: number, size: number): void {
@@ -133,6 +145,17 @@ public partial class MapGrid : Node2D {
 			var gridPos = MapHelpers.PosToGrid(pos);
 			GD.Print("Grid pos: " + gridPos);
 			GD.Print("Grid pos back to coordiante: " + MapHelpers.GridCoordToGridCenterPos(gridPos));
+		}
+	}
+
+	public void SetBlocking(Vector2 origin, int size) {
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				var a = PassiveGridLayer[(int)origin.X + i, (int)origin.Y + j];
+				if (a is not null) {
+					a.Blocking = true;
+				}
+			}
 		}
 	}
 }

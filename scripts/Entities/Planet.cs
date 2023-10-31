@@ -11,7 +11,7 @@ enum SlotStatus {
 }
 
 public partial class Planet : Node2D {
-	public static readonly int Radius = 75;
+	public static readonly int Radius = 150;
 
 	private List<BuildingNode2D> _buildings = new();
 	private SlotStatus[] _slots = new SlotStatus[12];

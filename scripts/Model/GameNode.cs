@@ -7,6 +7,8 @@ public class GameNode {
 	public Vector2 Position;
 	public Dictionary<GameNode, float> Neighbours;
 	public bool HasWormhole;
+	public bool Blocking = false;
+	public bool Occupied = false;
 
 	public GameNode(Vector2I pos) {
 		this.Position = pos;

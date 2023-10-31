@@ -470,6 +470,7 @@ script = ExtResource("1_1nk8g")
 script = ExtResource("2_5foyr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_mom51")
 autoplay = "default"
 frame_progress = 0.317065

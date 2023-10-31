@@ -21,8 +21,7 @@ public class Navigation {
 	}
 	
 	public IEnumerable<GameNode> FindPath(GameNode start, GameNode end) {
-		if (_mapGrid.PassiveGridLayer[(int)start.Position.X, (int)start.Position.Y] is null ||
-		    _mapGrid.PassiveGridLayer[(int)end.Position.X, (int)end.Position.Y] is null) {
+		if (start is null || end is null || end.Blocking) {
 			return Array.Empty<GameNode>();
 		}
 		
@@ -39,6 +38,9 @@ public class Navigation {
 			}
 
 			foreach (var next in _mapGrid.NodeNeighbours(current.Node)) {
+				if (next.Blocking) {
+					continue;
+				}
 				var newCost = costSoFar[current.Node] + current.Node.Weight(next);
 				if (!cameFrom.ContainsKey(next) || newCost < costSoFar[next]) {
 					costSoFar[next] = newCost;

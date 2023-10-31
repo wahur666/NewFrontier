@@ -11,14 +11,16 @@
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
+zoom = Vector2(0.5, 0.5)
 script = ExtResource("8_puijt")
-EnableEdgePanning = false
 
 [node name="MapGrid" parent="." instance=ExtResource("2_pn7aa")]
 
-[node name="GameController" parent="." instance=ExtResource("1_ox2q5")]
+[node name="Canvas" type="Node2D" parent="."]
 
 [node name="Ui" parent="." instance=ExtResource("8_5nm4l")]
+
+[node name="GameController" parent="." instance=ExtResource("1_ox2q5")]
 
 [node name="Resources" type="Node" parent="."]
 
