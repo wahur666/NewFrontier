@@ -1,7 +1,7 @@
 using Godot;
 using NewFrontier.scripts.helpers;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Entities;
 
 public partial class ResourceNode2D : Node2D {
 	public ResourceType Resource;

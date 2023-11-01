@@ -1,13 +1,15 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using NewFrontier.scripts.helpers;
+using NewFrontier.scripts.Model;
 
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Controllers;
 
 public partial class CameraController : Camera2D {
 	[Export] public float Speed = 10.0f;
 	[Export] public bool EnableEdgePanning = true;
-	private Vector2 _windowSize = Vector2.Zero;
 
 	private bool _dragging = false;
 
@@ -19,6 +21,9 @@ public partial class CameraController : Camera2D {
 	private Vector2 endV;	
 	private UiController _uiController;
 	public PlayerController PlayerControllerInstance;
+	private MapGrid _mapGrid;
+
+	private const int EdgeSize = 50;
 	
 	[Signal]
 	public delegate void AreaSelectedEventHandler(Vector2 start, Vector2 end);		
@@ -29,11 +34,12 @@ public partial class CameraController : Camera2D {
 	[Signal]
 	public delegate void StartMoveSelectionEventHandler();
 
+	[Signal]
+	public delegate void MoveToPointEventHandler(Vector2 point);
 
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		_windowSize = DisplayServer.WindowGetSize();
 		_uiController = GetNode<UiController>("../Ui");
 	}
 
@@ -44,8 +50,13 @@ public partial class CameraController : Camera2D {
 		}
 	}
 
-	
-	
+	public void Init(MapGrid mapGrid) {
+		_mapGrid = mapGrid;
+	}
+
+	public void CenterOnGridPosition(Vector2 pos) => CenterOnPosition(MapHelpers.GridCoordToGridCenterPos(pos));
+	public void CenterOnPosition(Vector2 pos) => Position = pos  ;
+
 	public void DrawArea(bool s = true) {
 		var panel = GetNode<Panel>("../Ui/Panel");
 		panel.Size = new Vector2(Math.Abs(startV.X - endV.X), Math.Abs(startV.Y - endV.Y));
@@ -64,6 +75,7 @@ public partial class CameraController : Camera2D {
 			startV = mousePosition;
 			_dragging = false;
 			DrawArea(false);
+			EmitSignal(SignalName.MoveToPoint, start);
 		}
 		
 		if (PlayerControllerInstance is not null && PlayerControllerInstance.BuildingMode) {
@@ -101,16 +113,19 @@ public partial class CameraController : Camera2D {
 		var inpy = 0;
 		
 		if (EnableEdgePanning) {
-			var b = GetLocalMousePosition();
-			if (b.X < 10) {
+			var windowSize = DisplayServer.WindowGetSize();
+			var windowPosition = DisplayServer.WindowGetPosition();
+			var windowMousePosition = DisplayServer.MouseGetPosition();
+			
+			if (windowMousePosition.X - windowPosition.X < EdgeSize) {
 				inpx = -1;
-			} else if (b.X > _windowSize.X) {
+			} else if (windowPosition.X + windowSize.X - windowMousePosition.X < EdgeSize) {
 				inpx = 1;
 			}
-
-			if (b.Y < 10) {
+			
+			if (windowMousePosition.Y - windowPosition.Y < EdgeSize) {
 				inpy = -1;
-			} else if (b.Y > _windowSize.Y) {
+			} else if (windowPosition.Y + windowSize.Y - windowMousePosition.Y < EdgeSize) {
 				inpy = 1;
 			}
 		}
@@ -119,9 +134,12 @@ public partial class CameraController : Camera2D {
 		// 		   - (Input.IsActionPressed("ui_left") ? 1 : 0);
 		// inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
 		// 		   - (Input.IsActionPressed("ui_up") ? 1 : 0);
-
+		var diameter = _mapGrid.RealMapSize * MapHelpers.Size;
 		Position += new Vector2(inpx * Speed, inpy * Speed);
+		Position = Position.Clamp(DisplayServer.WindowGetSize() / 2, new Vector2(diameter, diameter) - DisplayServer.WindowGetSize() / 2);
 	}
+
+	
 
 	private bool OverUiElement(Vector2 position) {
 		return _uiController.OverUiElement(position);

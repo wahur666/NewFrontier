@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://desjnoc545tf0"]
 
 [ext_resource type="Texture2D" uid="uid://dy1ps31o4d1ck" path="res://gfx/Fabgal.tga" id="1_a4hic"]
-[ext_resource type="Script" path="res://scripts/UnitIcon.cs" id="1_ae7sn"]
+[ext_resource type="Script" path="res://scripts/Entities/UnitIcon.cs" id="1_ae7sn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qgq5c"]
 atlas = ExtResource("1_a4hic")
@@ -19,6 +19,7 @@ offset_bottom = 32.0
 script = ExtResource("1_ae7sn")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
 offset_left = 3.0
 offset_top = 3.0
 offset_right = 67.0
@@ -27,6 +28,7 @@ scale = Vector2(0.4, 0.4)
 texture = SubResource("AtlasTexture_qgq5c")
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 0
 offset_left = 4.0
 offset_right = 29.0
 offset_bottom = 4.0
@@ -37,6 +39,7 @@ value = 55.0
 show_percentage = false
 
 [node name="ProgressBar2" type="ProgressBar" parent="."]
+layout_mode = 0
 offset_left = 4.0
 offset_top = 28.0
 offset_right = 29.0

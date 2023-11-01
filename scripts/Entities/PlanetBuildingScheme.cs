@@ -1,10 +1,10 @@
 using Godot;
 using System;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Entities;
 
 public partial class PlanetBuildingScheme : Node2D {
-	[Export] public int Radius = 83;
+	public int Radius;
 	[Export] public int Width = 8;
 	[Export] public Color SchemeColor = Color.FromHtml("#87cefa");
 

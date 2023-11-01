@@ -2,8 +2,10 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NewFrontier.scripts.Controllers;
+using NewFrontier.scripts.Entities;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.UI;
 
 public partial class LeftControls : Control {
 	private Control _buttonContainer;
@@ -11,13 +13,12 @@ public partial class LeftControls : Control {
 	private Button _button1;
 	private Button _button2;
 	private Button _button3;
-	private PlayerController _playerController;
+	public PlayerController PlayerController;
 	private PackedScene _fabricatorIcon;
 	private PackedScene _harvesterIcon;
 
 	private int _iconSize = 32;
 	private int _spacing = 5;
-
 
 	public bool OverUiElement {
 		get;
@@ -28,26 +29,28 @@ public partial class LeftControls : Control {
 	public override void _Ready() {
 		_fabricatorIcon = GD.Load<PackedScene>("res://scenes/fabricator_icon.tscn");
 		_harvesterIcon = GD.Load<PackedScene>("res://scenes/harvester_icon.tscn");
-		_playerController = GetTree().GetFirstNodeInGroup("player") as PlayerController;
 		_buttonContainer = GetNode<Control>("Panel/Container");
 		_iconContainer = GetNode<Control>("Panel/Cont2");
 		_button1 = GetNode<Button>("Panel/Container/Button");
 		_button2 = GetNode<Button>("Panel/Container/Button2");
 		_button3 = GetNode<Button>("Panel/Container/Button3");
+	}
 
-		_button1.Pressed += _playerController.CreateBuilding1;
-		_button2.Pressed += _playerController.CreateBuilding2;
-		_button3.Pressed += _playerController.CreateBuilding3;
+	public void Init(PlayerController playerController) {
+		PlayerController = playerController;
+		_button1.Pressed += PlayerController.CreateBuilding1;
+		_button2.Pressed += PlayerController.CreateBuilding2;
+		_button3.Pressed += PlayerController.CreateBuilding3;
 		_button1.MouseEntered += MouseEnteredPanelElement;
 		_button2.MouseEntered += MouseEnteredPanelElement;
 		_button3.MouseEntered += MouseEnteredPanelElement;
 
 		_iconContainer.MouseEntered += MouseEnteredPanelElement;
 		_iconContainer.MouseExited += MouseExitedPanelElement;
-		
+
 		_buttonContainer.MouseEntered += MouseEnteredPanelElement;
 		_buttonContainer.MouseExited += MouseExitedPanelElement;
-		_playerController.LeftControls = this;
+		PlayerController.LeftControls = this;
 	}
 
 	public void CalculateSelectedUnits(List<UnitNode2D> units) {
@@ -87,7 +90,7 @@ public partial class LeftControls : Control {
 		icon.Position = new Vector2(x, y);
 		icon.MouseEntered += MouseEnteredPanelElement;
 		icon.Unit = unitNode2D;
-		icon.PlayerController = _playerController;
+		icon.PlayerController = PlayerController;
 		_iconContainer.AddChild(icon);
 	}
 
@@ -98,14 +101,14 @@ public partial class LeftControls : Control {
 
 	private void MouseEnteredPanelElement() {
 		OverUiElement = true;
-		_playerController.SetBuildingShadeVisibility(false);
-		_playerController.OverGui = true;
+		PlayerController.SetBuildingShadeVisibility(false);
+		PlayerController.OverGui = true;
 	}
 
 	private void MouseExitedPanelElement() {
 		OverUiElement = false;
-		_playerController.SetBuildingShadeVisibility(true);
-		_playerController.OverGui = false;
+		PlayerController.SetBuildingShadeVisibility(true);
+		PlayerController.OverGui = false;
 	}
 
 	public void SetBuildingContainerVisibility(bool visible) {

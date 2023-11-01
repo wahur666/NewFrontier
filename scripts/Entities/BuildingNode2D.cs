@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NewFrontier.scripts;
+using NewFrontier.scripts.Controllers;
+
+namespace NewFrontier.scripts.Entities;
 
 public partial class BuildingNode2D : Node2D {
 	[Export] public int Wide = 1;
@@ -13,11 +16,15 @@ public partial class BuildingNode2D : Node2D {
 	private List<Planet> _planets;
 	public bool BuildingShade = true;
 
+	public int ImgSize = 34;
+
 	private PlayerController _playerController;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_planets = GetTree().GetNodesInGroup("planet").Select(planet => planet as Planet).ToList();
+		Scale = new Vector2(Planet.Radius / (float)ImgSize, Planet.Radius / (float)ImgSize);
+		GD.Print("Scale", Scale);
 		_sprite = GetNode<Sprite2D>("Sprite2D");
 	}
 
@@ -63,7 +70,7 @@ public partial class BuildingNode2D : Node2D {
 	}
 	
 	private static bool DistanceFn(Vector2 mousePos, Planet planet) =>
-		Math.Abs(mousePos.DistanceTo(planet.GlobalPosition) - planet.Radius) < 20;
+		Math.Abs(mousePos.DistanceTo(planet.GlobalPosition) - Planet.Radius) < 20;
 
 	public int[] CalculatePlace(Planet planet, double x, double y) {
 		double angle = Math.Atan2(y - planet.GlobalPosition.Y, x - planet.GlobalPosition.X);

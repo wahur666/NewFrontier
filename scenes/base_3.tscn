@@ -1,11 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://di3lq3dpt5hlp"]
 
-[ext_resource type="Script" path="res://scripts/BuildingNode2D.cs" id="1_d5es8"]
+[ext_resource type="Script" path="res://scripts/Entities/BuildingNode2D.cs" id="1_d5es8"]
 [ext_resource type="Texture2D" uid="uid://ctq84pytljkb2" path="res://gfx/aseprite/3slot.png" id="1_dipq8"]
 
 [node name="Base3" type="Node2D"]
 z_index = 100
-scale = Vector2(2.5, 2.5)
 script = ExtResource("1_d5es8")
 Wide = 3
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://puh55sbrd833"]
 
 [ext_resource type="PackedScene" uid="uid://dsq1lag3r7s8o" path="res://scenes/left_controls.tscn" id="1_mnjuk"]
-[ext_resource type="Script" path="res://scripts/UiController.cs" id="1_qu86p"]
+[ext_resource type="Script" path="res://scripts/Controllers/UiController.cs" id="1_qu86p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6hh77"]
 bg_color = Color(0.0980392, 0.0980392, 0.0980392, 0.2)

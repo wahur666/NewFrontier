@@ -1,7 +1,7 @@
 [gd_scene load_steps=68 format=3 uid="uid://crhg0jwfq7jtu"]
 
 [ext_resource type="Texture2D" uid="uid://batao01irmtu1" path="res://gfx/AsteroidAnimation.png" id="1_hf30g"]
-[ext_resource type="Script" path="res://scripts/Asteroid.cs" id="1_kgcp7"]
+[ext_resource type="Script" path="res://scripts/Entities/Asteroid.cs" id="1_kgcp7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_74o2v"]
 atlas = ExtResource("1_hf30g")

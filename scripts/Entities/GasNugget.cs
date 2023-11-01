@@ -2,7 +2,7 @@ using Godot;
 using System;
 using NewFrontier.scripts.helpers;
 
-namespace NewFrontier.scripts;
+namespace NewFrontier.scripts.Entities;
 
 public partial class GasNugget : ResourceNode2D {
 	private AnimationPlayer _animationPlayer;

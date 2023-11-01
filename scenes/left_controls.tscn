@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dsq1lag3r7s8o"]
 
-[ext_resource type="Script" path="res://scripts/LeftControls.cs" id="1_gw5hu"]
+[ext_resource type="Script" path="res://scripts/UI/LeftControls.cs" id="1_gw5hu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6gscy"]
 bg_color = Color(0.686275, 0.686275, 0.686275, 1)
