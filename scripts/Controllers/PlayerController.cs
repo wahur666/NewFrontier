@@ -50,7 +50,7 @@ public partial class PlayerController : Node {
 		get;
 		private set;
 	}
-
+	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_base1 = GD.Load<PackedScene>("res://scenes/base_1.tscn");
@@ -67,6 +67,7 @@ public partial class PlayerController : Node {
 		UiController = GetNode<UiController>("../../Ui");
 		UiController.Init(this);
 		CreateStartingUnits();
+		_camera.CenterOnGridPosition(new Vector2(12, 17));
 	}
 
 

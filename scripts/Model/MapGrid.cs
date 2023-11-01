@@ -20,7 +20,7 @@ public partial class MapGrid : Node2D {
 	private List<WormholeObject> _wormholes = new();
 	private CameraController _cameraController;
 
-	private int RealMapSize {
+	public int RealMapSize {
 		get { return MapSize * 2; }
 	} 
 
@@ -33,6 +33,7 @@ public partial class MapGrid : Node2D {
 		GenerateMap();
 		GenerateNeighbours();
 		_cameraController = GetNode<CameraController>("../Camera2D");
+		_cameraController.Init(this);
 		_cameraController.LimitLeft = 0;
 		_cameraController.LimitTop = 0;
 		_cameraController.LimitRight = _diameter * MapHelpers.Size;
