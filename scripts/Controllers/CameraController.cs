@@ -134,23 +134,12 @@ public partial class CameraController : Camera2D {
 		// 		   - (Input.IsActionPressed("ui_left") ? 1 : 0);
 		// inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
 		// 		   - (Input.IsActionPressed("ui_up") ? 1 : 0);
-
+		var diameter = _mapGrid.RealMapSize * MapHelpers.Size;
 		Position += new Vector2(inpx * Speed, inpy * Speed);
-		CheckBounds();
+		Position = Position.Clamp(DisplayServer.WindowGetSize() / 2, new Vector2(diameter, diameter) - DisplayServer.WindowGetSize() / 2);
 	}
 
-	private void CheckBounds() {
-		var radius = _mapGrid.MapSize * MapHelpers.Size / 2;
-		var center = new Vector2(radius, radius);
-		var calcPos = Position - GetViewportRect().Size / Zoom / 2;
-		var distance = calcPos.DistanceTo(center); 
-		if (distance > radius + 400) {
-			var circlePoint = new Vector2((float)Math.Cos(Position.AngleToPoint(center)),
-				(float)Math.Sin(Position.AngleToPoint(center)));
-			// Position = center + diff / ratio;
-			// Position = center - (radius - 400)  * circlePoint;
-		}
-	}
+	
 
 	private bool OverUiElement(Vector2 position) {
 		return _uiController.OverUiElement(position);

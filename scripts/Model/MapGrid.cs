@@ -144,6 +144,7 @@ public partial class MapGrid : Node2D {
 		if (Input.IsMouseButtonPressed(MouseButton.Left)) {
 			var pos = GetGlobalMousePosition();
 			var gridPos = MapHelpers.PosToGrid(pos);
+			GD.Print("Global mouse pos: ", pos);
 			GD.Print("Grid pos: " + gridPos);
 			GD.Print("Grid pos back to coordiante: " + MapHelpers.GridCoordToGridCenterPos(gridPos));
 		}
