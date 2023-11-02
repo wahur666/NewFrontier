@@ -18,19 +18,19 @@ public partial class CameraController : Camera2D {
 	private Vector2 start;
 	private Vector2 startV;
 	private Vector2 end;
-	private Vector2 endV;	
+	private Vector2 endV;
 	private UiController _uiController;
 	public PlayerController PlayerControllerInstance;
 	private MapGrid _mapGrid;
 
 	private const int EdgeSize = 50;
-	
+
 	[Signal]
-	public delegate void AreaSelectedEventHandler(Vector2 start, Vector2 end);		
-	
+	public delegate void AreaSelectedEventHandler(Vector2 start, Vector2 end);
+
 	[Signal]
-	public delegate void PointSelectedEventHandler(Vector2 point);	
-	
+	public delegate void PointSelectedEventHandler(Vector2 point);
+
 	[Signal]
 	public delegate void StartMoveSelectionEventHandler();
 
@@ -55,7 +55,7 @@ public partial class CameraController : Camera2D {
 	}
 
 	public void CenterOnGridPosition(Vector2 pos) => CenterOnPosition(MapHelpers.GridCoordToGridCenterPos(pos));
-	public void CenterOnPosition(Vector2 pos) => Position = pos  ;
+	public void CenterOnPosition(Vector2 pos) => Position = pos;
 
 	public void DrawArea(bool s = true) {
 		var panel = GetNode<Panel>("../Ui/Panel");
@@ -66,7 +66,7 @@ public partial class CameraController : Camera2D {
 		panel.Position = pos;
 		panel.Size *= s ? 1 : 0;
 	}
-	
+
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
@@ -77,7 +77,7 @@ public partial class CameraController : Camera2D {
 			DrawArea(false);
 			EmitSignal(SignalName.MoveToPoint, start);
 		}
-		
+
 		if (PlayerControllerInstance is not null && PlayerControllerInstance.BuildingMode) {
 			return;
 		}
@@ -104,25 +104,23 @@ public partial class CameraController : Camera2D {
 			} else if (!OverUiElement(start)) {
 				EmitSignal(SignalName.PointSelected, start);
 			}
-			
 		}
 
-		
 
 		var inpx = 0;
 		var inpy = 0;
-		
+
 		if (EnableEdgePanning) {
 			var windowSize = DisplayServer.WindowGetSize();
 			var windowPosition = DisplayServer.WindowGetPosition();
 			var windowMousePosition = DisplayServer.MouseGetPosition();
-			
+
 			if (windowMousePosition.X - windowPosition.X < EdgeSize) {
 				inpx = -1;
 			} else if (windowPosition.X + windowSize.X - windowMousePosition.X < EdgeSize) {
 				inpx = 1;
 			}
-			
+
 			if (windowMousePosition.Y - windowPosition.Y < EdgeSize) {
 				inpy = -1;
 			} else if (windowPosition.Y + windowSize.Y - windowMousePosition.Y < EdgeSize) {
@@ -135,8 +133,24 @@ public partial class CameraController : Camera2D {
 		// inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
 		// 		   - (Input.IsActionPressed("ui_up") ? 1 : 0);
 		var diameter = _mapGrid.RealMapSize * MapHelpers.Size;
+		var radius = diameter / 2;
+		var center = new Vector2(radius, radius);
+		var size = GetViewport().GetVisibleRect().Size;
+		var a = radius - size.X / 2;
+		var b = radius - size.Y / 2;
 		Position += new Vector2(inpx * Speed, inpy * Speed);
-		Position = Position.Clamp(DisplayServer.WindowGetSize() / 2, new Vector2(diameter, diameter) - DisplayServer.WindowGetSize() / 2);
+		
+		while (IsPointOutsideEllipse(center, a, b, Position)) {
+			Position += (center - Position).Normalized();
+		}
+
+		Position = Position.Clamp(DisplayServer.WindowGetSize() / 2,
+			new Vector2(diameter, diameter) - DisplayServer.WindowGetSize() / 2);
+	}
+	
+	private bool IsPointOutsideEllipse(Vector2 center, float a, float b, Vector2 point) {
+		var distanceSquared = (Math.Pow(point.X - center.X, 2) / Math.Pow(a, 2)) + (Math.Pow(point.Y - center.Y, 2) / Math.Pow(b, 2));
+		return distanceSquared > 1;
 	}
 
 	
