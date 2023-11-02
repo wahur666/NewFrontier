@@ -50,7 +50,7 @@ public partial class PlayerController : Node {
 		get;
 		private set;
 	}
-	
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_base1 = GD.Load<PackedScene>("res://scenes/base_1.tscn");
@@ -114,8 +114,7 @@ public partial class PlayerController : Node {
 
 		FreeBuildingShade();
 		_buildingShade = _base1.Instantiate<BuildingNode2D>();
-		_buildingShade.SetPlayer(this);
-		_buildingShade.ZIndex = 10;
+		_buildingShade.Init(this);
 		AddChild(_buildingShade);
 	}
 
@@ -127,8 +126,7 @@ public partial class PlayerController : Node {
 
 		FreeBuildingShade();
 		_buildingShade = _base2.Instantiate<BuildingNode2D>();
-		_buildingShade.SetPlayer(this);
-		_buildingShade.ZIndex = 10;
+		_buildingShade.Init(this);
 		AddChild(_buildingShade);
 	}
 
@@ -140,8 +138,7 @@ public partial class PlayerController : Node {
 
 		FreeBuildingShade();
 		_buildingShade = _base3.Instantiate<BuildingNode2D>();
-		_buildingShade.SetPlayer(this);
-		_buildingShade.ZIndex = 10;
+		_buildingShade.Init(this);
 		AddChild(_buildingShade);
 	}
 
@@ -191,17 +188,18 @@ public partial class PlayerController : Node {
 		UpdateUi();
 	}
 
-	private void MoveToPoint(Vector2 point) {
-		// _units.Where(x => x.Selected).ToList().ForEach(node2D => node2D.TargetDestination = point);
-		_units.Where(x => x.Selected).ToList().ForEach(a => {
-			var currGrid = MapHelpers.PosToGrid(a.Position);
-			var targetGrid = MapHelpers.PosToGrid(point);
-			GD.Print("Moving from", currGrid, targetGrid);
-			var path = _mapGrid.Navigation.FindPath(currGrid, targetGrid);
-			var gameNodes = path.ToList();
-			var ab = gameNodes.Select(x => x.Position).Select(x => $"({x.X}, {x.Y})");
-			GD.Print("Path", ab.ToArray().Stringify());
-			a.SetNavigation(gameNodes.Select(x => MapHelpers.GridCoordToGridCenterPos(x.Position)).ToList());
-		});
+	private void MoveToPoint(Vector2 targetVector2) {
+		_units.Where(x => x.Selected)
+			.ToList()
+			.ForEach(unitNode2D => {
+					var start = MapHelpers.PosToGrid(unitNode2D.Position);
+					var end = MapHelpers.PosToGrid(targetVector2);
+					var path = _mapGrid.Navigation
+						.FindPath(start, end)
+						.Select(x => MapHelpers.GridCoordToGridCenterPos(x.Position))
+						.ToList();
+					unitNode2D.SetNavigation(path);
+				}
+			);
 	}
 }
