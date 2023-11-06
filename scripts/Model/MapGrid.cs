@@ -13,9 +13,12 @@ public partial class MapGrid : Node2D {
 
 	private int _radius;
 	private int _diameter;
-	public GameNode[,] PassiveGridLayer;
-	private MapMoveLayer[,] _staticGridLayer;
-	private MapMoveLayer[,] _activeGridLayer;
+	
+	/// <summary>
+	/// Map representation, it can store at most 16 sectors, in a 4x4 grid of at most 128x128 sectors
+	/// If there is a node, if should be a <see cref="GameNode"/> or null
+	/// </summary>
+	public GameNode[,] GridLayer;
 	public Navigation Navigation;
 	private List<WormholeObject> _wormholes = new();
 	private CameraController _cameraController;
@@ -23,15 +26,14 @@ public partial class MapGrid : Node2D {
 	public int RealMapSize {
 		get { return MapSize * 2; }
 	} 
-
+	
 	public override void _Ready() {
-		_radius = (RealMapSize - 1) / 2;
+		_radius = MapSize - 1;
 		_diameter = RealMapSize - 1;
-		PassiveGridLayer = new GameNode[RealMapSize, RealMapSize];
+		GridLayer = new GameNode[512, 512];
 		Navigation = new(this);
-		GD.Print(PassiveGridLayer[0, 0]);
-		GenerateMap();
-		GenerateNeighbours();
+		GD.Print(GridLayer[0, 0]);
+		var sector = new Sector(GridLayer, new Vector2I(0, 0), (byte)MapSize, 0);
 		_cameraController = GetNode<CameraController>("../Camera2D");
 		_cameraController.Init(this);
 		_cameraController.LimitLeft = 0;
@@ -41,23 +43,22 @@ public partial class MapGrid : Node2D {
 		GD.Print("Camera Controller", _cameraController);
 	}
 
-	private void GenerateMap() {
-		var center = new Vector2(_radius + 0.5f, _radius + 0.5f);
-
-		for (int i = 0; i < _diameter + 1; i++) {
-			for (int j = 0; j < _diameter + 1; j++) {
-				if (AreaHelper.IsVector2InsideCircle(new(i + 0.5f, j + 0.5f), center, _radius + 0.5f)) {
-					PassiveGridLayer[i, j] = new(new(i, j));
-				}
-			}
-		}
-	}
+	// private void GenerateMap() {
+	// 	var center = new Vector2(_radius + 0.5f, _radius + 0.5f);
+	//
+	// 	for (int i = 0; i < _diameter + 1; i++) {
+	// 		for (int j = 0; j < _diameter + 1; j++) {
+	// 			if (AreaHelper.IsVector2InsideCircle(new(i + 0.5f, j + 0.5f), center, _radius + 0.5f)) {
+	// 				GridLayer[i, j] = new(new(i, j));
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	public override void _Draw() {
-		var center = new Vector2(_radius + 0.5f, _radius + 0.5f);
 		for (int i = 0; i < _diameter + 1; i++) {
 			for (int j = 0; j < _diameter + 1; j++) {
-				var valid = PassiveGridLayer[i, j] is null || PassiveGridLayer[i, j].Blocking;
+				var valid = GridLayer[i, j] is null || GridLayer[i, j].Blocking;
 				DrawRect(new(i * MapHelpers.Size, j * MapHelpers.Size, MapHelpers.Size, MapHelpers.Size),
 					 valid ? Color.FromHtml("#FF00001A") : Color.FromHtml("#0000FF"), valid, valid ? -1 : 2);
 			}
@@ -74,51 +75,51 @@ public partial class MapGrid : Node2D {
 		var neighbours = new List<GameNode>();
 		foreach (var neighboursKey in node.Neighbours.Keys) {
 			Vec2ToArray(neighboursKey.Position, out var x, out var y);
-			neighbours.Add(this.PassiveGridLayer[x, y]);
+			neighbours.Add(this.GridLayer[x, y]);
 		}
 
 		return neighbours;
 	}
 
-	private void setupNeighbours(GameNode node) {
-		List<Vector2> directions = new() {
-			new(-1, -1),
-			new(-1, 0),
-			new(-1, 1),
-			new(0, -1),
-			new(0, 1),
-			new(1, -1),
-			new(1, 0),
-			new(1, 1),
-		};
+	// private void setupNeighbours(GameNode node) {
+	// 	List<Vector2> directions = new() {
+	// 		new(-1, -1),
+	// 		new(-1, 0),
+	// 		new(-1, 1),
+	// 		new(0, -1),
+	// 		new(0, 1),
+	// 		new(1, -1),
+	// 		new(1, 0),
+	// 		new(1, 1),
+	// 	};
+	//
+	// 	foreach (var direction in directions) {
+	// 		var newPos = node.Position + direction;
+	// 		if (newPos.X < 0 || newPos.Y < 0 || newPos.X > _diameter - 1 || newPos.Y > _diameter - 1) {
+	// 			continue;
+	// 		}
+	//
+	// 		var newNeighbour = GridLayer[(int)newPos.X, (int)newPos.Y];
+	// 		if (newNeighbour is not null) {
+	// 			node.AddNeighbour(newNeighbour, direction.Length());
+	// 		}
+	// 	}
+	//
+	// 	_wormholes.Where(wormhole => wormhole.IsConnected(node))
+	// 		.ToList()
+	// 		.ForEach(wormhole => node.AddNeighbour(wormhole.GetOtherNode(node), wormhole.Distance));
+	// }
 
-		foreach (var direction in directions) {
-			var newPos = node.Position + direction;
-			if (newPos.X < 0 || newPos.Y < 0 || newPos.X > _diameter - 1 || newPos.Y > _diameter - 1) {
-				continue;
-			}
-
-			var newNeighbour = PassiveGridLayer[(int)newPos.X, (int)newPos.Y];
-			if (newNeighbour is not null) {
-				node.AddNeighbour(newNeighbour, direction.Length());
-			}
-		}
-
-		_wormholes.Where(wormhole => wormhole.IsConnected(node))
-			.ToList()
-			.ForEach(wormhole => node.AddNeighbour(wormhole.GetOtherNode(node), wormhole.Distance));
-	}
-
-	private void GenerateNeighbours() {
-		for (var i = 0; i < _diameter; i++) {
-			for (var j = 0; j < _diameter; j++) {
-				var item = PassiveGridLayer[i, j];
-				if (item is not null) {
-					this.setupNeighbours(item);
-				}
-			}
-		}
-	}
+	// private void GenerateNeighbours() {
+	// 	for (var i = 0; i < _diameter; i++) {
+	// 		for (var j = 0; j < _diameter; j++) {
+	// 			var item = GridLayer[i, j];
+	// 			if (item is not null) {
+	// 				this.setupNeighbours(item);
+	// 			}
+	// 		}
+	// 	}
+	// }
 	//
 	// private createSector(x: number, y: number, size: number): void {
 	//     for (let i = x; i < Math.min(this.size, x + size); i++) {
@@ -153,7 +154,7 @@ public partial class MapGrid : Node2D {
 	public void SetBlocking(Vector2 origin, int size) {
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				var a = PassiveGridLayer[(int)origin.X + i, (int)origin.Y + j];
+				var a = GridLayer[(int)origin.X + i, (int)origin.Y + j];
 				if (a is not null) {
 					a.Blocking = true;
 				}

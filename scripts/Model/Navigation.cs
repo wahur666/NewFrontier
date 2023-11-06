@@ -15,8 +15,8 @@ public class Navigation {
 	}
 
 	public IEnumerable<GameNode> FindPath(Vector2 startVector2, Vector2 endVector2) {
-		var start = _mapGrid.PassiveGridLayer[(int)startVector2.X, (int)startVector2.Y];
-		var end = _mapGrid.PassiveGridLayer[(int)endVector2.X, (int)endVector2.Y];
+		var start = _mapGrid.GridLayer[(int)startVector2.X, (int)startVector2.Y];
+		var end = _mapGrid.GridLayer[(int)endVector2.X, (int)endVector2.Y];
 		return FindPath(start, end);
 	}
 	
