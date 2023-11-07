@@ -23,7 +23,7 @@ public partial class CameraController : Camera2D {
 	public PlayerController PlayerControllerInstance;
 	private MapGrid _mapGrid;
 
-	private const int EdgeSize = 50;
+	private const int EdgeSize = 25;
 
 	[Signal]
 	public delegate void AreaSelectedEventHandler(Vector2 start, Vector2 end);
@@ -58,7 +58,7 @@ public partial class CameraController : Camera2D {
 	public void CenterOnPosition(Vector2 pos) => Position = pos;
 
 	public void DrawArea(bool s = true) {
-		var panel = GetNode<Panel>("../Ui/Panel");
+		var panel = GetNode<Panel>("../Ui/SelectionRect");
 		panel.Size = new Vector2(Math.Abs(startV.X - endV.X), Math.Abs(startV.Y - endV.Y));
 		var pos = Vector2.Zero;
 		pos.X = Math.Min(startV.X, endV.X);
@@ -140,12 +140,12 @@ public partial class CameraController : Camera2D {
 		var b = radius - size.Y / 2;
 		Position += new Vector2(inpx * Speed, inpy * Speed);
 		
-		while (IsPointOutsideEllipse(center, a, b, Position)) {
-			Position += (center - Position).Normalized();
-		}
-
-		Position = Position.Clamp(DisplayServer.WindowGetSize() / 2,
-			new Vector2(diameter, diameter) - DisplayServer.WindowGetSize() / 2);
+		// while (IsPointOutsideEllipse(center, a, b, Position)) {
+		// 	Position += (center - Position).Normalized();
+		// }
+		//
+		// Position = Position.Clamp(DisplayServer.WindowGetSize() / 2,
+		// 	new Vector2(diameter, diameter) - DisplayServer.WindowGetSize() / 2);
 	}
 	
 	private bool IsPointOutsideEllipse(Vector2 center, float a, float b, Vector2 point) {

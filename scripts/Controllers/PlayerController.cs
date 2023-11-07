@@ -31,6 +31,8 @@ public partial class PlayerController : Node {
 	private BuildingNode2D _buildingShade = null;
 	public UiController UiController;
 
+	private byte CurrentSector = 0;
+
 	public bool OverGui {
 		get => _overGui;
 		set {
@@ -68,6 +70,13 @@ public partial class PlayerController : Node {
 		UiController.Init(this);
 		CreateStartingUnits();
 		_camera.CenterOnGridPosition(new Vector2(12, 17));
+		SetupUiControllerHandlers();
+	}
+
+	private void SetupUiControllerHandlers() {
+		UiController.SectorPanel.Draw += () => {
+			_mapGrid.DrawSectors(UiController.SectorPanel);
+		};
 	}
 
 

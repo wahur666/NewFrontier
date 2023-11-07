@@ -19,7 +19,7 @@ public class Sector {
 	/// <summary>
 	/// Position on the minimap
 	/// </summary>
-	private Vector2 _position;
+	public Vector2 SectorPosition;
 
 	/// <summary>
 	/// Index if the sector, to allocate the memory, 0-15
@@ -28,10 +28,10 @@ public class Sector {
 
 	public Vector2 CameraPosition;
 
-	public Sector(GameNode[,] map, Vector2I position, byte size, byte index) {
+	public Sector(GameNode[,] map, Vector2I sectorPosition, byte size, byte index) {
 		_map = map;
 		_size = size;
-		_position = position;
+		SectorPosition = sectorPosition;
 		_index = index;
 		CreateSector();
 	}
@@ -59,7 +59,8 @@ public class Sector {
 		var diameter = _size * 2 - 1;
 		for (var i = 0; i < diameter; i++) {
 			for (var j = 0; j < diameter; j++) {
-				var item = _map[i, j];
+				var offset = MapHelpers.CalculateOffset(i, j, _index);
+				var item = _map[offset.X, offset.Y];
 				if (item is not null) {
 					this.setupNeighbours(item);
 				}
@@ -82,7 +83,8 @@ public class Sector {
 
 		foreach (var direction in directions) {
 			var newPos = node.Position + direction;
-			if (newPos.X < 0 || newPos.Y < 0 || newPos.X > diameter - 1 || newPos.Y > diameter - 1) {
+			var offset = MapHelpers.CalculateOffset(0, 0, _index);
+			if (newPos.X < offset.X || newPos.Y < offset.Y || newPos.X > offset.X + diameter - 1 || newPos.Y > offset.Y + diameter - 1) {
 				continue;
 			}
 

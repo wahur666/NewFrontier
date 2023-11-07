@@ -23,6 +23,8 @@ public partial class MapGrid : Node2D {
 	private List<WormholeObject> _wormholes = new();
 	private CameraController _cameraController;
 
+	private List<Sector> _sectors = new();
+
 	public int RealMapSize {
 		get { return MapSize * 2; }
 	} 
@@ -33,32 +35,33 @@ public partial class MapGrid : Node2D {
 		GridLayer = new GameNode[512, 512];
 		Navigation = new(this);
 		GD.Print(GridLayer[0, 0]);
-		var sector = new Sector(GridLayer, new Vector2I(0, 0), (byte)MapSize, 0);
+		var sector = new Sector(GridLayer, new Vector2I(80, 80), (byte)MapSize, 0);
+		var sector2 = new Sector(GridLayer, new Vector2I(120, 90), (byte)MapSize, 1);
+		_sectors.Add(sector);
+		_sectors.Add(sector2);
 		_cameraController = GetNode<CameraController>("../Camera2D");
 		_cameraController.Init(this);
-		_cameraController.LimitLeft = 0;
-		_cameraController.LimitTop = 0;
-		_cameraController.LimitRight = _diameter * MapHelpers.Size;
-		_cameraController.LimitBottom = _diameter * MapHelpers.Size;
+		// _cameraController.LimitLeft = 0;
+		// _cameraController.LimitTop = 0;
+		// _cameraController.LimitRight = _diameter * MapHelpers.Size;
+		// _cameraController.LimitBottom = _diameter * MapHelpers.Size;
 		GD.Print("Camera Controller", _cameraController);
 	}
 
-	// private void GenerateMap() {
-	// 	var center = new Vector2(_radius + 0.5f, _radius + 0.5f);
-	//
-	// 	for (int i = 0; i < _diameter + 1; i++) {
-	// 		for (int j = 0; j < _diameter + 1; j++) {
-	// 			if (AreaHelper.IsVector2InsideCircle(new(i + 0.5f, j + 0.5f), center, _radius + 0.5f)) {
-	// 				GridLayer[i, j] = new(new(i, j));
-	// 			}
-	// 		}
-	// 	}
-	// }
-
+	public void DrawSectors(Panel sectorMap) {
+		foreach (var sector in _sectors) {
+			sectorMap.DrawCircle(sector.SectorPosition, 5, Colors.Azure);
+		}
+	}
+	
 	public override void _Draw() {
-		for (int i = 0; i < _diameter + 1; i++) {
-			for (int j = 0; j < _diameter + 1; j++) {
-				var valid = GridLayer[i, j] is null || GridLayer[i, j].Blocking;
+		GD.Print("Drawing");
+		for (int i = 0; i < GridLayer.GetLength(0); i++) {
+			for (int j = 0; j < GridLayer.GetLength(1); j++) {
+				if (GridLayer[i, j] is null) {
+					continue;
+				}
+				var valid = GridLayer[i, j].Blocking;
 				DrawRect(new(i * MapHelpers.Size, j * MapHelpers.Size, MapHelpers.Size, MapHelpers.Size),
 					 valid ? Color.FromHtml("#FF00001A") : Color.FromHtml("#0000FF"), valid, valid ? -1 : 2);
 			}
@@ -81,53 +84,7 @@ public partial class MapGrid : Node2D {
 		return neighbours;
 	}
 
-	// private void setupNeighbours(GameNode node) {
-	// 	List<Vector2> directions = new() {
-	// 		new(-1, -1),
-	// 		new(-1, 0),
-	// 		new(-1, 1),
-	// 		new(0, -1),
-	// 		new(0, 1),
-	// 		new(1, -1),
-	// 		new(1, 0),
-	// 		new(1, 1),
-	// 	};
-	//
-	// 	foreach (var direction in directions) {
-	// 		var newPos = node.Position + direction;
-	// 		if (newPos.X < 0 || newPos.Y < 0 || newPos.X > _diameter - 1 || newPos.Y > _diameter - 1) {
-	// 			continue;
-	// 		}
-	//
-	// 		var newNeighbour = GridLayer[(int)newPos.X, (int)newPos.Y];
-	// 		if (newNeighbour is not null) {
-	// 			node.AddNeighbour(newNeighbour, direction.Length());
-	// 		}
-	// 	}
-	//
-	// 	_wormholes.Where(wormhole => wormhole.IsConnected(node))
-	// 		.ToList()
-	// 		.ForEach(wormhole => node.AddNeighbour(wormhole.GetOtherNode(node), wormhole.Distance));
-	// }
-
-	// private void GenerateNeighbours() {
-	// 	for (var i = 0; i < _diameter; i++) {
-	// 		for (var j = 0; j < _diameter; j++) {
-	// 			var item = GridLayer[i, j];
-	// 			if (item is not null) {
-	// 				this.setupNeighbours(item);
-	// 			}
-	// 		}
-	// 	}
-	// }
-	//
-	// private createSector(x: number, y: number, size: number): void {
-	//     for (let i = x; i < Math.min(this.size, x + size); i++) {
-	//         for (let j = y; j < Math.min(this.size, y + size); j++) {
-	//             this.sectorNodeMap[i][j] = new GameNode(new Vector2(i, j));
-	//         }
-	//     }
-	// }
+	
 	// getNode = (x: number, y: number): GameNode => this.sectorNodeMap[x][y] as GameNode;
 	//
 	// private generateWormholes() {
