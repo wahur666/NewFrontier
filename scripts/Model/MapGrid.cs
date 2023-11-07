@@ -13,25 +13,29 @@ public partial class MapGrid : Node2D {
 
 	private int _radius;
 	private int _diameter;
-	
+
+
 	/// <summary>
 	/// Map representation, it can store at most 16 sectors, in a 4x4 grid of at most 128x128 sectors
 	/// If there is a node, if should be a <see cref="GameNode"/> or null
 	/// </summary>
 	public GameNode[,] GridLayer;
+
 	public Navigation Navigation;
 	private List<WormholeObject> _wormholes = new();
 	private CameraController _cameraController;
 
 	private List<Sector> _sectors = new();
+	private PackedScene _wormholeScene;
 
 	public int RealMapSize {
 		get { return MapSize * 2; }
-	} 
-	
+	}
+
 	public override void _Ready() {
 		_radius = MapSize - 1;
 		_diameter = RealMapSize - 1;
+		_wormholeScene = GD.Load<PackedScene>("res://scenes/wormhole.tscn");
 		GridLayer = new GameNode[512, 512];
 		Navigation = new(this);
 		GD.Print(GridLayer[0, 0]);
@@ -53,7 +57,7 @@ public partial class MapGrid : Node2D {
 			sectorMap.DrawCircle(sector.SectorPosition, 5, Colors.Azure);
 		}
 	}
-	
+
 	public override void _Draw() {
 		GD.Print("Drawing");
 		for (int i = 0; i < GridLayer.GetLength(0); i++) {
@@ -61,9 +65,10 @@ public partial class MapGrid : Node2D {
 				if (GridLayer[i, j] is null) {
 					continue;
 				}
+
 				var valid = GridLayer[i, j].Blocking;
 				DrawRect(new(i * MapHelpers.Size, j * MapHelpers.Size, MapHelpers.Size, MapHelpers.Size),
-					 valid ? Color.FromHtml("#FF00001A") : Color.FromHtml("#0000FF"), valid, valid ? -1 : 2);
+					valid ? Color.FromHtml("#FF00001A") : Color.FromHtml("#0000FF"), valid, valid ? -1 : 2);
 			}
 		}
 	}
@@ -84,7 +89,7 @@ public partial class MapGrid : Node2D {
 		return neighbours;
 	}
 
-	
+
 	// getNode = (x: number, y: number): GameNode => this.sectorNodeMap[x][y] as GameNode;
 	//
 	// private generateWormholes() {
@@ -117,5 +122,43 @@ public partial class MapGrid : Node2D {
 				}
 			}
 		}
+	}
+
+	private void ConnectWormholes() {
+		foreach (var node in GridLayer) {
+			if (node is null) {
+				continue;
+			}
+
+			_wormholes.Where(wormhole => wormhole.IsConnected(node))
+				.ToList()
+				.ForEach(wormhole => node.AddNeighbour(wormhole.GetOtherNode(node), wormhole.Distance));
+		}
+	}
+
+	public void CreateWormholes(Vector2 pos1, Vector2 pos2) {
+		var w1 = _wormholeScene.Instantiate<Node2D>();
+		w1.Position = MapHelpers.GridCoordToGridPointPos(pos1);
+		AddChild(w1);
+		var w2 = _wormholeScene.Instantiate<Node2D>();
+		w2.Position = MapHelpers.GridCoordToGridPointPos(pos2);
+		AddChild(w2);
+
+		// GridLayer[(int)origin.X - 1, (int)origin.Y - 1]?.SetWormhole(wormhole);
+		// GridLayer[(int)origin.X, (int)origin.Y - 1]?.SetWormhole(wormhole);
+		// GridLayer[(int)origin.X - 1, (int)origin.Y]?.SetWormhole(wormhole);
+		GridLayer[(int)pos1.X, (int)pos1.Y].HasWormhole = true;
+		GridLayer[(int)pos2.X, (int)pos2.Y].HasWormhole = true;
+		_wormholes.Add(new WormholeObject(GetGameNode(pos1), GetGameNode(pos2), 1));
+		ConnectWormholes();
+	}
+
+	public GameNode GetGameNode(Vector2 positon, int sector) {
+		var offset = MapHelpers.CalculateOffset(positon, sector);
+		return GridLayer[offset.X, offset.Y];
+	}
+
+	public GameNode GetGameNode(Vector2 positon) {
+		return GridLayer[(int)positon.X, (int)positon.Y];
 	}
 }

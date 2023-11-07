@@ -93,9 +93,5 @@ public class Sector {
 				node.AddNeighbour(newNeighbour, direction.Length());
 			}
 		}
-
-		// _wormholes.Where(wormhole => wormhole.IsConnected(node))
-		// 	.ToList()
-		// 	.ForEach(wormhole => node.AddNeighbour(wormhole.GetOtherNode(node), wormhole.Distance));
 	}
 }

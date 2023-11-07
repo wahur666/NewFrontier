@@ -23,6 +23,8 @@ public class MapHelpers {
 	public static Vector2 NodeToPos(GameNode node) => node.Position * Size + new Vector2(Size / 2f, Size / 2f);
 	public static Vector2 PosToGrid(Vector2 pos) => new((int)pos.X / Size, (int)pos.Y / Size);
 
+
+	public static Vector2I CalculateOffset(Vector2 pos, int index) => CalculateOffset((int)pos.X, (int)pos.Y, index); 
 	public static Vector2I CalculateOffset(int row, int col, int index) {
 		const int chunkSize = 128;
 		const int rowCount = 4;
