@@ -47,6 +47,7 @@ public partial class PlayerController : Node {
 	private PackedScene _harvester;
 	private PackedScene _fabricator;
 	private bool _overGui;
+	private bool _overSectormap;
 
 	public bool BuildingMode {
 		get;
@@ -77,6 +78,14 @@ public partial class PlayerController : Node {
 		UiController.SectorPanel.Draw += () => {
 			_mapGrid.DrawSectors(UiController.SectorPanel);
 		};
+		UiController.SectorPanel.MouseEntered += () => {
+			GD.Print("Mouse entered sector element");
+			_overSectormap = true;
+		};
+		UiController.SectorPanel.MouseExited += () => {
+			GD.Print("Mouse exited sector element");
+			_overSectormap = false;
+		};
 	}
 
 
@@ -93,7 +102,11 @@ public partial class PlayerController : Node {
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
-		if (Input.IsActionJustPressed("RMB")) {
+		if (Input.IsActionJustPressed("RMB") && _overSectormap) {
+			var a = _camera.GetLocalMousePosition() + GetViewport().GetVisibleRect().Size / 2 * _camera.Zoom;
+			var b = UiController.SectorPanel.Position;
+			GD.Print($"G: {a}, Inside: {b}");
+		} else if (Input.IsActionJustPressed("RMB")) {
 			FreeBuildingShade();
 			BuildingMode = false;
 		}

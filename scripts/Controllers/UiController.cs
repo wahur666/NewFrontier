@@ -19,14 +19,14 @@ public partial class UiController : CanvasLayer {
 		canvasItems = new();
 		leftControls = GetNode<LeftControls>("LeftControls");
 		Canvas = GetNode<Node2D>("../Canvas");
-		SectorPanel = GetNode<Panel>("SectorMap/Panel");
+		SectorPanel = GetNode<Panel>("SectorMap/Control/Panel");
 		SectorPanel.Draw += SectorPanelOnDraw;
 	}
 
 	private void SectorPanelOnDraw() {
 		var shorterSide = Math.Min(SectorPanel.Size.X, SectorPanel.Size.Y);
 		var center = new Vector2(shorterSide, shorterSide) / 2;
-		var radius = shorterSide / 2 - 10;
+		var radius = shorterSide / 2 ;
 		SectorPanel.DrawArc(center, radius, 0, Mathf.Tau, 32, Colors.Azure, 2, true);
 	}
 

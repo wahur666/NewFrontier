@@ -90,8 +90,7 @@ public partial class MapGrid : Node2D {
 	}
 
 
-	// getNode = (x: number, y: number): GameNode => this.sectorNodeMap[x][y] as GameNode;
-	//
+//
 	// private generateWormholes() {
 	//     this.wormholes.push(new WormholeObject(this.getNode(8, 6), this.getNode(22, 10), 1));
 	//     this.wormholes.push(new WormholeObject(this.getNode(26, 9), this.getNode(37, 14), 1));
@@ -130,9 +129,10 @@ public partial class MapGrid : Node2D {
 				continue;
 			}
 
-			_wormholes.Where(wormhole => wormhole.IsConnected(node))
-				.ToList()
-				.ForEach(wormhole => node.AddNeighbour(wormhole.GetOtherNode(node), wormhole.Distance));
+			foreach (var wormhole in _wormholes.Where(wormhole => wormhole.IsConnected(node)))
+			{
+				node.AddNeighbour(wormhole.GetOtherNode(node), wormhole.Distance);
+			}
 		}
 	}
 
