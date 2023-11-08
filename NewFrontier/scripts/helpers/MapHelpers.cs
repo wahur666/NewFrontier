@@ -25,7 +25,7 @@ public class MapHelpers {
 
 
 	public static Vector2I CalculateOffset(Vector2 pos, int index) => CalculateOffset((int)pos.X, (int)pos.Y, index); 
-	public static Vector2I CalculateOffset(int row, int col, int index) {
+	public static Vector2I CalculateOffset(int col, int row, int index) {
 		const int chunkSize = 128;
 		const int rowCount = 4;
 		const int colCount = 4;
@@ -39,5 +39,25 @@ public class MapHelpers {
 		int finalY = yOffset + row;
 
 		return new(finalX, finalY);
+	}
+
+	public static void GetPositionFromOffset(int col, int row, out int col2, out int row2, out int index) {
+		const int chunkSize = 128;
+		const int colCount = 4;
+		
+		int ocol = col % chunkSize;
+		int orow = row % chunkSize;
+
+		int xOffset = col - ocol;
+		int yOffset = row - orow;
+
+		int colIndex = xOffset / chunkSize;
+		int rowIndex = yOffset / chunkSize;
+
+		// Calculate the final index
+		index = rowIndex * colCount + colIndex;
+
+		row2 = orow;
+		col2 = ocol;
 	}
 }
