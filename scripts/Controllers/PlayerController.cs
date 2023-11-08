@@ -218,7 +218,6 @@ public partial class PlayerController : Node {
 					var end = MapHelpers.PosToGrid(targetVector2);
 					var path = _mapGrid.Navigation
 						.FindPath(start, end)
-						.Select(x => MapHelpers.GridCoordToGridCenterPos(x.Position))
 						.ToList();
 					unitNode2D.SetNavigation(path);
 				}

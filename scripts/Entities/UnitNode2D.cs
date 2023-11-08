@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.helpers;
+using NewFrontier.scripts.Model;
 using NewFrontier.scripts.UI;
 
 namespace NewFrontier.scripts.Entities;
@@ -11,6 +12,7 @@ namespace NewFrontier.scripts.Entities;
 public partial class UnitNode2D : CharacterBody2D {
 	private bool _selected;
 	private int _speed = 300;
+	private TravelState _travelState = TravelState.NotTraveling;
 
 	[Export]
 	public virtual bool Selected {
@@ -27,7 +29,7 @@ public partial class UnitNode2D : CharacterBody2D {
 
 	protected SelectionRect SelectionRect;
 
-	public Queue<Vector2> Path = new();
+	public Queue<GameNode> navPpoints = new();
 	public PlayerController PlayerController;
 	public UiController UiController;
 	private Node2D canvas;
@@ -48,7 +50,7 @@ public partial class UnitNode2D : CharacterBody2D {
 
 	private void CanvasOnDraw() {
 		var points = new List<Vector2> { Position, TargetDestination };
-		points.AddRange(Path);
+		points.AddRange(navPpoints.Select(x => MapHelpers.GridCoordToGridCenterPos(x.Position)));
 		DrawPath(points);
 	}
 
@@ -60,10 +62,23 @@ public partial class UnitNode2D : CharacterBody2D {
 
 	public override void _PhysicsProcess(double delta) {
 		base._PhysicsProcess(delta);
+
+		// switch (_travelState) {
+		// 	case TravelState.PrepareForTraveling:
+		// 		break;
+		// 	case TravelState.Traveling:
+		// 		break;
+		// 	case TravelState.EndTraveling:
+		// 		break;
+		// 	case TravelState.NotTraveling:
+		// 	default:
+		// 		throw new ArgumentOutOfRangeException();
+		// }
+		
 		if (Position.DistanceTo(TargetDestination) < 5) {
-			if (Path.Count > 0) {
+			if (navPpoints.Count > 0) {
 				_moving = true;
-				TargetDestination = Path.Dequeue();
+				TargetDestination = MapHelpers.GridCoordToGridCenterPos(navPpoints.Dequeue().Position);
 			} else {
 				_moving = false;
 				Velocity = Vector2.Zero;
@@ -80,11 +95,11 @@ public partial class UnitNode2D : CharacterBody2D {
 
 		// Ensure the angle is between -PI and PI
 		while (targetRotation - Rotation > Mathf.Pi) {
-			targetRotation -= 2 * Mathf.Pi;
+			targetRotation -= Mathf.Tau;
 		}
 
 		while (targetRotation - Rotation < -Mathf.Pi) {
-			targetRotation += 2 * Mathf.Pi;
+			targetRotation += Mathf.Tau;
 		}
 
 		// Define a constant rotation speed
@@ -95,9 +110,9 @@ public partial class UnitNode2D : CharacterBody2D {
 
 		// Determine the shortest path to the target rotation
 		if (rotationDifference > Mathf.Pi) {
-			rotationDifference -= 2 * Mathf.Pi;
+			rotationDifference -= Mathf.Tau;
 		} else if (rotationDifference < -Mathf.Pi) {
-			rotationDifference += 2 * Mathf.Pi;
+			rotationDifference += Mathf.Tau;
 		}
 
 		// Rotate at a constant speed
@@ -133,14 +148,83 @@ public partial class UnitNode2D : CharacterBody2D {
 		canvas.QueueRedraw();
 	}
 
-	public void SetNavigation(List<Vector2> vector2s) {
+	public void SetNavigation(List<GameNode> vector2s) {
 		TargetDestination = Position;
-		if (vector2s.Count > 1
-		    // && Position.DistanceTo(vector2s[1]) < vector2s[0].DistanceTo(vector2s[1])
-		   ) {
+		if (vector2s.Count > 1) {
 			vector2s.RemoveAt(0);
 		}
 
-		this.Path = new Queue<Vector2>(vector2s);
+		this.navPpoints = new Queue<GameNode>(vector2s);
 	}
+	
+	// updateNotTraveling(delta: number) {
+ //        if (this.selected) {
+ //            this.drawPath();
+ //        }
+ //        if (this.navNodes.value.length > 0) {
+ //            const target = this.navPoints.value[0];
+ //            if (this.pos.distance(target) < 5) {
+ //                this.navNodes.value = this.navNodes.value.slice(1);
+ //                if (this.navNodes.value.length === 0) {
+ //                    this.stopNav();
+ //                } else if (this.navNodes.value.length > 1 && this.navNodes.value[0].hasWormhole && this.navNodes.value[1].hasWormhole) {
+ //                    this.traveling = TravelState.PREPARE_FOR_TRAVELING;
+ //                }
+ //            } else {
+ //                this.moveToTarget(target, 50);
+ //            }
+ //        }
+ //    }
+ //
+ //    updatePrepareForTraveling(delta: number) {
+ //        // Wait until everybody is read for jump
+ //        this.selectedGraphics.clear();
+ //        this.selectedGraphics.lineStyle(2, 0x00ff00, 1);
+ //        this.selectedGraphics.lineBetween(this.x, this.y, this.navPoints.value[0].x, this.navPoints.value[0].y);
+ //        this.body?.stop();
+ //        const target = this.navPoints.value[0];
+ //        this.setRotation(Math.atan2(-this.y + target.y, -this.x + target.x) + Math.PI / 2);
+ //        if (this.currentTravelTime < this.travelTime) {
+ //            this.currentTravelTime += delta;
+ //            return;
+ //        }
+ //        if (this.pos.distance(target) < 5) {
+ //            this.navNodes.value = this.navNodes.value.slice(1);
+ //        } else {
+ //            this.moveToTarget(target, 200);
+ //            return;
+ //        }
+ //        this.currentTravelTime = 0;
+ //        this.traveling = TravelState.TRAVELING;
+ //    }
+ //
+ //    updateTraveling(delta: number) {
+ //        this.visible = false;
+ //        if (this.currentTravelTime < this.travelTime) {
+ //            this.currentTravelTime += delta;
+ //            return;
+ //        }
+ //        const target = this.navPoints.value[0];
+ //        this.x = target.x;
+ //        this.y = target.y;
+ //        this.currentTravelTime = 0;
+ //        this.navNodes.value = this.navNodes.value.slice(1);
+ //        this.traveling = TravelState.END_TRAVELING;
+ //    }
+ //
+ //    private void UpdateEndTraveling(double delta) {
+ //        Visible = true;
+ //        // speed up ship until its reached the next position
+ //        var target = this.navPoints.value[0];
+ //        if (this.pos.distance(target) < 5) {
+ //            this.navNodes.value = this.navNodes.value.slice(1);
+ //        } else {
+ //            this.moveToTarget(target, 200);
+ //            return;
+ //        }
+ //        if (this.navNodes.value.length === 0) {
+ //            this.stopNav();
+ //        }
+ //        this.traveling = TravelState.NOT_TRAVELING;
+ //    }
 }
