@@ -2,6 +2,8 @@
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewFrontier", "NewFrontier.csproj", "{DC546786-1D12-4AA5-BB7D-0EAF02B4F706}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1", "..\TestProject1\TestProject1.csproj", "{02833855-54D6-4B5F-B7A5-F189B7CECA75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 	Debug|Any CPU = Debug|Any CPU
@@ -15,5 +17,11 @@ Global
 		{DC546786-1D12-4AA5-BB7D-0EAF02B4F706}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
 		{DC546786-1D12-4AA5-BB7D-0EAF02B4F706}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
 		{DC546786-1D12-4AA5-BB7D-0EAF02B4F706}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{02833855-54D6-4B5F-B7A5-F189B7CECA75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02833855-54D6-4B5F-B7A5-F189B7CECA75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02833855-54D6-4B5F-B7A5-F189B7CECA75}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02833855-54D6-4B5F-B7A5-F189B7CECA75}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{02833855-54D6-4B5F-B7A5-F189B7CECA75}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{02833855-54D6-4B5F-B7A5-F189B7CECA75}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
