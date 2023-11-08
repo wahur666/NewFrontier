@@ -24,7 +24,7 @@ public class Sector {
 	/// <summary>
 	/// Index if the sector, to allocate the memory, 0-15
 	/// </summary>
-	private byte _index;
+	public byte Index;
 
 	public Vector2 CameraPosition;
 
@@ -32,7 +32,7 @@ public class Sector {
 		_map = map;
 		_size = size;
 		SectorPosition = sectorPosition;
-		_index = index;
+		Index = index;
 		CreateSector();
 	}
 
@@ -48,7 +48,7 @@ public class Sector {
 		for (int i = 0; i < diameter + 1; i++) {
 			for (int j = 0; j < diameter + 1; j++) {
 				if (AreaHelper.IsVector2InsideCircle(new(i + 0.5f, j + 0.5f), center, radius + 0.5f)) {
-					var offset = MapHelpers.CalculateOffset(i, j, _index);
+					var offset = MapHelpers.CalculateOffset(i, j, Index);
 					_map[offset.X, offset.Y] = new(offset);
 				}
 			}
@@ -59,7 +59,7 @@ public class Sector {
 		var diameter = _size * 2 - 1;
 		for (var i = 0; i < diameter; i++) {
 			for (var j = 0; j < diameter; j++) {
-				var offset = MapHelpers.CalculateOffset(i, j, _index);
+				var offset = MapHelpers.CalculateOffset(i, j, Index);
 				var item = _map[offset.X, offset.Y];
 				if (item is not null) {
 					this.setupNeighbours(item);
@@ -83,7 +83,7 @@ public class Sector {
 
 		foreach (var direction in directions) {
 			var newPos = node.Position + direction;
-			var offset = MapHelpers.CalculateOffset(0, 0, _index);
+			var offset = MapHelpers.CalculateOffset(0, 0, Index);
 			if (newPos.X < offset.X || newPos.Y < offset.Y || newPos.X > offset.X + diameter - 1 || newPos.Y > offset.Y + diameter - 1) {
 				continue;
 			}

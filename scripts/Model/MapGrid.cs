@@ -25,7 +25,7 @@ public partial class MapGrid : Node2D {
 	private List<WormholeObject> _wormholes = new();
 	private CameraController _cameraController;
 
-	private List<Sector> _sectors = new();
+	public List<Sector> Sectors = new();
 	private PackedScene _wormholeScene;
 
 	public int RealMapSize {
@@ -41,8 +41,8 @@ public partial class MapGrid : Node2D {
 		GD.Print(GridLayer[0, 0]);
 		var sector = new Sector(GridLayer, new Vector2I(80, 80), (byte)MapSize, 0);
 		var sector2 = new Sector(GridLayer, new Vector2I(120, 90), (byte)MapSize, 1);
-		_sectors.Add(sector);
-		_sectors.Add(sector2);
+		Sectors.Add(sector);
+		Sectors.Add(sector2);
 		_cameraController = GetNode<CameraController>("../Camera2D");
 		_cameraController.Init(this);
 		// _cameraController.LimitLeft = 0;
@@ -53,7 +53,7 @@ public partial class MapGrid : Node2D {
 	}
 
 	public void DrawSectors(Panel sectorMap) {
-		foreach (var sector in _sectors) {
+		foreach (var sector in Sectors) {
 			sectorMap.DrawCircle(sector.SectorPosition, 5, Colors.Azure);
 		}
 	}
@@ -103,13 +103,13 @@ public partial class MapGrid : Node2D {
 	// }
 
 	public override void _Process(double delta) {
-		if (Input.IsMouseButtonPressed(MouseButton.Left)) {
-			var pos = GetGlobalMousePosition();
-			var gridPos = MapHelpers.PosToGrid(pos);
-			GD.Print("Global mouse pos: ", pos);
-			GD.Print("Grid pos: " + gridPos);
-			GD.Print("Grid pos back to coordiante: " + MapHelpers.GridCoordToGridCenterPos(gridPos));
-		}
+		// if (Input.IsMouseButtonPressed(MouseButton.Left)) {
+		// 	var pos = GetGlobalMousePosition();
+		// 	var gridPos = MapHelpers.PosToGrid(pos);
+		// 	GD.Print("Global mouse pos: ", pos);
+		// 	GD.Print("Grid pos: " + gridPos);
+		// 	GD.Print("Grid pos back to coordiante: " + MapHelpers.GridCoordToGridCenterPos(gridPos));
+		// }
 	}
 
 	public void SetBlocking(Vector2 origin, int size) {

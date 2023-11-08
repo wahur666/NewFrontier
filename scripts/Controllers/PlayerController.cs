@@ -102,10 +102,14 @@ public partial class PlayerController : Node {
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
-		if (Input.IsActionJustPressed("RMB") && _overSectormap) {
-			var a = _camera.GetLocalMousePosition() + GetViewport().GetVisibleRect().Size / 2 * _camera.Zoom;
-			var b = UiController.SectorPanel.Position;
-			GD.Print($"G: {a}, Inside: {b}");
+		if (Input.IsActionJustPressed("LMB") ) {
+			var a = GetViewport().GetMousePosition();
+			var b = UiController.SectorPanel.GlobalPosition;
+			var z = _mapGrid.Sectors.Find(x => Math.Abs((x.SectorPosition + b - a).Length()) < 10);
+			if (z is not null) {
+				_camera.Position =
+					MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(15, 15), z.Index));
+			}
 		} else if (Input.IsActionJustPressed("RMB")) {
 			FreeBuildingShade();
 			BuildingMode = false;
