@@ -139,7 +139,7 @@ public partial class UnitNode2D : CharacterBody2D {
 			return;
 		}
 
-		const int squareSize = MapHelpers.Size / 4;
+		const int squareSize = MapHelpers.DrawSize / 4;
 		const int halfSquareSize = squareSize / 2;
 		canvas.DrawRect(
 			new Rect2(path[^1] - new Vector2(halfSquareSize, halfSquareSize),

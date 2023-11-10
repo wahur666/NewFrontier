@@ -78,7 +78,11 @@ public partial class CameraController : Camera2D {
 			EmitSignal(SignalName.MoveToPoint, start);
 		}
 
-		if (PlayerControllerInstance is not null && PlayerControllerInstance.BuildingMode) {
+		if (PlayerControllerInstance is null) {
+			return;
+		}
+
+		if (PlayerControllerInstance.BuildingMode) {
 			return;
 		}
 
@@ -132,28 +136,29 @@ public partial class CameraController : Camera2D {
 		// 		   - (Input.IsActionPressed("ui_left") ? 1 : 0);
 		// inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
 		// 		   - (Input.IsActionPressed("ui_up") ? 1 : 0);
-		var diameter = _mapGrid.RealMapSize * MapHelpers.Size;
+		var offset = MapHelpers.CalculateOffset(0, 0, PlayerControllerInstance.CurrentSector) * MapHelpers.DrawSize;
+		var diameter = _mapGrid.RealMapSize * MapHelpers.DrawSize;
 		var radius = diameter / 2;
-		var center = new Vector2(radius, radius);
+		var center = new Vector2(radius, radius) + offset;
 		var size = GetViewport().GetVisibleRect().Size;
 		var a = radius - size.X / 2;
 		var b = radius - size.Y / 2;
 		Position += new Vector2(inpx * Speed, inpy * Speed);
-		
-		// while (IsPointOutsideEllipse(center, a, b, Position)) {
-		// 	Position += (center - Position).Normalized();
-		// }
-		//
-		// Position = Position.Clamp(DisplayServer.WindowGetSize() / 2,
-		// 	new Vector2(diameter, diameter) - DisplayServer.WindowGetSize() / 2);
+
+		while (IsPointOutsideEllipse(center, a, b, Position)) {
+			Position += (center - Position).Normalized();
+		}
+
+		Position = Position.Clamp(DisplayServer.WindowGetSize() / 2 + offset,
+			new Vector2(diameter, diameter) - DisplayServer.WindowGetSize() / 2 + offset);
 	}
-	
+
 	private bool IsPointOutsideEllipse(Vector2 center, float a, float b, Vector2 point) {
-		var distanceSquared = (Math.Pow(point.X - center.X, 2) / Math.Pow(a, 2)) + (Math.Pow(point.Y - center.Y, 2) / Math.Pow(b, 2));
+		var distanceSquared = (Math.Pow(point.X - center.X, 2) / Math.Pow(a, 2)) +
+		                      (Math.Pow(point.Y - center.Y, 2) / Math.Pow(b, 2));
 		return distanceSquared > 1;
 	}
 
-	
 
 	private bool OverUiElement(Vector2 position) {
 		return _uiController.OverUiElement(position);

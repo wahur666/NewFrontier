@@ -18,6 +18,13 @@ public class Tests {
 		var result2 = new Vector2I(15, 148);
 		Assert.That(result2, Is.EqualTo(pos2));
 	}
+	
+	[Test]
+	public void TestCalculateOffset2() {
+		var pos = MapHelpers.CalculateOffset(new Vector2(9, 15), 1);
+		var pos2 = MapHelpers.CalculateOffset(9, 15, 1);
+		Assert.That(pos, Is.EqualTo(pos2));
+	}
 
 	[Test]
 	public void TestGetPositionFromOffset() {

@@ -67,7 +67,7 @@ public partial class MapGrid : Node2D {
 				}
 
 				var valid = GridLayer[i, j].Blocking;
-				DrawRect(new(i * MapHelpers.Size, j * MapHelpers.Size, MapHelpers.Size, MapHelpers.Size),
+				DrawRect(new(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize, MapHelpers.DrawSize),
 					valid ? Color.FromHtml("#FF00001A") : Color.FromHtml("#0000FF"), valid, valid ? -1 : 2);
 			}
 		}

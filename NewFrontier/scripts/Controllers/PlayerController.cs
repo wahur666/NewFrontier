@@ -31,7 +31,7 @@ public partial class PlayerController : Node {
 	private BuildingNode2D _buildingShade = null;
 	public UiController UiController;
 
-	private byte CurrentSector = 0;
+	public byte CurrentSector = 0;
 
 	public bool OverGui {
 		get => _overGui;
@@ -109,6 +109,7 @@ public partial class PlayerController : Node {
 			if (z is not null) {
 				_camera.Position =
 					MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(15, 15), z.Index));
+				CurrentSector = z.Index;
 			}
 		} else if (Input.IsActionJustPressed("RMB")) {
 			FreeBuildingShade();
