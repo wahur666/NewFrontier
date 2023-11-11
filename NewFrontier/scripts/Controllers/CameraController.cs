@@ -1,32 +1,16 @@
-using Godot;
 using System;
-using System.Collections.Generic;
+using Godot;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
-
 
 namespace NewFrontier.scripts.Controllers;
 
 public partial class CameraController : Camera2D {
-	[Export] public float Speed = 10.0f;
-	[Export] public bool EnableEdgePanning = true;
-
-	private bool _dragging = false;
-
-	private Vector2 mousePosition;
-	private Vector2 mousePosGlobal;
-	private Vector2 start;
-	private Vector2 startV;
-	private Vector2 end;
-	private Vector2 endV;
-	private UiController _uiController;
-	public PlayerController PlayerControllerInstance;
-	private MapGrid _mapGrid;
-
-	private const int EdgeSize = 25;
-
 	[Signal]
 	public delegate void AreaSelectedEventHandler(Vector2 start, Vector2 end);
+
+	[Signal]
+	public delegate void MoveToPointEventHandler(Vector2 point);
 
 	[Signal]
 	public delegate void PointSelectedEventHandler(Vector2 point);
@@ -34,8 +18,21 @@ public partial class CameraController : Camera2D {
 	[Signal]
 	public delegate void StartMoveSelectionEventHandler();
 
-	[Signal]
-	public delegate void MoveToPointEventHandler(Vector2 point);
+	private const int EdgeSize = 25;
+
+	private bool _dragging;
+	private MapGrid _mapGrid;
+	private UiController _uiController;
+	[Export] public bool EnableEdgePanning = true;
+	private Vector2 end;
+	private Vector2 endV;
+	private Vector2 mousePosGlobal;
+
+	private Vector2 mousePosition;
+	public PlayerController PlayerControllerInstance;
+	[Export] public float Speed = 10.0f;
+	private Vector2 start;
+	private Vector2 startV;
 
 
 	// Called when the node enters the scene tree for the first time.
@@ -54,8 +51,13 @@ public partial class CameraController : Camera2D {
 		_mapGrid = mapGrid;
 	}
 
-	public void CenterOnGridPosition(Vector2 pos) => CenterOnPosition(MapHelpers.GridCoordToGridCenterPos(pos));
-	public void CenterOnPosition(Vector2 pos) => Position = pos;
+	public void CenterOnGridPosition(Vector2 pos) {
+		CenterOnPosition(MapHelpers.GridCoordToGridCenterPos(pos));
+	}
+
+	public void CenterOnPosition(Vector2 pos) {
+		Position = pos;
+	}
 
 	public void DrawArea(bool s = true) {
 		var panel = GetNode<Panel>("../Ui/SelectionRect");
@@ -141,21 +143,21 @@ public partial class CameraController : Camera2D {
 		var radius = diameter / 2;
 		var center = new Vector2(radius, radius) + offset;
 		var size = GetViewport().GetVisibleRect().Size;
-		var a = radius - size.X / 2;
-		var b = radius - size.Y / 2;
+		var a = radius - (size.X / 2);
+		var b = radius - (size.Y / 2);
 		Position += new Vector2(inpx * Speed, inpy * Speed);
 
 		while (IsPointOutsideEllipse(center, a, b, Position)) {
 			Position += (center - Position).Normalized();
 		}
 
-		Position = Position.Clamp(DisplayServer.WindowGetSize() / 2 + offset,
-			new Vector2(diameter, diameter) - DisplayServer.WindowGetSize() / 2 + offset);
+		Position = Position.Clamp((DisplayServer.WindowGetSize() / 2) + offset,
+			new Vector2(diameter, diameter) - (DisplayServer.WindowGetSize() / 2) + offset);
 	}
 
 	private bool IsPointOutsideEllipse(Vector2 center, float a, float b, Vector2 point) {
 		var distanceSquared = (Math.Pow(point.X - center.X, 2) / Math.Pow(a, 2)) +
-		                      (Math.Pow(point.Y - center.Y, 2) / Math.Pow(b, 2));
+							  (Math.Pow(point.Y - center.Y, 2) / Math.Pow(b, 2));
 		return distanceSquared > 1;
 	}
 

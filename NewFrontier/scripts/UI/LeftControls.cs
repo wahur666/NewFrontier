@@ -1,24 +1,24 @@
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.Entities;
 
 namespace NewFrontier.scripts.UI;
 
 public partial class LeftControls : Control {
-	private Control _buttonContainer;
-	private Control _iconContainer;
 	private Button _button1;
 	private Button _button2;
 	private Button _button3;
-	public PlayerController PlayerController;
+	private Control _buttonContainer;
 	private PackedScene _fabricatorIcon;
 	private PackedScene _harvesterIcon;
+	private Control _iconContainer;
 
 	private int _iconSize = 32;
 	private int _spacing = 5;
+	public PlayerController PlayerController;
 
 	public bool OverUiElement {
 		get;
@@ -62,8 +62,8 @@ public partial class LeftControls : Control {
 		var rowIndex = 0;
 		var squaresDrawn = 0;
 		while (squaresDrawn < maxSquares && rowIndex < 4) {
-			var rowCount = (rowIndex % 2 == 0) ? 6 : 5;
-			var startX = (rowIndex % 2 == 0) ? 10 : 10 + (_iconSize / 2) + _spacing; // Indent odd rows
+			var rowCount = rowIndex % 2 == 0 ? 6 : 5;
+			var startX = rowIndex % 2 == 0 ? 10 : 10 + (_iconSize / 2) + _spacing; // Indent odd rows
 			var endIndex = Math.Min(squaresDrawn + rowCount, maxSquares);
 			DrawRow(rowCount, startX, startY + (rowIndex * (_iconSize + _spacing)), squaresDrawn, endIndex, units);
 			squaresDrawn += rowCount;
@@ -75,16 +75,17 @@ public partial class LeftControls : Control {
 		for (var i = 0; i < rowCount && startNumber < endIndex; i++) {
 			GD.Print("Index: ", startNumber);
 			var a = units[startNumber];
-			PackedScene scene = a switch {
+			var scene = a switch {
 				Fabricator => _fabricatorIcon,
 				Harvester => _harvesterIcon,
 				_ => _harvesterIcon
-			};;
+			};
+			;
 			DrawIcon(startX + (i * (_iconSize + _spacing)), startY, scene, a);
 			startNumber++;
 		}
 	}
-	
+
 	private void DrawIcon(int x, int y, PackedScene scene, UnitNode2D unitNode2D) {
 		var icon = scene.Instantiate() as UnitIcon;
 		icon.Position = new Vector2(x, y);

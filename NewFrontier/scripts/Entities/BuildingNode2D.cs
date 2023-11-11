@@ -1,24 +1,23 @@
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NewFrontier.scripts;
+using Godot;
 using NewFrontier.scripts.Controllers;
 
 namespace NewFrontier.scripts.Entities;
 
 public partial class BuildingNode2D : Node2D {
-	[Export] public int Wide = 1;
-	private int baseAngle = 30;
-	private Planet _planet;
 	private int[] _place = Array.Empty<int>();
-	private Sprite2D _sprite;
+	private Planet _planet;
 	private List<Planet> _planets;
+
+	private PlayerController _playerController;
+	private Sprite2D _sprite;
+	private int baseAngle = 30;
 	public bool BuildingShade = true;
 
 	public int ImgSize = 34;
-
-	private PlayerController _playerController;
+	[Export] public int Wide = 1;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
@@ -52,19 +51,20 @@ public partial class BuildingNode2D : Node2D {
 		} else {
 			_planet = null;
 			_place = Array.Empty<int>();
-			GlobalPosition = pos - _sprite.Offset * Scale;
+			GlobalPosition = pos - (_sprite.Offset * Scale);
 			RotationDegrees = 0;
 		}
 	}
 
-	private static bool DistanceFn(Vector2 mousePos, Planet planet) =>
-		Math.Abs(mousePos.DistanceTo(planet.GlobalPosition) - Planet.Radius) < 20;
+	private static bool DistanceFn(Vector2 mousePos, Planet planet) {
+		return Math.Abs(mousePos.DistanceTo(planet.GlobalPosition) - Planet.Radius) < 20;
+	}
 
 	private int[] CalculatePlace(Node2D planet, Vector2 pos) {
 		double angle = Mathf.RadToDeg(planet.GlobalPosition.AngleToPoint(pos));
-		double b = angle > 0 ? angle : 360 + angle;
-		int place = (int)((b + (Wide % 2 == 0 ? 0 : 15)) / 30) % 12;
-		RotationDegrees = place * 30 - 90 + (Wide % 2 == 0 ? 16 : 0);
+		var b = angle > 0 ? angle : 360 + angle;
+		var place = (int)((b + (Wide % 2 == 0 ? 0 : 15)) / 30) % 12;
+		RotationDegrees = (place * 30) - 90 + (Wide % 2 == 0 ? 16 : 0);
 		GlobalPosition = planet.GlobalPosition;
 		return Wide switch {
 			1 => new[] { place },

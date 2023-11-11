@@ -1,22 +1,21 @@
-using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 namespace NewFrontier.scripts.Entities;
 
-enum SlotStatus {
+internal enum SlotStatus {
 	Free,
-	Occupied,
+	Occupied
 }
 
 public partial class Planet : Node2D {
 	public static readonly int Radius = 150;
 
-	private List<BuildingNode2D> _buildings = new();
-	private SlotStatus[] _slots = new SlotStatus[12];
+	private readonly List<BuildingNode2D> _buildings = new();
 	private Node _buildingsContainer;
 	private PlanetBuildingScheme _planetBuildingScheme;
+	private readonly SlotStatus[] _slots = new SlotStatus[12];
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {

@@ -4,5 +4,5 @@ public enum TravelState {
 	NotTraveling,
 	PrepareForTraveling,
 	Traveling,
-	EndTraveling,
+	EndTraveling
 }

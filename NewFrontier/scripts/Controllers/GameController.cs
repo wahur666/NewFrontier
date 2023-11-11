@@ -2,14 +2,13 @@ using Godot;
 using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
-using System;
 
 namespace NewFrontier.scripts.Controllers;
 
 public partial class GameController : Node {
-	private PackedScene _playerControllerScene;
-	private PackedScene _planetScene;
 	private MapGrid _mapGrid;
+	private PackedScene _planetScene;
+	private PackedScene _playerControllerScene;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
@@ -19,15 +18,14 @@ public partial class GameController : Node {
 		var player = _playerControllerScene.Instantiate();
 		AddChild(player);
 		var planet2 = _planetScene.Instantiate<Planet>();
-		planet2.Position = MapHelpers.GridCoordToGridPointPos(new Vector2(15, 15));
+		planet2.Position = MapHelpers.GridCoordToGridPointPos(new Vector2(14, 14));
 		AddChild(planet2);
 		_mapGrid = GetNode<MapGrid>("../MapGrid");
-		_mapGrid.SetBlocking(new Vector2(13, 13), 4);
+		_mapGrid.SetBlocking(new Vector2(12, 12), 4);
 		GD.Print("MapGrid: ", _mapGrid);
 
 
-		_mapGrid.CreateWormholes(MapHelpers.CalculateOffset(new Vector2(20, 20), 0),
-			MapHelpers.CalculateOffset(new Vector2(25, 25), 1));
+		_mapGrid.CreateWormholes(new Vector2(19, 19), 0, new Vector2(29, 23), 1);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using NewFrontier.scripts.helpers;
 
 namespace NewFrontier.scripts.Entities;

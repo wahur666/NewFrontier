@@ -4,10 +4,10 @@ using NewFrontier.scripts.helpers;
 namespace NewFrontier.scripts.Entities;
 
 public partial class ResourceNode2D : Node2D {
-	public ResourceType Resource;
+	[Export] public float BaseScale = 1f;
 	public int CurrentResource;
 	[Export] public int MaxResource = 500;
-	[Export] public float BaseScale = 1f;
+	public ResourceType Resource;
 
 	public override void _Ready() {
 		CurrentResource = MaxResource;

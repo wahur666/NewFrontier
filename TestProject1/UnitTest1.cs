@@ -18,7 +18,7 @@ public class Tests {
 		var result2 = new Vector2I(15, 148);
 		Assert.That(result2, Is.EqualTo(pos2));
 	}
-	
+
 	[Test]
 	public void TestCalculateOffset2() {
 		var pos = MapHelpers.CalculateOffset(new Vector2(9, 15), 1);
@@ -29,8 +29,8 @@ public class Tests {
 	[Test]
 	public void TestGetPositionFromOffset() {
 		var a = new Vector2I(143, 15);
-		
-		MapHelpers.GetPositionFromOffset(a.X, a.Y, out var col, out var row , out var index);
+
+		MapHelpers.GetPositionFromOffset(a.X, a.Y, out var col, out var row, out var index);
 		Assert.Multiple(() => {
 			Assert.That(col, Is.EqualTo(15));
 			Assert.That(row, Is.EqualTo(15));

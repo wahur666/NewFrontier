@@ -1,8 +1,8 @@
 ﻿namespace NewFrontier.scripts.Model;
 
 public class WormholeObject {
-	private GameNode _node1;
-	private GameNode _node2;
+	private readonly GameNode _node1;
+	private readonly GameNode _node2;
 	public float Distance;
 
 	public WormholeObject(GameNode node1, GameNode node2, float distance) {

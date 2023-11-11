@@ -1,12 +1,11 @@
 using Godot;
-using System;
 using NewFrontier.scripts.Controllers;
 
 namespace NewFrontier.scripts.Entities;
 
 public partial class UnitIcon : Button {
-	public UnitNode2D Unit;
 	public PlayerController PlayerController;
+	public UnitNode2D Unit;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {

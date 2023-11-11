@@ -1,6 +1,3 @@
-using Godot;
-using System;
-
 namespace NewFrontier.scripts.Entities;
 
 public partial class Fabricator : UnitNode2D {

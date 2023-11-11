@@ -1,124 +1,99 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NewFrontier.scripts.helpers; 
-public class Heap<T>
-{
-    List<T> a = new();
-    Comparer<T> comparer;
+namespace NewFrontier.scripts.helpers;
 
-    public Heap(Comparer<T> comparer)
-    {
-        this.comparer = comparer;
-    }
+public class Heap<T> {
+	private readonly List<T> a = new();
+	private readonly Comparer<T> comparer;
 
-    public Heap(Comparison<T> comparison)
-    {
-        this.comparer = Comparer<T>.Create(comparison);
-    }
+	public Heap(Comparer<T> comparer) {
+		this.comparer = comparer;
+	}
 
-    public Heap()
-    {
-        this.comparer = Comparer<T>.Default;
-    }
+	public Heap(Comparison<T> comparison) {
+		comparer = Comparer<T>.Create(comparison);
+	}
 
-    public void Add(T value)
-    {
-        a.Add(value);
-        HeapifyUp(a.Count - 1);
-    }
+	public Heap() {
+		comparer = Comparer<T>.Default;
+	}
 
-    public T PeekTop()
-    {
-        return a[0];
-    }
+	public int Count => a.Count;
 
-    public T PopTop()
-    {
-        var result = PeekTop();
-        Swap(0, a.Count - 1);
-        a.RemoveAt(a.Count - 1);
-        HeapifyDown(0);
-        return result;
-    }
+	public void Add(T value) {
+		a.Add(value);
+		HeapifyUp(a.Count - 1);
+	}
 
-    public void Remove(T value)
-    {
-        if (a[a.Count - 1].Equals(value))
-        {
-            a.RemoveAt(a.Count - 1);
-            return;
-        }
+	public T PeekTop() {
+		return a[0];
+	}
 
-        var index = a.IndexOf(value);
-        Swap(index, a.Count - 1);
-        a.RemoveAt(a.Count - 1);
+	public T PopTop() {
+		var result = PeekTop();
+		Swap(0, a.Count - 1);
+		a.RemoveAt(a.Count - 1);
+		HeapifyDown(0);
+		return result;
+	}
 
-        int parentIndex = (index - 1) / 2;
-        if (comparer.Compare(a[index], a[parentIndex]) > 0)
-        {
-            HeapifyUp(index);
-        }
-        else
-        {
-            HeapifyDown(index);
-        }
-    }
+	public void Remove(T value) {
+		if (a[a.Count - 1].Equals(value)) {
+			a.RemoveAt(a.Count - 1);
+			return;
+		}
 
-    public int Count => a.Count;
+		var index = a.IndexOf(value);
+		Swap(index, a.Count - 1);
+		a.RemoveAt(a.Count - 1);
 
-    private void HeapifyUp(int index)
-    {
-        while (index > 0)
-        {
-            int parentIndex = (index - 1) / 2;
-            if (comparer.Compare(a[index], a[parentIndex]) > 0)
-            {
-                Swap(index, parentIndex);
-                index = parentIndex;
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
+		var parentIndex = (index - 1) / 2;
+		if (comparer.Compare(a[index], a[parentIndex]) > 0) {
+			HeapifyUp(index);
+		} else {
+			HeapifyDown(index);
+		}
+	}
 
-    private void HeapifyDown(int index)
-    {
-        while (true)
-        {
-            var leftChildIndex = index * 2 + 1;
-            if (leftChildIndex >= a.Count)
-            {
-                return;
-            }
+	private void HeapifyUp(int index) {
+		while (index > 0) {
+			var parentIndex = (index - 1) / 2;
+			if (comparer.Compare(a[index], a[parentIndex]) > 0) {
+				Swap(index, parentIndex);
+				index = parentIndex;
+			} else {
+				break;
+			}
+		}
+	}
 
-            var bestChildIndex = leftChildIndex;
+	private void HeapifyDown(int index) {
+		while (true) {
+			var leftChildIndex = (index * 2) + 1;
+			if (leftChildIndex >= a.Count) {
+				return;
+			}
 
-            var rightChildIndex = index * 2 + 2;
-            if (rightChildIndex < a.Count)
-            {
-                if (comparer.Compare(a[rightChildIndex], a[leftChildIndex]) > 0)
-                {
-                    bestChildIndex = rightChildIndex;
-                }
-            }
+			var bestChildIndex = leftChildIndex;
 
-            if (comparer.Compare(a[bestChildIndex], a[index]) > 0)
-            {
-                Swap(bestChildIndex, index);
-                index = bestChildIndex;
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
+			var rightChildIndex = (index * 2) + 2;
+			if (rightChildIndex < a.Count) {
+				if (comparer.Compare(a[rightChildIndex], a[leftChildIndex]) > 0) {
+					bestChildIndex = rightChildIndex;
+				}
+			}
 
-    private void Swap(int i, int j)
-    {
-        (a[i], a[j]) = (a[j], a[i]);
-    }
+			if (comparer.Compare(a[bestChildIndex], a[index]) > 0) {
+				Swap(bestChildIndex, index);
+				index = bestChildIndex;
+			} else {
+				break;
+			}
+		}
+	}
+
+	private void Swap(int i, int j) {
+		(a[i], a[j]) = (a[j], a[i]);
+	}
 }
