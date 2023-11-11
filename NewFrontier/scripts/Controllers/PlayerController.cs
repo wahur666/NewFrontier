@@ -1,37 +1,43 @@
-using Godot;
-using NewFrontier.scripts.helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using NewFrontier.scripts.Entities;
+using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
 using NewFrontier.scripts.UI;
-
 
 namespace NewFrontier.scripts.Controllers;
 
 public partial class PlayerController : Node {
-	public int MaxCrew = 2500;
-	public int MaxOre = 5500;
-	public int MaxGas = 4500;
-	public int MaxSupply = 0;
+	private PackedScene _base1;
+	private PackedScene _base2;
+	private PackedScene _base3;
+
+	private readonly List<BuildingNode2D> _buildings = new();
+	private BuildingNode2D _buildingShade;
+	private CameraController _camera;
+	private PackedScene _fabricator;
+	private PackedScene _harvester;
+
+	private MapGrid _mapGrid;
+	private bool _overGui;
+	private bool _overSectormap;
+	private List<UnitNode2D> _units = new();
 
 	public int CurrentCrew = 0;
-	[Export] public int CurrentOre = 0;
-	[Export] public int CurrentGas = 0;
+	[Export] public int CurrentGas;
+	[Export] public int CurrentOre;
+
+	public byte CurrentSector;
 	public int CurrentSupply = 0;
 
 	public LeftControls LeftControls;
-
-	private MapGrid _mapGrid;
-	private CameraController _camera;
-
-	private List<BuildingNode2D> _buildings = new();
-	private List<UnitNode2D> _units = new();
-	private BuildingNode2D _buildingShade = null;
+	public int MaxCrew = 2500;
+	public int MaxGas = 4500;
+	public int MaxOre = 5500;
+	public int MaxSupply = 0;
 	public UiController UiController;
-
-	public byte CurrentSector = 0;
 
 	public bool OverGui {
 		get => _overGui;
@@ -40,14 +46,6 @@ public partial class PlayerController : Node {
 			_overGui = value;
 		}
 	}
-
-	private PackedScene _base1;
-	private PackedScene _base2;
-	private PackedScene _base3;
-	private PackedScene _harvester;
-	private PackedScene _fabricator;
-	private bool _overGui;
-	private bool _overSectormap;
 
 	public bool BuildingMode {
 		get;
@@ -76,7 +74,7 @@ public partial class PlayerController : Node {
 
 	private void SetupUiControllerHandlers() {
 		UiController.SectorPanel.Draw += () => {
-			_mapGrid.DrawSectors(UiController.SectorPanel);
+			DrawSectors(UiController.SectorPanel);
 		};
 		UiController.SectorPanel.MouseEntered += () => {
 			GD.Print("Mouse entered sector element");
@@ -88,9 +86,17 @@ public partial class PlayerController : Node {
 		};
 	}
 
+	private void DrawSectors(CanvasItem sectorMap) {
+		foreach (var sector in _mapGrid.Sectors) {
+			sectorMap.DrawCircle(sector.SectorPosition, 5, Colors.LightBlue);
+		}
+
+		sectorMap.DrawArc(_mapGrid.Sectors[CurrentSector].SectorPosition, 10, 0, Mathf.Tau, 32, Colors.White, 2);
+		sectorMap.DrawArc(_mapGrid.Sectors[CurrentSector].SectorPosition, 7, 0, Mathf.Tau, 32, Colors.Red, 2);
+	}
 
 	private void CreateStartingUnits() {
-		_units = new();
+		_units = new List<UnitNode2D>();
 		var harvester = _harvester.Instantiate<Harvester>();
 		harvester.Init(new Vector2(10, 10), this, UiController);
 		_units.Add(harvester);
@@ -102,7 +108,7 @@ public partial class PlayerController : Node {
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
-		if (Input.IsActionJustPressed("LMB") ) {
+		if (Input.IsActionJustPressed("LMB")) {
 			var a = GetViewport().GetMousePosition();
 			var b = UiController.SectorPanel.GlobalPosition;
 			var z = _mapGrid.Sectors.Find(x => Math.Abs((x.SectorPosition + b - a).Length()) < 10);
@@ -117,9 +123,17 @@ public partial class PlayerController : Node {
 		}
 	}
 
-	public int AvailableOreStorage() => MaxOre - CurrentOre;
-	public int AvailableGasStorage() => MaxGas - CurrentGas;
-	public int AvailableCrewStorage() => MaxCrew - CurrentCrew;
+	public int AvailableOreStorage() {
+		return MaxOre - CurrentOre;
+	}
+
+	public int AvailableGasStorage() {
+		return MaxGas - CurrentGas;
+	}
+
+	public int AvailableCrewStorage() {
+		return MaxCrew - CurrentCrew;
+	}
 
 	private void FreeBuildingShade() {
 		_buildingShade?.QueueFree();
@@ -177,7 +191,10 @@ public partial class PlayerController : Node {
 	}
 
 	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
-		if (OverGui) return;
+		if (OverGui) {
+			return;
+		}
+
 		GD.Print("this is running SelectUnitsInArea");
 		BuildingMode = false;
 		foreach (var unit in _units) {
@@ -188,7 +205,10 @@ public partial class PlayerController : Node {
 	}
 
 	private void SelectUnitNearPoint(Vector2 point) {
-		if (OverGui) return;
+		if (OverGui) {
+			return;
+		}
+
 		GD.Print("this is running SelectUnitNearPoint");
 		if (BuildingMode) {
 			return;

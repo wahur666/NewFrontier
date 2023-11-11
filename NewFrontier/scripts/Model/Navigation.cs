@@ -37,7 +37,7 @@ public class Navigation {
 				break;
 			}
 
-			foreach (var next in _mapGrid.NodeNeighbours(current.Node)) {
+			foreach (var next in current.Node.Neighbours.Keys) {
 				if (next.Blocking) {
 					continue;
 				}
