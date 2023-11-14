@@ -73,21 +73,6 @@ public partial class MapGrid : Node2D {
 		y = (int)vector2.Y;
 	}
 
-
-	// public List<GameNode> NodeNeighbours(GameNode node) => node.Neighbours.Keys.ToList();
-
-
-	// private generateWormholes() {
-	//     this.wormholes.push(new WormholeObject(this.getNode(8, 6), this.getNode(22, 10), 1));
-	//     this.wormholes.push(new WormholeObject(this.getNode(26, 9), this.getNode(37, 14), 1));
-	//     this.wormholes.push(new WormholeObject(this.getNode(25, 13), this.getNode(10, 25), 1));
-	//     this.wormholes.push(new WormholeObject(this.getNode(40, 18), this.getNode(30, 30), 1));
-	//     this.wormholes.push(new WormholeObject(this.getNode(16, 28), this.getNode(27, 31), 1));
-	//     this.wormholes.push(new WormholeObject(this.getNode(32, 37), this.getNode(46, 32), 1));
-	//     // this.wormholes.push(new WormholeObject(this.getNode(12, 20), this.getNode(12, 14), 1));
-	//     // this.wormholes.push(new WormholeObject(this.getNode(20, 20), this.getNode(14, 14), 1));
-	// }
-
 	public override void _Process(double delta) {
 		// if (Input.IsMouseButtonPressed(MouseButton.Left)) {
 		// 	var pos = GetGlobalMousePosition();
@@ -130,21 +115,34 @@ public partial class MapGrid : Node2D {
 	private GameNode SetupWormholeGameNode(Vector2 position, int sector) {
 		var offset = MapHelpers.CalculateOffset(position, sector);
 		var gameNode = new GameNode(offset - new Vector2(0.5f, 0.5f));
-		GridLayer[offset.X - 2, offset.Y - 2].AddNeighbourTwoWays(gameNode, Mathf.Sqrt(8));
-		GridLayer[offset.X - 1, offset.Y - 2].AddNeighbourTwoWays(gameNode, 2);
-		GridLayer[offset.X, offset.Y - 2].AddNeighbourTwoWays(gameNode, 2);
-		GridLayer[offset.X + 1, offset.Y - 2].AddNeighbourTwoWays(gameNode, Mathf.Sqrt(8));
 
-		GridLayer[offset.X - 2, offset.Y - 1].AddNeighbourTwoWays(gameNode, 2);
-		GridLayer[offset.X - 2, offset.Y].AddNeighbourTwoWays(gameNode, 2);
+		var tmpNode = GridLayer[offset.X - 2, offset.Y - 2];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		tmpNode = GridLayer[offset.X - 1, offset.Y - 2];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		tmpNode = GridLayer[offset.X, offset.Y - 2];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		tmpNode = GridLayer[offset.X + 1, offset.Y - 2];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
 
-		GridLayer[offset.X + 1, offset.Y - 1].AddNeighbourTwoWays(gameNode, 2);
-		GridLayer[offset.X + 1, offset.Y].AddNeighbourTwoWays(gameNode, 2);
+		tmpNode = GridLayer[offset.X - 2, offset.Y - 1];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		tmpNode = GridLayer[offset.X - 2, offset.Y];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
 
-		GridLayer[offset.X - 2, offset.Y + 1].AddNeighbourTwoWays(gameNode, Mathf.Sqrt(8));
-		GridLayer[offset.X - 1, offset.Y + 1].AddNeighbourTwoWays(gameNode, 2);
-		GridLayer[offset.X, offset.Y + 1].AddNeighbourTwoWays(gameNode, 2);
-		GridLayer[offset.X + 1, offset.Y + 1].AddNeighbourTwoWays(gameNode, Mathf.Sqrt(8));
+		tmpNode = GridLayer[offset.X + 1, offset.Y - 1];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		tmpNode = GridLayer[offset.X + 1, offset.Y];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+
+		tmpNode = GridLayer[offset.X - 2, offset.Y + 1];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		tmpNode = GridLayer[offset.X - 1, offset.Y + 1];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		tmpNode = GridLayer[offset.X, offset.Y + 1];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		tmpNode = GridLayer[offset.X + 1, offset.Y + 1];
+		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
 		WormholeNodes.Add(gameNode);
 
 		GridLayer[offset.X - 1, offset.Y - 1]?.SetWormhole(gameNode);

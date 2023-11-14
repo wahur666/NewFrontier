@@ -4,18 +4,18 @@ using Godot;
 namespace NewFrontier.scripts.Model;
 
 public class GameNode {
-	public int ActiveAttribute;
-	public bool Blocking;
-
-	// TODO: remove this in favour of the attributes
 	public bool HasWormhole;
 	public Dictionary<GameNode, float> Neighbours;
-	public bool Occupied;
+	public Vector2 Position;
+
+	// TODO: remove this in favour of the attributes
+	public int ActiveAttribute;
+	public int PassiveAttribute;
+	public int StaticAttribute;
 
 	// TODO: replace this with a proper enums
-	public int PassiveAttribute;
-	public Vector2 Position;
-	public int StaticAttribute;
+	public bool Blocking;
+	public bool Occupied;
 
 	public GameNode WormholeNode;
 
