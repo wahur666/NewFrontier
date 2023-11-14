@@ -116,42 +116,41 @@ public partial class MapGrid : Node2D {
 		var offset = MapHelpers.CalculateOffset(position, sector);
 		var gameNode = new GameNode(offset - new Vector2(0.5f, 0.5f));
 
-		var tmpNode = GridLayer[offset.X - 2, offset.Y - 2];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
-		tmpNode = GridLayer[offset.X - 1, offset.Y - 2];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
-		tmpNode = GridLayer[offset.X, offset.Y - 2];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
-		tmpNode = GridLayer[offset.X + 1, offset.Y - 2];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		ConnectNeighbours(offset, gameNode, -2, -2);
+		ConnectNeighbours(offset, gameNode, -1, -2);
+		ConnectNeighbours(offset, gameNode, 0, -2);
+		ConnectNeighbours(offset, gameNode, 1, -2);
 
-		tmpNode = GridLayer[offset.X - 2, offset.Y - 1];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
-		tmpNode = GridLayer[offset.X - 2, offset.Y];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		ConnectNeighbours(offset, gameNode, -2, -1);
+		ConnectNeighbours(offset, gameNode, -2, 0);
 
-		tmpNode = GridLayer[offset.X + 1, offset.Y - 1];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
-		tmpNode = GridLayer[offset.X + 1, offset.Y];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		ConnectNeighbours(offset, gameNode, 1, -1);
+		ConnectNeighbours(offset, gameNode, 1, 0);
 
-		tmpNode = GridLayer[offset.X - 2, offset.Y + 1];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
-		tmpNode = GridLayer[offset.X - 1, offset.Y + 1];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
-		tmpNode = GridLayer[offset.X, offset.Y + 1];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
-		tmpNode = GridLayer[offset.X + 1, offset.Y + 1];
-		tmpNode.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+		ConnectNeighbours(offset, gameNode, -2, 1);
+		ConnectNeighbours(offset, gameNode, -1, 1);
+		ConnectNeighbours(offset, gameNode, 0, 1);
+		ConnectNeighbours(offset, gameNode, 1, 1);
+
 		WormholeNodes.Add(gameNode);
 
-		GridLayer[offset.X - 1, offset.Y - 1]?.SetWormhole(gameNode);
-		GridLayer[offset.X - 1, offset.Y]?.SetWormhole(gameNode);
-		GridLayer[offset.X, offset.Y - 1]?.SetWormhole(gameNode);
-		GridLayer[offset.X, offset.Y]?.SetWormhole(gameNode);
+		SetWormhole(offset, -1, -1, gameNode);
+		SetWormhole(offset, -1, 0, gameNode);
+		SetWormhole(offset, 0, -1, gameNode);
+		SetWormhole(offset, 0, 0, gameNode);
 
 		return gameNode;
 	}
+
+	private void ConnectNeighbours(Vector2 offset, GameNode gameNode, int offsetX, int offsetY) {
+		var tmpNode = GridLayer[(int)(offset.X + offsetX), (int)(offset.Y + offsetY)];
+		tmpNode?.AddNeighbourTwoWays(gameNode, tmpNode.Distance(gameNode));
+	}
+
+	private void SetWormhole(Vector2 offset, int offsetX, int offsetY, GameNode gameNode) {
+		GridLayer[(int)(offset.X + offsetX), (int)(offset.Y + offsetY)]?.SetWormhole(gameNode);
+	}
+
 
 	public GameNode GetGameNode(Vector2 positon, int sector) {
 		var offset = MapHelpers.CalculateOffset(positon, sector);
