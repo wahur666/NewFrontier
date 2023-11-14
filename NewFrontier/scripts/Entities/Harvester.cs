@@ -80,14 +80,12 @@ public partial class Harvester : UnitNode2D {
 			var transferAmount = Math.Min(Math.Min(playerController.AvailableOreStorage(), _currentOreCargo),
 				harvestAmount);
 			_currentOreCargo -= transferAmount;
-			playerController.CurrentOre += transferAmount;
-		}
-
-		if (_currentGasCargo > 0 && playerController.AvailableGasStorage() > 0) {
+			playerController.IncreaseOre(transferAmount);
+		} else if (_currentGasCargo > 0 && playerController.AvailableGasStorage() > 0) {
 			var transferAmount = Math.Min(Math.Min(playerController.AvailableGasStorage(), _currentGasCargo),
 				harvestAmount);
 			_currentGasCargo -= transferAmount;
-			playerController.CurrentGas += transferAmount;
+			playerController.IncreaseGas(transferAmount);
 		}
 	}
 

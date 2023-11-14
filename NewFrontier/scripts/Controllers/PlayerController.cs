@@ -24,19 +24,12 @@ public partial class PlayerController : Node {
 	private bool _overGui;
 	private bool _overSectormap;
 	private List<UnitNode2D> _units = new();
-
-	public int CurrentCrew = 0;
-	[Export] public int CurrentGas;
-	[Export] public int CurrentOre;
+	private PlayerStats _playerStats = new();
 
 	public byte CurrentSector;
-	public int CurrentSupply = 0;
 
 	public LeftControls LeftControls;
-	public int MaxCrew = 2500;
-	public int MaxGas = 4500;
-	public int MaxOre = 5500;
-	public int MaxSupply = 0;
+	
 	public UiController UiController;
 
 	private Vector2 end;
@@ -133,6 +126,7 @@ public partial class PlayerController : Node {
 			start = _camera.GetGlobalMousePosition();
 			startV = mousePosition;
 			_dragging = false;
+			_camera.EnableEdgePanning = true;
 			DrawArea(false);
 			MoveToPoint(start);
 		}
@@ -146,6 +140,7 @@ public partial class PlayerController : Node {
 			start = _camera.GetGlobalMousePosition();
 			startV = mousePosition;
 			_dragging = true;
+			_camera.EnableEdgePanning = false;
 		}
 
 		if (_dragging) {
@@ -158,6 +153,7 @@ public partial class PlayerController : Node {
 			end = _camera.GetGlobalMousePosition();
 			endV = mousePosition;
 			_dragging = false;
+			_camera.EnableEdgePanning = true;
 			DrawArea(false);
 			if (start.DistanceTo(end) > 10) {
 				SelectUnitsInArea(start, end);
@@ -187,15 +183,15 @@ public partial class PlayerController : Node {
 
 
 	public int AvailableOreStorage() {
-		return MaxOre - CurrentOre;
+		return _playerStats.MaxOre - _playerStats.CurrentOre;
 	}
 
 	public int AvailableGasStorage() {
-		return MaxGas - CurrentGas;
+		return _playerStats.MaxGas - _playerStats.CurrentGas;
 	}
 
 	public int AvailableCrewStorage() {
-		return MaxCrew - CurrentCrew;
+		return _playerStats.MaxCrew - _playerStats.CurrentCrew;
 	}
 
 	private void FreeBuildingShade() {
@@ -312,7 +308,10 @@ public partial class PlayerController : Node {
 			);
 	}
 
-
+	public void IncreaseOre(int amount) => _playerStats.CurrentOre += amount;
+	public void IncreaseGas(int amount) => _playerStats.CurrentGas += amount;
+	public void IncreaseCrew(int amount) => _playerStats.CurrentCrew += amount;
+	
 	private bool OverUiElement(Vector2 position) {
 		return UiController.OverUiElement(position);
 	}
