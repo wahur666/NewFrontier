@@ -44,6 +44,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
+mouse_filter = 2
 
 [node name="Panel" type="Panel" parent="SectorMap"]
 layout_mode = 1

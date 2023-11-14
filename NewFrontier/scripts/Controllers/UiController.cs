@@ -11,6 +11,7 @@ public partial class UiController : CanvasLayer {
 	private List<Control> canvasItems;
 	private LeftControls leftControls;
 	public Panel SectorPanel;
+	public Panel SelectionPanel;
 
 	public override void _Ready() {
 		canvasItems = new List<Control>();
@@ -18,6 +19,7 @@ public partial class UiController : CanvasLayer {
 		Canvas = GetNode<Node2D>("../Canvas");
 		SectorPanel = GetNode<Panel>("SectorMap/Control/Panel");
 		SectorPanel.Draw += SectorPanelOnDraw;
+		SelectionPanel = GetNode<Panel>("SelectionRect");
 	}
 
 	private void SectorPanelOnDraw() {

@@ -39,6 +39,15 @@ public partial class PlayerController : Node {
 	public int MaxSupply = 0;
 	public UiController UiController;
 
+	private Vector2 end;
+	private Vector2 endV;
+	private Vector2 mousePosGlobal;
+	private Vector2 start;
+	private Vector2 startV;
+	private Vector2 mousePosition;
+	private bool _dragging;
+
+
 	public bool OverGui {
 		get => _overGui;
 		set {
@@ -60,9 +69,7 @@ public partial class PlayerController : Node {
 		_harvester = GD.Load<PackedScene>("res://scenes/harvester.tscn");
 		_fabricator = GD.Load<PackedScene>("res://scenes/fabricator.tscn");
 		_camera = GetNode<CameraController>("../../Camera2D");
-		_camera.AreaSelected += SelectUnitsInArea;
 		_camera.PointSelected += SelectUnitNearPoint;
-		_camera.MoveToPoint += MoveToPoint;
 		_camera.PlayerControllerInstance = this;
 		_mapGrid = GetNode<MapGrid>("../../MapGrid");
 		UiController = GetNode<UiController>("../../Ui");
@@ -121,7 +128,63 @@ public partial class PlayerController : Node {
 			FreeBuildingShade();
 			BuildingMode = false;
 		}
+
+		if (Input.IsActionJustPressed("RMB")) {
+			start = _camera.GetGlobalMousePosition();
+			startV = mousePosition;
+			_dragging = false;
+			DrawArea(false);
+			MoveToPoint(start);
+		}
+
+
+		if (BuildingMode) {
+			return;
+		}
+
+		if (Input.IsActionJustPressed("LMB")) {
+			start = _camera.GetGlobalMousePosition();
+			startV = mousePosition;
+			_dragging = true;
+		}
+
+		if (_dragging) {
+			end = _camera.GetGlobalMousePosition();
+			endV = mousePosition;
+			DrawArea();
+		}
+
+		if (Input.IsActionJustReleased("LMB")) {
+			end = _camera.GetGlobalMousePosition();
+			endV = mousePosition;
+			_dragging = false;
+			DrawArea(false);
+			if (start.DistanceTo(end) > 10) {
+				SelectUnitsInArea(start, end);
+			} else if (!OverUiElement(start)) {
+				SelectUnitNearPoint(start);
+			}
+		}
 	}
+
+	public void DrawArea(bool s = true) {
+		var panel = UiController.SelectionPanel;
+		panel.Size = new Vector2(Math.Abs(startV.X - endV.X), Math.Abs(startV.Y - endV.Y));
+		var pos = Vector2.Zero;
+		pos.X = Math.Min(startV.X, endV.X);
+		pos.Y = Math.Min(startV.Y, endV.Y);
+		panel.Position = pos;
+		panel.Size *= s ? 1 : 0;
+	}
+
+
+	public override void _Input(InputEvent @event) {
+		if (@event is InputEventMouse mouse) {
+			mousePosition = mouse.Position;
+			mousePosGlobal = _camera.GetGlobalMousePosition();
+		}
+	}
+
 
 	public int AvailableOreStorage() {
 		return MaxOre - CurrentOre;
@@ -247,5 +310,10 @@ public partial class PlayerController : Node {
 					unitNode2D.SetNavigation(path);
 				}
 			);
+	}
+
+
+	private bool OverUiElement(Vector2 position) {
+		return UiController.OverUiElement(position);
 	}
 }
