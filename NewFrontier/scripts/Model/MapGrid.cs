@@ -109,12 +109,14 @@ public partial class MapGrid : Node2D {
 		var w2Node = SetupWormholeGameNode(position2, sector2);
 		w1Node.AddNeighbourTwoWays(w2Node, 1);
 
-		_wormholes.Add(new WormholeObject(w1Node, w2Node, 1));
+		_wormholes.Add(new WormholeObject(w1Node, w2Node));
 	}
 
 	private GameNode SetupWormholeGameNode(Vector2 position, int sector) {
 		var offset = MapHelpers.CalculateOffset(position, sector);
-		var gameNode = new GameNode(offset - new Vector2(0.5f, 0.5f));
+		var gameNode = new GameNode(offset - new Vector2(0.5f, 0.5f)) {
+			HasWormhole = true
+		};
 
 		ConnectNeighbours(offset, gameNode, -2, -2);
 		ConnectNeighbours(offset, gameNode, -1, -2);
