@@ -1,0 +1,77 @@
+[gd_scene load_steps=8 format=3 uid="uid://puh55sbrd833"]
+
+[ext_resource type="PackedScene" uid="uid://dsq1lag3r7s8o" path="res://scenes/left_controls.tscn" id="1_mnjuk"]
+[ext_resource type="Script" path="res://scripts/Controllers/UiController.cs" id="1_qu86p"]
+[ext_resource type="Texture2D" uid="uid://bvdunaiynaq4b" path="res://gfx/sectormap_BG_T.tga" id="3_7ap0f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6hh77"]
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 0.2)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0.501961, 0.12549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nu6aa"]
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tdugm"]
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ovk7y"]
+texture = ExtResource("3_7ap0f")
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
+
+[node name="Ui" type="CanvasLayer"]
+script = ExtResource("1_qu86p")
+
+[node name="LeftControls" parent="." instance=ExtResource("1_mnjuk")]
+
+[node name="SelectionRect" type="Panel" parent="."]
+theme_override_styles/panel = SubResource("StyleBoxFlat_6hh77")
+
+[node name="SectorMap" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+mouse_filter = 2
+
+[node name="Panel" type="Panel" parent="SectorMap"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -207.0
+offset_top = -210.0
+offset_right = -37.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_nu6aa")
+
+[node name="Control" type="Panel" parent="SectorMap"]
+clip_children = 1
+layout_mode = 0
+offset_left = 950.0
+offset_top = 443.0
+offset_right = 1110.0
+offset_bottom = 603.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tdugm")
+
+[node name="Panel" type="Panel" parent="SectorMap/Control"]
+layout_mode = 0
+offset_right = 160.0
+offset_bottom = 160.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_ovk7y")

@@ -1,0 +1,17 @@
+﻿using NewFrontier.scripts.helpers;
+
+namespace NewFrontier.scripts.Model;
+
+public class WormholeObject {
+	private readonly GameNode _node1;
+	private readonly GameNode _node2;
+	public SectorJumpGateStatus SectorJumpGateStatus;
+
+	public WormholeObject(GameNode node1, GameNode node2) {
+		_node1 = node1;
+		_node2 = node2;
+	}
+
+	public byte GetNode1Sector => MapHelpers.GetSectorFromOffset(_node1.Position);
+	public byte GetNode2Sector => MapHelpers.GetSectorFromOffset(_node2.Position);
+}
