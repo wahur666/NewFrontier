@@ -18,7 +18,9 @@ public class Sector {
 	public Vector2 CameraPosition;
 
 	public bool EnemyInSector;
-	public bool HQInSector;
+	public SectorBuildingStatus SectorBuildingStatus;
+	public bool SupplyLineForSector;
+	public bool Discovered = true;
 
 	/// <summary>
 	///     Index if the sector, to allocate the memory, 0-15
@@ -64,13 +66,13 @@ public class Sector {
 				var offset = MapHelpers.CalculateOffset(i, j, Index);
 				var item = _map[offset.X, offset.Y];
 				if (item is not null) {
-					setupNeighbours(item);
+					SetupNeighbours(item);
 				}
 			}
 		}
 	}
 
-	private void setupNeighbours(GameNode node) {
+	private void SetupNeighbours(GameNode node) {
 		var diameter = (_size * 2) - 1;
 		List<Vector2> directions = new() {
 			new Vector2(-1, -1),

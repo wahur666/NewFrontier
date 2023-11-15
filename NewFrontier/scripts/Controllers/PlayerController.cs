@@ -29,7 +29,7 @@ public partial class PlayerController : Node {
 	public byte CurrentSector;
 
 	public LeftControls LeftControls;
-	
+
 	public UiController UiController;
 
 	private Vector2 end;
@@ -66,16 +66,13 @@ public partial class PlayerController : Node {
 		_camera.PlayerControllerInstance = this;
 		_mapGrid = GetNode<MapGrid>("../../MapGrid");
 		UiController = GetNode<UiController>("../../Ui");
-		UiController.Init(this);
+		UiController.Init(this, _mapGrid);
 		CreateStartingUnits();
 		_camera.CenterOnGridPosition(new Vector2(12, 17));
 		SetupUiControllerHandlers();
 	}
 
 	private void SetupUiControllerHandlers() {
-		UiController.SectorPanel.Draw += () => {
-			DrawSectors(UiController.SectorPanel);
-		};
 		UiController.SectorPanel.MouseEntered += () => {
 			GD.Print("Mouse entered sector element");
 			_overSectormap = true;
@@ -84,15 +81,6 @@ public partial class PlayerController : Node {
 			GD.Print("Mouse exited sector element");
 			_overSectormap = false;
 		};
-	}
-
-	private void DrawSectors(CanvasItem sectorMap) {
-		foreach (var sector in _mapGrid.Sectors) {
-			sectorMap.DrawCircle(sector.SectorPosition, 5, Colors.LightBlue);
-		}
-
-		sectorMap.DrawArc(_mapGrid.Sectors[CurrentSector].SectorPosition, 10, 0, Mathf.Tau, 32, Colors.White, 2);
-		sectorMap.DrawArc(_mapGrid.Sectors[CurrentSector].SectorPosition, 7, 0, Mathf.Tau, 32, Colors.Red, 2);
 	}
 
 	private void CreateStartingUnits() {
@@ -111,7 +99,8 @@ public partial class PlayerController : Node {
 		if (Input.IsActionJustPressed("LMB")) {
 			var a = GetViewport().GetMousePosition();
 			var b = UiController.SectorPanel.GlobalPosition;
-			var z = _mapGrid.Sectors.Find(x => Math.Abs((x.SectorPosition + b - a).Length()) < 10);
+			var z = _mapGrid.Sectors.Where(x => x.Discovered).ToList()
+				.Find(x => Math.Abs((x.SectorPosition + b - a).Length()) < 10);
 			if (z is not null) {
 				_camera.Position =
 					MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(15, 15), z.Index));
@@ -311,7 +300,7 @@ public partial class PlayerController : Node {
 	public void IncreaseOre(int amount) => _playerStats.CurrentOre += amount;
 	public void IncreaseGas(int amount) => _playerStats.CurrentGas += amount;
 	public void IncreaseCrew(int amount) => _playerStats.CurrentCrew += amount;
-	
+
 	private bool OverUiElement(Vector2 position) {
 		return UiController.OverUiElement(position);
 	}

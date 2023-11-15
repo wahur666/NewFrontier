@@ -10,7 +10,7 @@ public partial class MapGrid : Node2D {
 	private int _diameter;
 
 	private int _radius;
-	private readonly List<WormholeObject> _wormholes = new();
+	public readonly List<WormholeObject> Wormholes = new();
 	private PackedScene _wormholeScene;
 
 
@@ -39,8 +39,13 @@ public partial class MapGrid : Node2D {
 		Navigation = new Navigation(this);
 		GD.Print(GridLayer[0, 0]);
 		var sector = new Sector(GridLayer, new Vector2I(80, 80), (byte)MapSize, 0);
-		var sector2 = new Sector(GridLayer, new Vector2I(120, 90), (byte)MapSize, 1);
 		Sectors.Add(sector);
+		// TODO: remove manual assignment
+		var sector2 = new Sector(GridLayer, new Vector2I(120, 90), (byte)MapSize, 1) {
+			Discovered = true,
+			SectorBuildingStatus = SectorBuildingStatus.HasBuilding,
+			EnemyInSector = true
+		};
 		Sectors.Add(sector2);
 		_cameraController = GetNode<CameraController>("../Camera2D");
 		_cameraController.Init(this);
@@ -109,7 +114,7 @@ public partial class MapGrid : Node2D {
 		var w2Node = SetupWormholeGameNode(position2, sector2);
 		w1Node.AddNeighbourTwoWays(w2Node, 1);
 
-		_wormholes.Add(new WormholeObject(w1Node, w2Node));
+		Wormholes.Add(new WormholeObject(w1Node, w2Node));
 	}
 
 	private GameNode SetupWormholeGameNode(Vector2 position, int sector) {

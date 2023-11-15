@@ -51,6 +51,13 @@ public class MapHelpers {
 
 		return new Vector2I(finalX, finalY);
 	}
+	public static byte GetSectorFromOffset(Vector2 pos) { 
+		return GetSectorFromOffset((int)pos.X, (int)pos.Y);
+	}
+	public static byte GetSectorFromOffset(int col, int row) {
+		GetPositionFromOffset(col, row, out _, out _, out var index);
+		return (byte)index;
+	}
 
 	public static void GetPositionFromOffset(int col, int row, out int col2, out int row2, out int index) {
 		const int chunkSize = 128;
