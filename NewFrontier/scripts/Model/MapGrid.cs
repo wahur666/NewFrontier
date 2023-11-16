@@ -49,10 +49,6 @@ public partial class MapGrid : Node2D {
 		Sectors.Add(sector2);
 		_cameraController = GetNode<CameraController>("../Camera2D");
 		_cameraController.Init(this);
-		// _cameraController.LimitLeft = 0;
-		// _cameraController.LimitTop = 0;
-		// _cameraController.LimitRight = _diameter * MapHelpers.Size;
-		// _cameraController.LimitBottom = _diameter * MapHelpers.Size;
 		GD.Print("Camera Controller", _cameraController);
 	}
 
@@ -71,21 +67,6 @@ public partial class MapGrid : Node2D {
 					valid ? Color.FromHtml("#FF00001A") : Color.FromHtml("#0000FF"), valid, valid ? -1 : 2);
 			}
 		}
-	}
-
-	private static void Vec2ToArray(Vector2 vector2, out int x, out int y) {
-		x = (int)vector2.X;
-		y = (int)vector2.Y;
-	}
-
-	public override void _Process(double delta) {
-		// if (Input.IsMouseButtonPressed(MouseButton.Left)) {
-		// 	var pos = GetGlobalMousePosition();
-		// 	var gridPos = MapHelpers.PosToGrid(pos);
-		// 	GD.Print("Global mouse pos: ", pos);
-		// 	GD.Print("Grid pos: " + gridPos);
-		// 	GD.Print("Grid pos back to coordiante: " + MapHelpers.GridCoordToGridCenterPos(gridPos));
-		// }
 	}
 
 	public void SetBlocking(Vector2 origin, int size) {

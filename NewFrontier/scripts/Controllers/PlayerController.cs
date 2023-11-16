@@ -97,48 +97,31 @@ public partial class PlayerController : Node {
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
 		if (Input.IsActionJustPressed("LMB")) {
-			var a = GetViewport().GetMousePosition();
-			var b = UiController.SectorPanel.GlobalPosition;
-			var z = _mapGrid.Sectors.Where(x => x.Discovered).ToList()
-				.Find(x => Math.Abs((x.SectorPosition + b - a).Length()) < 10);
-			if (z is not null) {
-				_camera.Position =
-					MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(15, 15), z.Index));
-				CurrentSector = z.Index;
+			var sectorPanelGlobalPosition = UiController.SectorPanel.GlobalPosition;
+			var sectorPanelSize = UiController.SectorPanel.Size;
+			var overSectorMap = AreaHelper.InRect(mousePosition, sectorPanelGlobalPosition,
+				sectorPanelGlobalPosition + sectorPanelSize);
+			if (overSectorMap) {
+				CheckSectorMapClick();
+			} else {
+				start = _camera.GetGlobalMousePosition();
+				startV = mousePosition;
+				_dragging = true;
+				_camera.EnableEdgePanning = false;
 			}
 		} else if (Input.IsActionJustPressed("RMB")) {
-			FreeBuildingShade();
-			BuildingMode = false;
-		}
-
-		if (Input.IsActionJustPressed("RMB")) {
-			start = _camera.GetGlobalMousePosition();
-			startV = mousePosition;
-			_dragging = false;
-			_camera.EnableEdgePanning = true;
-			DrawArea(false);
-			MoveToPoint(start);
-		}
-
-
-		if (BuildingMode) {
-			return;
-		}
-
-		if (Input.IsActionJustPressed("LMB")) {
-			start = _camera.GetGlobalMousePosition();
-			startV = mousePosition;
-			_dragging = true;
-			_camera.EnableEdgePanning = false;
-		}
-
-		if (_dragging) {
-			end = _camera.GetGlobalMousePosition();
-			endV = mousePosition;
-			DrawArea();
-		}
-
-		if (Input.IsActionJustReleased("LMB")) {
+			if (BuildingMode) {
+				FreeBuildingShade();
+				BuildingMode = false;
+			} else {
+				start = _camera.GetGlobalMousePosition();
+				startV = mousePosition;
+				_dragging = false;
+				_camera.EnableEdgePanning = true;
+				DrawArea(false);
+				MoveToPoint(start);
+			}
+		} else if (Input.IsActionJustReleased("LMB")) {
 			end = _camera.GetGlobalMousePosition();
 			endV = mousePosition;
 			_dragging = false;
@@ -150,6 +133,26 @@ public partial class PlayerController : Node {
 				SelectUnitNearPoint(start);
 			}
 		}
+
+		if (_dragging) {
+			end = _camera.GetGlobalMousePosition();
+			endV = mousePosition;
+			DrawArea();
+		}
+	}
+
+	private void CheckSectorMapClick() {
+		var a = GetViewport().GetMousePosition();
+		var b = UiController.SectorPanel.GlobalPosition;
+		var z = _mapGrid.Sectors.Where(x => x.Discovered).ToList()
+			.Find(x => Math.Abs((x.SectorPosition + b - a).Length()) < 10);
+		if (z is null) {
+			return;
+		}
+
+		_camera.Position =
+			MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(15, 15), z.Index));
+		CurrentSector = z.Index;
 	}
 
 	public void DrawArea(bool s = true) {

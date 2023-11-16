@@ -73,6 +73,11 @@ public partial class CameraController : Camera2D {
 		// 		   - (Input.IsActionPressed("ui_left") ? 1 : 0);
 		// inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
 		// 		   - (Input.IsActionPressed("ui_up") ? 1 : 0);
+
+		if (inpx == 0 && inpy == 0) {
+			return;
+		}
+
 		var offset = MapHelpers.CalculateOffset(0, 0, PlayerControllerInstance.CurrentSector) * MapHelpers.DrawSize;
 		var diameter = _mapGrid.RealMapSize * MapHelpers.DrawSize;
 		var radius = diameter / 2;
@@ -88,6 +93,7 @@ public partial class CameraController : Camera2D {
 
 		Position = Position.Clamp((DisplayServer.WindowGetSize() / 2) + offset,
 			new Vector2(diameter, diameter) - (DisplayServer.WindowGetSize() / 2) + offset);
+
 	}
 
 	private bool IsPointOutsideEllipse(Vector2 center, float a, float b, Vector2 point) {
