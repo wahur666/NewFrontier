@@ -56,10 +56,6 @@ public partial class UiController : CanvasLayer {
 		_mapGrid = mapGrid;
 	}
 
-	public bool OverUiElement(Vector2 position) {
-		return leftControls.OverUiElement;
-	}
-
 	public override void _Process(double delta) {
 		Canvas.QueueRedraw();
 		SectorPanel.QueueRedraw();

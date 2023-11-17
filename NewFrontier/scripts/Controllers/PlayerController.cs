@@ -77,15 +77,13 @@ public partial class PlayerController : Node {
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
 		if (Input.IsActionJustPressed("LMB")) {
+			_dragStart = _camera.GetGlobalMousePosition();
+			_dragStartV = _mousePosition;
 			if (_buildingShade?.Planet is not null) {
 				BuildBuilding(_buildingShade);
-			}
-
-			if (_uiController.MouseOverSectorMap(_mousePosition)) {
+			} else if (_uiController.MouseOverSectorMap(_mousePosition)) {
 				CheckSectorMapClick();
 			} else {
-				_dragStart = _camera.GetGlobalMousePosition();
-				_dragStartV = _mousePosition;
 				_dragging = true;
 				_camera.EnableEdgePanning = false;
 			}
@@ -107,9 +105,10 @@ public partial class PlayerController : Node {
 			_dragging = false;
 			_camera.EnableEdgePanning = true;
 			DrawArea(false);
-			if (_dragStart.DistanceTo(_dragEnd) > 10) {
+			if (_dragStartV.DistanceTo(_dragEndV) > 10) {
+				GD.Print("Area select");
 				SelectUnitsInArea(_dragStart, _dragEnd);
-			} else if (!_uiController.MouseOverSectorMap(_mousePosition)) {
+			} else {
 				SelectUnitNearPoint(_dragStart);
 			}
 		}
