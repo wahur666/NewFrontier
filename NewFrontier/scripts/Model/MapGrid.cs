@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 using NewFrontier.scripts.Controllers;
+using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.helpers;
 
 namespace NewFrontier.scripts.Model;
@@ -12,6 +13,7 @@ public partial class MapGrid : Node2D {
 	private int _radius;
 	public readonly List<WormholeObject> Wormholes = new();
 	private PackedScene _wormholeScene;
+	public List<Planet> Planets = new();
 
 
 	/// <summary>
@@ -37,7 +39,6 @@ public partial class MapGrid : Node2D {
 		_wormholeScene = GD.Load<PackedScene>("res://scenes/wormhole.tscn");
 		GridLayer = new GameNode[512, 512];
 		Navigation = new Navigation(this);
-		GD.Print(GridLayer[0, 0]);
 		var sector = new Sector(GridLayer, new Vector2I(80, 80), (byte)MapSize, 0);
 		Sectors.Add(sector);
 		// TODO: remove manual assignment
@@ -49,11 +50,9 @@ public partial class MapGrid : Node2D {
 		Sectors.Add(sector2);
 		_cameraController = GetNode<CameraController>("../Camera2D");
 		_cameraController.Init(this);
-		GD.Print("Camera Controller", _cameraController);
 	}
 
 	public override void _Draw() {
-		GD.Print("Drawing");
 		for (var i = 0; i < GridLayer.GetLength(0); i += 2) {
 			for (var j = 0; j < GridLayer.GetLength(1); j += 2) {
 				if (GridLayer[i, j] is null) {

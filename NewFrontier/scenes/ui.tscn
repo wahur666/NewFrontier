@@ -30,10 +30,10 @@ axis_stretch_vertical = 2
 [node name="Ui" type="CanvasLayer"]
 script = ExtResource("1_qu86p")
 
-[node name="LeftControls" parent="." instance=ExtResource("1_mnjuk")]
-
 [node name="SelectionRect" type="Panel" parent="."]
 theme_override_styles/panel = SubResource("StyleBoxFlat_6hh77")
+
+[node name="LeftControls" parent="." instance=ExtResource("1_mnjuk")]
 
 [node name="SectorMap" type="Control" parent="."]
 layout_mode = 3

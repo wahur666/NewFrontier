@@ -15,6 +15,7 @@ public partial class LeftControls : Control {
 	private PackedScene _fabricatorIcon;
 	private PackedScene _harvesterIcon;
 	private Control _iconContainer;
+	public Panel Bg;
 
 	private int _iconSize = 32;
 	private int _spacing = 5;
@@ -31,6 +32,7 @@ public partial class LeftControls : Control {
 		_harvesterIcon = GD.Load<PackedScene>("res://scenes/harvester_icon.tscn");
 		_buttonContainer = GetNode<Control>("Panel/Container");
 		_iconContainer = GetNode<Control>("Panel/Cont2");
+		Bg = GetNode<Panel>("Panel");
 		_button1 = GetNode<Button>("Panel/Container/Button");
 		_button2 = GetNode<Button>("Panel/Container/Button2");
 		_button3 = GetNode<Button>("Panel/Container/Button3");
@@ -56,7 +58,6 @@ public partial class LeftControls : Control {
 	public void CalculateSelectedUnits(List<UnitNode2D> units) {
 		_iconContainer.GetChildren().ToList().ForEach(x => x.QueueFree());
 		_iconContainer.GetChildren().Clear();
-		GD.Print("Cleaning up");
 		const int startY = 10; // Adjust the starting Y-coordinate as needed
 		var maxSquares = Math.Min(22, units.Count); // Maximum number of squares to display
 		var rowIndex = 0;
@@ -73,7 +74,6 @@ public partial class LeftControls : Control {
 
 	private void DrawRow(int rowCount, int startX, int startY, int startNumber, int endIndex, List<UnitNode2D> units) {
 		for (var i = 0; i < rowCount && startNumber < endIndex; i++) {
-			GD.Print("Index: ", startNumber);
 			var a = units[startNumber];
 			var scene = a switch {
 				Fabricator => _fabricatorIcon,
@@ -103,13 +103,11 @@ public partial class LeftControls : Control {
 	private void MouseEnteredPanelElement() {
 		OverUiElement = true;
 		PlayerController.SetBuildingShadeVisibility(false);
-		PlayerController.OverGui = true;
 	}
 
 	private void MouseExitedPanelElement() {
 		OverUiElement = false;
 		PlayerController.SetBuildingShadeVisibility(true);
-		PlayerController.OverGui = false;
 	}
 
 	public void SetBuildingContainerVisibility(bool visible) {

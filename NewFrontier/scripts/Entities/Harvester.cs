@@ -30,12 +30,9 @@ public partial class Harvester : UnitNode2D {
 		base._Ready();
 		_currentHarvest = HarvestRate;
 		_playerController = GetTree().GetFirstNodeInGroup("player") as PlayerController;
-		GD.Print("Player Controller" + _playerController);
 		var resources =
 			GetTree().GetNodesInGroup("resource").Select(node => node as ResourceNode2D).ToList();
 		_currentResourceNode2D = resources[0];
-		GD.Print(_currentResourceNode2D);
-		GD.Print(resources, resources.Count);
 	}
 
 	public override void _Process(double delta) {

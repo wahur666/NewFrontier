@@ -17,4 +17,10 @@ public static class AreaHelper {
 		var h = Math.Abs(r1.Y - r2.Y);
 		return x <= point.X && point.X <= x + w && y <= point.Y && point.Y <= y + h;
 	}
+
+	public static bool IsPointOutsideEllipse(Vector2 center, float a, float b, Vector2 point) {
+		var distanceSquared = (Math.Pow(point.X - center.X, 2) / Math.Pow(a, 2)) +
+		                      (Math.Pow(point.Y - center.Y, 2) / Math.Pow(b, 2));
+		return distanceSquared > 1;
+	}
 }

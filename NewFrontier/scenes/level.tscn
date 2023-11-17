@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://bt2rj4k835nj0"]
+[gd_scene load_steps=8 format=3 uid="uid://bt2rj4k835nj0"]
 
 [ext_resource type="PackedScene" uid="uid://dwkcq78ovc6d8" path="res://scenes/game_controller.tscn" id="1_ox2q5"]
+[ext_resource type="Script" path="res://scripts/Level.cs" id="1_x66kv"]
 [ext_resource type="PackedScene" uid="uid://bq8kik2f2pim3" path="res://scenes/map_grid.tscn" id="2_pn7aa"]
 [ext_resource type="PackedScene" uid="uid://crhg0jwfq7jtu" path="res://scenes/asteroid.tscn" id="3_x4j80"]
 [ext_resource type="PackedScene" uid="uid://ddkn0wk5cvsm" path="res://scenes/gas_nugget.tscn" id="5_vqw1s"]
@@ -8,6 +9,7 @@
 [ext_resource type="Script" path="res://scripts/Controllers/CameraController.cs" id="8_puijt"]
 
 [node name="Level" type="Node2D"]
+script = ExtResource("1_x66kv")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.8, 0.8)

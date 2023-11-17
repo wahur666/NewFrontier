@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
 using NewFrontier.scripts.UI;
 
@@ -16,6 +17,18 @@ public partial class UiController : CanvasLayer {
 	public Panel SelectionPanel;
 	private MapGrid _mapGrid;
 
+	#region SectorPanel constants
+
+	private Vector2 _sectorPanelGlobalPosition;
+	private Vector2 _sectorPanelSize;
+	private Vector2 _sectorPanelGlobalPositionBottomLeft;
+
+	#endregion
+
+	private Vector2 _leftPanelGlobalPosition;
+	private Vector2 _leftPanelSize;
+	private Vector2 _leftPanelGlobalPositionBottomLeft;
+
 	public override void _Ready() {
 		canvasItems = new List<Control>();
 		leftControls = GetNode<LeftControls>("LeftControls");
@@ -23,6 +36,8 @@ public partial class UiController : CanvasLayer {
 		SectorPanel = GetNode<Panel>("SectorMap/Control/Panel");
 		SectorPanel.Draw += SectorPanelOnDraw;
 		SelectionPanel = GetNode<Panel>("SelectionRect");
+		SetupSectorPanelConstants();
+		SetupLeftPanelConstants();
 	}
 
 	private byte CurrentSector => _playerController.CurrentSector;
@@ -56,6 +71,27 @@ public partial class UiController : CanvasLayer {
 		float y = radius * Mathf.Sin(angle);
 		return new Vector2(x, y) + pos1;
 	}
+
+	private void SetupLeftPanelConstants() {
+		_leftPanelGlobalPosition = leftControls.Bg.GlobalPosition;
+		_leftPanelSize = leftControls.Bg.Size;
+		_leftPanelGlobalPositionBottomLeft = _leftPanelGlobalPosition + _leftPanelSize;
+	}
+
+	public bool MouseOverLeftPanel(Vector2 mousePosition) =>
+		AreaHelper.InRect(mousePosition, _leftPanelGlobalPosition, _leftPanelGlobalPositionBottomLeft);
+
+	private void SetupSectorPanelConstants() {
+		_sectorPanelGlobalPosition = SectorPanel.GlobalPosition;
+		_sectorPanelSize = SectorPanel.Size;
+		_sectorPanelGlobalPositionBottomLeft = _sectorPanelGlobalPosition + _sectorPanelSize;
+	}
+
+	public bool MouseOverSectorMap(Vector2 mousePosition) =>
+		AreaHelper.InRect(mousePosition, _sectorPanelGlobalPosition, _sectorPanelGlobalPositionBottomLeft);
+
+	public bool MouseOverGui(Vector2 mousePosition) =>
+		MouseOverSectorMap(mousePosition) || MouseOverLeftPanel(mousePosition);
 
 	private void DrawSectors(CanvasItem sectorPanel) {
 		const int innerPointRadius = 4;
@@ -115,6 +151,7 @@ public partial class UiController : CanvasLayer {
 		if (currentSector is null) {
 			return;
 		}
+
 		sectorPanel.DrawArc(currentSector.SectorPosition, selectorPointRadius, 0, Mathf.Tau, 32, Colors.White, 2);
 	}
 }

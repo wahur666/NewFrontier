@@ -22,32 +22,25 @@ public partial class PlayerController : Node {
 
 	private MapGrid _mapGrid;
 	private bool _overGui;
-	private bool _overSectormap;
 	private List<UnitNode2D> _units = new();
 	private PlayerStats _playerStats = new();
 
 	public byte CurrentSector;
 
 	public LeftControls LeftControls;
+	private UiController _uiController;
 
-	public UiController UiController;
+	#region Dragging variables
 
-	private Vector2 end;
-	private Vector2 endV;
-	private Vector2 mousePosGlobal;
-	private Vector2 start;
-	private Vector2 startV;
-	private Vector2 mousePosition;
+	private Vector2 _dragEnd;
+	private Vector2 _dragEndV;
+	private Vector2 _mousePosGlobal;
+	private Vector2 _dragStart;
+	private Vector2 _dragStartV;
+	private Vector2 _mousePosition;
 	private bool _dragging;
 
-
-	public bool OverGui {
-		get => _overGui;
-		set {
-			GD.Print("setting over gui ", value);
-			_overGui = value;
-		}
-	}
+	#endregion
 
 	public bool BuildingMode {
 		get;
@@ -62,34 +55,21 @@ public partial class PlayerController : Node {
 		_harvester = GD.Load<PackedScene>("res://scenes/harvester.tscn");
 		_fabricator = GD.Load<PackedScene>("res://scenes/fabricator.tscn");
 		_camera = GetNode<CameraController>("../../Camera2D");
-		_camera.PointSelected += SelectUnitNearPoint;
 		_camera.PlayerControllerInstance = this;
 		_mapGrid = GetNode<MapGrid>("../../MapGrid");
-		UiController = GetNode<UiController>("../../Ui");
-		UiController.Init(this, _mapGrid);
+		_uiController = GetNode<UiController>("../../Ui");
+		_uiController.Init(this, _mapGrid);
 		CreateStartingUnits();
 		_camera.CenterOnGridPosition(new Vector2(12, 17));
-		SetupUiControllerHandlers();
-	}
-
-	private void SetupUiControllerHandlers() {
-		UiController.SectorPanel.MouseEntered += () => {
-			GD.Print("Mouse entered sector element");
-			_overSectormap = true;
-		};
-		UiController.SectorPanel.MouseExited += () => {
-			GD.Print("Mouse exited sector element");
-			_overSectormap = false;
-		};
 	}
 
 	private void CreateStartingUnits() {
 		_units = new List<UnitNode2D>();
 		var harvester = _harvester.Instantiate<Harvester>();
-		harvester.Init(new Vector2(10, 10), this, UiController);
+		harvester.Init(new Vector2(10, 10), this, _uiController);
 		_units.Add(harvester);
 		var fabricator = _fabricator.Instantiate<Fabricator>();
-		fabricator.Init(new Vector2(12, 17), this, UiController);
+		fabricator.Init(new Vector2(12, 17), this, _uiController);
 		_units.Add(fabricator);
 		_units.ForEach(e => AddChild(e));
 	}
@@ -97,15 +77,15 @@ public partial class PlayerController : Node {
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
 		if (Input.IsActionJustPressed("LMB")) {
-			var sectorPanelGlobalPosition = UiController.SectorPanel.GlobalPosition;
-			var sectorPanelSize = UiController.SectorPanel.Size;
-			var overSectorMap = AreaHelper.InRect(mousePosition, sectorPanelGlobalPosition,
-				sectorPanelGlobalPosition + sectorPanelSize);
-			if (overSectorMap) {
+			if (_buildingShade?.Planet is not null) {
+				BuildBuilding(_buildingShade);
+			}
+
+			if (_uiController.MouseOverSectorMap(_mousePosition)) {
 				CheckSectorMapClick();
 			} else {
-				start = _camera.GetGlobalMousePosition();
-				startV = mousePosition;
+				_dragStart = _camera.GetGlobalMousePosition();
+				_dragStartV = _mousePosition;
 				_dragging = true;
 				_camera.EnableEdgePanning = false;
 			}
@@ -114,36 +94,42 @@ public partial class PlayerController : Node {
 				FreeBuildingShade();
 				BuildingMode = false;
 			} else {
-				start = _camera.GetGlobalMousePosition();
-				startV = mousePosition;
+				_dragStart = _camera.GetGlobalMousePosition();
+				_dragStartV = _mousePosition;
 				_dragging = false;
 				_camera.EnableEdgePanning = true;
 				DrawArea(false);
-				MoveToPoint(start);
+				MoveToPoint(_dragStart);
 			}
 		} else if (Input.IsActionJustReleased("LMB")) {
-			end = _camera.GetGlobalMousePosition();
-			endV = mousePosition;
+			_dragEnd = _camera.GetGlobalMousePosition();
+			_dragEndV = _mousePosition;
 			_dragging = false;
 			_camera.EnableEdgePanning = true;
 			DrawArea(false);
-			if (start.DistanceTo(end) > 10) {
-				SelectUnitsInArea(start, end);
-			} else if (!OverUiElement(start)) {
-				SelectUnitNearPoint(start);
+			if (_dragStart.DistanceTo(_dragEnd) > 10) {
+				SelectUnitsInArea(_dragStart, _dragEnd);
+			} else if (!_uiController.MouseOverSectorMap(_mousePosition)) {
+				SelectUnitNearPoint(_dragStart);
 			}
 		}
 
 		if (_dragging) {
-			end = _camera.GetGlobalMousePosition();
-			endV = mousePosition;
+			_dragEnd = _camera.GetGlobalMousePosition();
+			_dragEndV = _mousePosition;
 			DrawArea();
+		}
+
+		if (BuildingMode && _buildingShade is not null) {
+			var pos = _camera.GetGlobalMousePosition();
+			var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
+			_buildingShade.CalculateBuildingPlace(pos, planet);
 		}
 	}
 
 	private void CheckSectorMapClick() {
 		var a = GetViewport().GetMousePosition();
-		var b = UiController.SectorPanel.GlobalPosition;
+		var b = _uiController.SectorPanel.GlobalPosition;
 		var z = _mapGrid.Sectors.Where(x => x.Discovered).ToList()
 			.Find(x => Math.Abs((x.SectorPosition + b - a).Length()) < 10);
 		if (z is null) {
@@ -156,11 +142,11 @@ public partial class PlayerController : Node {
 	}
 
 	public void DrawArea(bool s = true) {
-		var panel = UiController.SelectionPanel;
-		panel.Size = new Vector2(Math.Abs(startV.X - endV.X), Math.Abs(startV.Y - endV.Y));
+		var panel = _uiController.SelectionPanel;
+		panel.Size = new Vector2(Math.Abs(_dragStartV.X - _dragEndV.X), Math.Abs(_dragStartV.Y - _dragEndV.Y));
 		var pos = Vector2.Zero;
-		pos.X = Math.Min(startV.X, endV.X);
-		pos.Y = Math.Min(startV.Y, endV.Y);
+		pos.X = Math.Min(_dragStartV.X, _dragEndV.X);
+		pos.Y = Math.Min(_dragStartV.Y, _dragEndV.Y);
 		panel.Position = pos;
 		panel.Size *= s ? 1 : 0;
 	}
@@ -168,8 +154,8 @@ public partial class PlayerController : Node {
 
 	public override void _Input(InputEvent @event) {
 		if (@event is InputEventMouse mouse) {
-			mousePosition = mouse.Position;
-			mousePosGlobal = _camera.GetGlobalMousePosition();
+			_mousePosition = mouse.Position;
+			_mousePosGlobal = _camera.GetGlobalMousePosition();
 		}
 	}
 
@@ -234,37 +220,28 @@ public partial class PlayerController : Node {
 		AddChild(_buildingShade);
 	}
 
-	public void BuildBuilding(BuildingNode2D buildingNode2D, Planet planet, int[] place) {
-		var building = planet.BuildBuilding(buildingNode2D, place);
+	public void BuildBuilding(BuildingNode2D buildingNode2D) {
+		var building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
 		if (building is not null) {
 			_buildings.Add(building);
 		}
 	}
 
 	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
-		if (OverGui) {
-			return;
-		}
-
-		GD.Print("this is running SelectUnitsInArea");
+		// if (_uiController.MouseOverGui(_mousePosition)) {
+		// 	return;
+		// }
 		BuildingMode = false;
 		foreach (var unit in _units) {
 			unit.Selected = AreaHelper.InRect(unit.Position, start, end);
 		}
-
 		UpdateUi();
 	}
 
 	private void SelectUnitNearPoint(Vector2 point) {
-		if (OverGui) {
+		if (_uiController.MouseOverGui(_mousePosition) || BuildingMode) {
 			return;
 		}
-
-		GD.Print("this is running SelectUnitNearPoint");
-		if (BuildingMode) {
-			return;
-		}
-
 		_units.ForEach(x => x.Selected = false);
 		var unitNode2D = _units.Find(x => x.InsideSelectionRect(point));
 		if (unitNode2D is not null) {
@@ -281,7 +258,6 @@ public partial class PlayerController : Node {
 	}
 
 	public void SelectUnit(UnitNode2D unit) {
-		GD.Print("this is running SelectUnit");
 		_units.ForEach(x => x.Selected = x == unit);
 		UpdateUi();
 	}
@@ -303,8 +279,4 @@ public partial class PlayerController : Node {
 	public void IncreaseOre(int amount) => _playerStats.CurrentOre += amount;
 	public void IncreaseGas(int amount) => _playerStats.CurrentGas += amount;
 	public void IncreaseCrew(int amount) => _playerStats.CurrentCrew += amount;
-
-	private bool OverUiElement(Vector2 position) {
-		return UiController.OverUiElement(position);
-	}
 }

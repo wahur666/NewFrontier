@@ -13,48 +13,48 @@ public partial class UnitNode2D : CharacterBody2D {
 	private bool _selected;
 	private int _speed = 300;
 	private TravelState _travelState = TravelState.NotTraveling;
-	private Node2D canvas;
+	private Node2D _canvas;
 
-	public Queue<GameNode> navPpoints = new();
-	public PlayerController PlayerController;
+	private Queue<GameNode> _navPoints = new();
+	private PlayerController _playerController;
 
-	protected SelectionRect SelectionRect;
+	private SelectionRect _selectionRect;
 
-	private Vector2 TargetDestination;
-	public UiController UiController;
+	private Vector2 _targetDestination;
+	private UiController _uiController;
 
 	[Export]
-	public virtual bool Selected {
+	public bool Selected {
 		get => _selected;
 		set {
 			_selected = value;
-			if (SelectionRect is not null) {
-				SelectionRect.Selected = value;
+			if (_selectionRect is not null) {
+				_selectionRect.Selected = value;
 			}
 		}
 	}
 
 	public override void _Ready() {
-		SelectionRect = GetNode<SelectionRect>("SelectionRect");
-		TargetDestination = Position;
-		canvas = UiController.Canvas;
-		canvas.Draw += CanvasOnDraw;
+		_selectionRect = GetNode<SelectionRect>("SelectionRect");
+		_targetDestination = Position;
+		_canvas = _uiController.Canvas;
+		_canvas.Draw += CanvasOnDraw;
 	}
 
 	public void Init(Vector2 pos, PlayerController playerController, UiController uiController) {
 		Position = MapHelpers.GridCoordToGridCenterPos(pos);
-		PlayerController = playerController;
-		UiController = uiController;
+		_playerController = playerController;
+		_uiController = uiController;
 	}
 
 	private void CanvasOnDraw() {
-		var points = new List<Vector2> { Position, TargetDestination };
-		points.AddRange(navPpoints.Select(x => MapHelpers.GridCoordToGridCenterPos(x.Position)));
+		var points = new List<Vector2> { Position, _targetDestination };
+		points.AddRange(_navPoints.Select(x => MapHelpers.GridCoordToGridCenterPos(x.Position)));
 		DrawPath(points);
 	}
 
 	public bool InsideSelectionRect(Vector2 position) {
-		var size = SelectionRect.Size;
+		var size = _selectionRect.Size;
 		return AreaHelper.InRect(position, Position + (size * new Vector2(.5f, .5f)),
 			Position - (size * new Vector2(.5f, .5f)));
 	}
@@ -74,10 +74,10 @@ public partial class UnitNode2D : CharacterBody2D {
 		// 		throw new ArgumentOutOfRangeException();
 		// }
 
-		if (Position.DistanceTo(TargetDestination) < 5) {
-			if (navPpoints.Count > 0) {
+		if (Position.DistanceTo(_targetDestination) < 5) {
+			if (_navPoints.Count > 0) {
 				_moving = true;
-				TargetDestination = MapHelpers.GridCoordToGridCenterPos(navPpoints.Dequeue().Position);
+				_targetDestination = MapHelpers.GridCoordToGridCenterPos(_navPoints.Dequeue().Position);
 			} else {
 				_moving = false;
 				Velocity = Vector2.Zero;
@@ -86,7 +86,7 @@ public partial class UnitNode2D : CharacterBody2D {
 			return;
 		}
 
-		var direction = TargetDestination - GlobalPosition;
+		var direction = _targetDestination - GlobalPosition;
 		direction = direction.Normalized();
 
 		// Calculate the angle between the current rotation and the direction vector
@@ -125,13 +125,13 @@ public partial class UnitNode2D : CharacterBody2D {
 		}
 	}
 
-	public void DrawPath(List<Vector2> path) {
+	private void DrawPath(List<Vector2> path) {
 		if (!_moving) {
 			return;
 		}
 
 		for (var i = 0; i < path.Count - 1; i += 1) {
-			canvas.DrawLine(path[i], path[i + 1], Colors.Aqua);
+			_canvas.DrawLine(path[i], path[i + 1], Colors.Aqua);
 		}
 
 		if (path.Count <= 1) {
@@ -140,20 +140,20 @@ public partial class UnitNode2D : CharacterBody2D {
 
 		const int squareSize = MapHelpers.DrawSize / 4;
 		const int halfSquareSize = squareSize / 2;
-		canvas.DrawRect(
+		_canvas.DrawRect(
 			new Rect2(path[^1] - new Vector2(halfSquareSize, halfSquareSize),
 				new Vector2(squareSize, squareSize)),
 			Colors.Aqua);
-		canvas.QueueRedraw();
+		_canvas.QueueRedraw();
 	}
 
-	public void SetNavigation(List<GameNode> vector2s) {
-		TargetDestination = Position;
-		if (vector2s.Count > 1) {
-			vector2s.RemoveAt(0);
+	public void SetNavigation(List<GameNode> vector2S) {
+		_targetDestination = Position;
+		if (vector2S.Count > 1) {
+			vector2S.RemoveAt(0);
 		}
 
-		navPpoints = new Queue<GameNode>(vector2s);
+		_navPoints = new Queue<GameNode>(vector2S);
 	}
 
 	// updateNotTraveling(delta: number) {

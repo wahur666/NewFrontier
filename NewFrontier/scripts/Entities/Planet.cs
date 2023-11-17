@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -17,19 +18,21 @@ public partial class Planet : Node2D {
 	private PlanetBuildingScheme _planetBuildingScheme;
 	private readonly SlotStatus[] _slots = new SlotStatus[12];
 
-	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		_buildingsContainer = GetNode<Node>("BuildingsContainer");
-		GD.Print("slots: " + _slots);
 		_planetBuildingScheme = GetNode<PlanetBuildingScheme>("PlanetBuildingScheme");
 		_planetBuildingScheme.Radius = Radius;
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
 	}
+	
+	public bool PointNearToRing(Vector2 mousePos) {
+		return Math.Abs(mousePos.DistanceTo(GlobalPosition) - Radius) < 20;
+	}
 
-	public BuildingNode2D BuildBuilding(BuildingNode2D building, int[] slots) {
+	public BuildingNode2D BuildBuilding(BuildingNode2D building) {
+		var slots = building.Place;
 		if (slots.Any(slot => _slots[slot] == SlotStatus.Occupied)) {
 			return null;
 		}
