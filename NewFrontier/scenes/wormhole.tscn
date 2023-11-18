@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://cwl2xwkwn7fil"]
+[gd_scene load_steps=7 format=3 uid="uid://cwl2xwkwn7fil"]
 
+[ext_resource type="Script" path="res://scripts/Entities/Wormhole.cs" id="1_etnkx"]
 [ext_resource type="Texture2D" uid="uid://bihn72npbt205" path="res://gfx/rotator2.png" id="1_p5e8v"]
 
 [sub_resource type="Animation" id="Animation_nmf5j"]
@@ -40,8 +41,12 @@ _data = {
 "default": SubResource("Animation_27ran")
 }
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_y78de"]
+radius = 122.5
+
 [node name="Wormhole" type="Node2D"]
 scale = Vector2(0.4, 0.4)
+script = ExtResource("1_etnkx")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_p5e8v")
@@ -51,3 +56,9 @@ autoplay = "default"
 libraries = {
 "": SubResource("AnimationLibrary_qm3pw")
 }
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+scale = Vector2(1, 1)
+shape = SubResource("CircleShape2D_y78de")

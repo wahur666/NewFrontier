@@ -11,7 +11,6 @@ namespace NewFrontier.scripts.Controllers;
 public partial class UiController : CanvasLayer {
 	private PlayerController _playerController;
 	public Node2D Canvas;
-	private List<Control> canvasItems;
 	private LeftControls leftControls;
 	public Panel SectorPanel;
 	public Panel SelectionPanel;
@@ -30,7 +29,6 @@ public partial class UiController : CanvasLayer {
 	private Vector2 _leftPanelGlobalPositionBottomLeft;
 
 	public override void _Ready() {
-		canvasItems = new List<Control>();
 		leftControls = GetNode<LeftControls>("LeftControls");
 		Canvas = GetNode<Node2D>("../Canvas");
 		SectorPanel = GetNode<Panel>("SectorMap/Control/Panel");
@@ -116,7 +114,7 @@ public partial class UiController : CanvasLayer {
 			}
 		}
 
-		foreach (var mapGridWormhole in _mapGrid.Wormholes) {
+		foreach (var mapGridWormhole in _mapGrid.WormholeObjects) {
 			var sector1 = _mapGrid.Sectors.Find(x => x.Index == mapGridWormhole.GetNode1Sector);
 			var sector2 = _mapGrid.Sectors.Find(x => x.Index == mapGridWormhole.GetNode2Sector);
 			if (sector1 is null || sector2 is null) {

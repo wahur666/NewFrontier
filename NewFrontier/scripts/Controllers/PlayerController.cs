@@ -23,6 +23,7 @@ public partial class PlayerController : Node {
 	private MapGrid _mapGrid;
 	private bool _overGui;
 	private List<UnitNode2D> _units = new();
+	private List<UnitNode2D> _selectedUnits = new();
 	private PlayerStats _playerStats = new();
 
 	public byte CurrentSector;
@@ -227,13 +228,27 @@ public partial class PlayerController : Node {
 	}
 
 	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
-		// if (_uiController.MouseOverGui(_mousePosition)) {
-		// 	return;
-		// }
+		var shiftDown = Input.IsKeyPressed(Key.Shift);
 		BuildingMode = false;
-		foreach (var unit in _units) {
-			unit.Selected = AreaHelper.InRect(unit.Position, start, end);
+
+		if (shiftDown) {
+			var units = _units.Where(unit => AreaHelper.InRect(unit.Position, start, end)).ToList();
+			if (units.Count == 0) {
+				_selectedUnits.ForEach(x => x.Selected = false);
+				_selectedUnits = new List<UnitNode2D>();
+			} else {
+				foreach (var unit in units) {
+					unit.Selected = !unit.Selected;
+				}
+				_selectedUnits = _units.Where(x => x.Selected).ToList();
+			}
+		} else {
+			foreach (var unit in _units) {
+				unit.Selected = AreaHelper.InRect(unit.Position, start, end);
+			}
+			_selectedUnits = _units.Where(x => x.Selected).ToList();
 		}
+
 		UpdateUi();
 	}
 
@@ -241,23 +256,49 @@ public partial class PlayerController : Node {
 		if (_uiController.MouseOverGui(_mousePosition) || BuildingMode) {
 			return;
 		}
-		_units.ForEach(x => x.Selected = false);
+
+		var shiftDown = Input.IsKeyPressed(Key.Shift);
+		if (!shiftDown) {
+			_units.ForEach(x => x.Selected = false);
+		}
+
 		var unitNode2D = _units.Find(x => x.InsideSelectionRect(point));
-		if (unitNode2D is not null) {
-			unitNode2D.Selected = true;
+		if (unitNode2D is null) {
+			_selectedUnits.ForEach(x => x.Selected = false);
+			_selectedUnits.Clear();
+		} else {
+			if (shiftDown) {
+				unitNode2D.Selected = !unitNode2D.Selected;
+				if (unitNode2D.Selected) {
+					_selectedUnits.Add(unitNode2D);
+				} else {
+					_selectedUnits.Remove(unitNode2D);
+				}
+			} else {
+				unitNode2D.Selected = true;
+				_selectedUnits = new List<UnitNode2D> { unitNode2D };
+			}
 		}
 
 		UpdateUi();
 	}
 
 	private void UpdateUi() {
-		var units = _units.Where(x => x.Selected).ToList();
+		var units = _selectedUnits;
 		LeftControls.SetBuildingContainerVisibility(units.Count == 1 && units[0] is Fabricator);
-		LeftControls.CalculateSelectedUnits(_units.Where(x => x.Selected).ToList());
+		LeftControls.CalculateSelectedUnits(units);
 	}
 
-	public void SelectUnit(UnitNode2D unit) {
-		_units.ForEach(x => x.Selected = x == unit);
+	public void SelectUnitFromUi(UnitNode2D unit) {
+		var shiftDown = Input.IsKeyPressed(Key.Shift);
+		if (shiftDown) {
+			unit.Selected = false;
+			_selectedUnits.Remove(unit);
+		} else {
+			_units.ForEach(x => x.Selected = x == unit);
+			_selectedUnits = new List<UnitNode2D> { unit };
+		}
+
 		UpdateUi();
 	}
 

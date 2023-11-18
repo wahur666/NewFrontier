@@ -13,7 +13,7 @@ public partial class UnitIcon : Button {
 	}
 
 	private void SelectUnit() {
-		PlayerController.SelectUnit(Unit);
+		PlayerController.SelectUnitFromUi(Unit);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

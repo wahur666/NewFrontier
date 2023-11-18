@@ -17,6 +17,14 @@ public partial class CameraController : Camera2D {
 		_uiController = GetNode<UiController>("../Ui");
 	}
 
+	public override void _Notification(int what) {
+		if (what == MainLoop.NotificationApplicationFocusOut) {
+			EnableEdgePanning = false;
+		} else if (what == MainLoop.NotificationApplicationFocusIn) {
+			EnableEdgePanning = true;
+		}
+	}
+
 	public void Init(MapGrid mapGrid) {
 		_mapGrid = mapGrid;
 	}

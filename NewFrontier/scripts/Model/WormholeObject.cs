@@ -14,4 +14,11 @@ public class WormholeObject {
 
 	public byte GetNode1Sector => MapHelpers.GetSectorFromOffset(_node1.Position);
 	public byte GetNode2Sector => MapHelpers.GetSectorFromOffset(_node2.Position);
+
+	public bool IsConnected(GameNode gameNode) {
+		return gameNode == _node1 || gameNode == _node2;
+	}
+	public GameNode GetOtherNode(GameNode gameNode) {
+		return gameNode == _node1 ? _node2 : _node1;
+	}
 }
