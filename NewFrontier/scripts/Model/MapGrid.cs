@@ -11,9 +11,10 @@ public partial class MapGrid : Node2D {
 	private int _diameter;
 
 	private int _radius;
-	public readonly List<WormholeObject> Wormholes = new();
+	public readonly List<WormholeObject> WormholeObjects = new();
 	private PackedScene _wormholeScene;
-	public List<Planet> Planets = new();
+	public readonly List<Planet> Planets = new();
+	public readonly List<Wormhole> Wormholes = new();
 
 
 	/// <summary>
@@ -83,18 +84,21 @@ public partial class MapGrid : Node2D {
 	public void CreateWormholes(Vector2 position1, int sector1, Vector2 position2, int sector2) {
 		var pos1 = MapHelpers.CalculateOffset(position1, sector1);
 		var pos2 = MapHelpers.CalculateOffset(position2, sector2);
-		var w1 = _wormholeScene.Instantiate<Node2D>();
+		var w1 = _wormholeScene.Instantiate<Wormhole>();
 		w1.Position = MapHelpers.GridCoordToGridPointPos(pos1);
 		AddChild(w1);
-		var w2 = _wormholeScene.Instantiate<Node2D>();
+		var w2 = _wormholeScene.Instantiate<Wormhole>();
 		w2.Position = MapHelpers.GridCoordToGridPointPos(pos2);
 		AddChild(w2);
 
 		var w1Node = SetupWormholeGameNode(position1, sector1);
+		w1.Init(w1Node);
 		var w2Node = SetupWormholeGameNode(position2, sector2);
+		w2.Init(w2Node);
 		w1Node.AddNeighbourTwoWays(w2Node, 1);
-
-		Wormholes.Add(new WormholeObject(w1Node, w2Node));
+		Wormholes.Add(w1);
+		Wormholes.Add(w2);
+		WormholeObjects.Add(new WormholeObject(w1Node, w2Node));
 	}
 
 	private GameNode SetupWormholeGameNode(Vector2 position, int sector) {
