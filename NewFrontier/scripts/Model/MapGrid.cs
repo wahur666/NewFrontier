@@ -142,7 +142,10 @@ public partial class MapGrid : Node2D {
 		GridLayer[(int)(offset.X + offsetX), (int)(offset.Y + offsetY)]?.SetWormhole(gameNode);
 	}
 
-
+	public Sector GetSector(byte index) {
+		return Sectors.Find(x => x.Index == index);
+	}
+	
 	public GameNode GetGameNode(Vector2 positon, int sector) {
 		var offset = MapHelpers.CalculateOffset(positon, sector);
 		return GridLayer[offset.X, offset.Y];

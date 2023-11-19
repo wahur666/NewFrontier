@@ -26,7 +26,17 @@ public partial class PlayerController : Node {
 	private List<UnitNode2D> _selectedUnits = new();
 	private PlayerStats _playerStats = new();
 
-	public byte CurrentSector;
+	private byte _currentSector;
+
+	public byte CurrentSector {
+		get => _currentSector;
+		set {
+			_currentSector = value;
+			CurrentSectorObj = _mapGrid.GetSector(_currentSector);
+		}
+	}
+
+	public Sector CurrentSectorObj { get; private set; }
 
 	public LeftControls LeftControls;
 	private UiController _uiController;
@@ -62,6 +72,7 @@ public partial class PlayerController : Node {
 		_uiController.Init(this, _mapGrid);
 		CreateStartingUnits();
 		_camera.CenterOnGridPosition(new Vector2(12, 17));
+		CurrentSector = 0;
 	}
 
 	private void CreateStartingUnits() {
@@ -127,14 +138,19 @@ public partial class PlayerController : Node {
 			var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
 			_buildingShade.CalculateBuildingPlace(pos, planet);
 		}
+		
+		CurrentSectorObj.CameraPosition = _camera.Position;
 	}
 
 	private void SwitchCameraToJoinedWormhole() {
 		var wormhole = _mapGrid.Wormholes.Find(x => x.MousePointerIsOver);
 		var who = _mapGrid.WormholeObjects.Find(x => x.IsConnected(wormhole.GameNode));
 		var otherNode = who.GetOtherNode(wormhole.GameNode);
-		_camera.CenterOnGridPosition(otherNode.Position);
-		CurrentSector = otherNode.Index;
+		var sector = _mapGrid.GetSector(otherNode.Index);
+		if (sector?.Discovered == true) {
+			CurrentSector = otherNode.Index;
+			_camera.CenterOnGridPosition(otherNode.Position);
+		}
 	}
 
 	private void CheckSectorMapClick() {
@@ -146,9 +162,13 @@ public partial class PlayerController : Node {
 			return;
 		}
 
-		_camera.Position =
-			MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(15, 15), z.Index));
+		var sector = _mapGrid.GetSector(z.Index);
+		if (sector is null) {
+			return;
+		}
+
 		CurrentSector = z.Index;
+		_camera.Position = sector.CameraPosition;
 	}
 
 	public void DrawArea(bool s = true) {
@@ -192,7 +212,6 @@ public partial class PlayerController : Node {
 			_buildingShade.Visible = visible;
 		}
 	}
-
 
 	public void CreateBuilding1() {
 		BuildingMode = true;
