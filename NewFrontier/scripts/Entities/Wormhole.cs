@@ -21,8 +21,5 @@ public partial class Wormhole : Node2D {
 	private void Area2DOnMouseEntered() => MousePointerIsOver = true;
 
 	public override void _Process(double delta) {
-		if (Input.IsActionJustPressed("LMB") && MousePointerIsOver) {
-			GD.Print("Yeet into the void");
-		}
 	}
 }

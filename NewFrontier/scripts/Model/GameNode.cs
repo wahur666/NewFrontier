@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Godot;
+using NewFrontier.scripts.helpers;
 
 namespace NewFrontier.scripts.Model;
 
@@ -8,6 +9,10 @@ public class GameNode {
 	public Dictionary<GameNode, float> Neighbours;
 	public Vector2 Position;
 
+	public byte Index {
+		get => MapHelpers.GetSectorIndexFromOffset(Position);
+	}
+	
 	// TODO: remove this in favour of the attributes
 	public int ActiveAttribute;
 	public int PassiveAttribute;

@@ -51,10 +51,10 @@ public class MapHelpers {
 
 		return new Vector2I(finalX, finalY);
 	}
-	public static byte GetSectorFromOffset(Vector2 pos) { 
-		return GetSectorFromOffset((int)pos.X, (int)pos.Y);
+	public static byte GetSectorIndexFromOffset(Vector2 pos) { 
+		return GetSectorIndexFromOffset((int)pos.X, (int)pos.Y);
 	}
-	public static byte GetSectorFromOffset(int col, int row) {
+	public static byte GetSectorIndexFromOffset(int col, int row) {
 		GetPositionFromOffset(col, row, out _, out _, out var index);
 		return (byte)index;
 	}

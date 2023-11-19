@@ -84,6 +84,8 @@ public partial class PlayerController : Node {
 				BuildBuilding(_buildingShade);
 			} else if (_uiController.MouseOverSectorMap(_mousePosition)) {
 				CheckSectorMapClick();
+			} else if (_mapGrid.Wormholes.Any(x => x.MousePointerIsOver)) {
+				SwitchCameraToJoinedWormhole();
 			} else {
 				_dragging = true;
 				_camera.EnableEdgePanning = false;
@@ -125,6 +127,14 @@ public partial class PlayerController : Node {
 			var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
 			_buildingShade.CalculateBuildingPlace(pos, planet);
 		}
+	}
+
+	private void SwitchCameraToJoinedWormhole() {
+		var wormhole = _mapGrid.Wormholes.Find(x => x.MousePointerIsOver);
+		var who = _mapGrid.WormholeObjects.Find(x => x.IsConnected(wormhole.GameNode));
+		var otherNode = who.GetOtherNode(wormhole.GameNode);
+		_camera.CenterOnGridPosition(otherNode.Position);
+		CurrentSector = otherNode.Index;
 	}
 
 	private void CheckSectorMapClick() {
@@ -240,12 +250,14 @@ public partial class PlayerController : Node {
 				foreach (var unit in units) {
 					unit.Selected = !unit.Selected;
 				}
+
 				_selectedUnits = _units.Where(x => x.Selected).ToList();
 			}
 		} else {
 			foreach (var unit in _units) {
 				unit.Selected = AreaHelper.InRect(unit.Position, start, end);
 			}
+
 			_selectedUnits = _units.Where(x => x.Selected).ToList();
 		}
 
