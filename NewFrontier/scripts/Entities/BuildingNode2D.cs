@@ -1,6 +1,8 @@
 using System;
 using Godot;
 using NewFrontier.scripts.Controllers;
+using NewFrontier.scripts.helpers;
+using NewFrontier.scripts.Model;
 
 namespace NewFrontier.scripts.Entities;
 
@@ -15,17 +17,28 @@ public partial class BuildingNode2D : Node2D {
 	private const int ImgSize = 34;
 	[Export] public int Wide = 1;
 
+	public string BuildingName;
+
+	/// <summary>
+	///		Snap to planet or snap to grid
+	/// </summary>
+	public SnapOption SnapToPlanet = SnapOption.Planet;
+
 	public override void _Ready() {
-		Scale = new Vector2(Planet.Radius / (float)ImgSize, Planet.Radius / (float)ImgSize);
+		if (SnapToPlanet == SnapOption.Planet) {
+			Scale = new Vector2(Planet.Radius / (float)ImgSize, Planet.Radius / (float)ImgSize);
+		}
 		_sprite = GetNode<Sprite2D>("Sprite2D");
 	}
 
-	public void Init(PlayerController playerController, int zIndex = 10) {
+	public BuildingNode2D Init(PlayerController playerController, string name, int zIndex = 10) {
 		_playerController = playerController;
+		BuildingName = name;
 		ZIndex = zIndex;
+		return this;
 	}
-	
-	private int[] CalculatePlace(Node2D planet, Vector2 pos) {
+
+	private int[] CalculatePlaceOnPlanet(Node2D planet, Vector2 pos) {
 		const int planetAngleSize = 30;
 		const int planetHalfAngleSize = 15;
 		double angle = Mathf.RadToDeg(planet.GlobalPosition.AngleToPoint(pos));
@@ -44,11 +57,23 @@ public partial class BuildingNode2D : Node2D {
 	public void CalculateBuildingPlace(Vector2 pos, Planet planet = null) {
 		Planet = planet;
 		if (Planet is not null) {
-			Place = CalculatePlace(planet, pos);
+			Place = CalculatePlaceOnPlanet(planet, pos);
 		} else {
 			Place = Array.Empty<int>();
 			GlobalPosition = pos - (_sprite.Offset * Scale);
 			RotationDegrees = 0;
+		}
+	}
+
+	public void CalculateBuildingGridPlace(Vector2 pos) {
+		if (Wide == 1) {
+			var gridPos = MapHelpers.PosToGrid(pos);
+			GlobalPosition = MapHelpers.GridCoordToGridCenterPos(gridPos);
+		} else if (Wide == 2) {
+			var gridPos = MapHelpers.PosToGrid(pos);
+			GlobalPosition = MapHelpers.GridCoordToGridPointPos(gridPos);
+		} else {
+			GlobalPosition = pos;
 		}
 	}
 }

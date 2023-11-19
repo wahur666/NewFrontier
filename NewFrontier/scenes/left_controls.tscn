@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dsq1lag3r7s8o"]
+[gd_scene load_steps=4 format=3 uid="uid://dsq1lag3r7s8o"]
 
 [ext_resource type="Script" path="res://scripts/UI/LeftControls.cs" id="1_gw5hu"]
+[ext_resource type="Texture2D" uid="uid://ct0gshyqjllb0" path="res://gfx/Jumpgate1.png" id="2_18l88"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6gscy"]
 bg_color = Color(0.686275, 0.686275, 0.686275, 1)
@@ -34,7 +35,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Container" type="Control" parent="Panel"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -65,3 +65,12 @@ offset_top = 91.0
 offset_right = 105.0
 offset_bottom = 122.0
 text = "Building 3"
+
+[node name="Button4" type="Button" parent="Panel/Container"]
+layout_mode = 0
+offset_left = 114.0
+offset_top = 11.0
+offset_right = 250.0
+offset_bottom = 147.0
+scale = Vector2(0.4, 0.4)
+icon = ExtResource("2_18l88")

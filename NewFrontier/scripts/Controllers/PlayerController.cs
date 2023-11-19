@@ -5,14 +5,14 @@ using Godot;
 using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
+using NewFrontier.scripts.Model.Factions;
 using NewFrontier.scripts.UI;
 
 namespace NewFrontier.scripts.Controllers;
 
 public partial class PlayerController : Node {
-	private PackedScene _base1;
-	private PackedScene _base2;
-	private PackedScene _base3;
+
+	public Faction Faction;
 
 	private readonly List<BuildingNode2D> _buildings = new();
 	private BuildingNode2D _buildingShade;
@@ -30,7 +30,7 @@ public partial class PlayerController : Node {
 
 	public byte CurrentSector {
 		get => _currentSector;
-		set {
+		private set {
 			_currentSector = value;
 			CurrentSectorObj = _mapGrid.GetSector(_currentSector);
 		}
@@ -60,9 +60,7 @@ public partial class PlayerController : Node {
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		_base1 = GD.Load<PackedScene>("res://scenes/base_1.tscn");
-		_base2 = GD.Load<PackedScene>("res://scenes/base_2.tscn");
-		_base3 = GD.Load<PackedScene>("res://scenes/base_3.tscn");
+		Faction = Faction.CreateTerran();
 		_harvester = GD.Load<PackedScene>("res://scenes/harvester.tscn");
 		_fabricator = GD.Load<PackedScene>("res://scenes/fabricator.tscn");
 		_camera = GetNode<CameraController>("../../Camera2D");
@@ -135,10 +133,14 @@ public partial class PlayerController : Node {
 
 		if (BuildingMode && _buildingShade is not null) {
 			var pos = _camera.GetGlobalMousePosition();
-			var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
-			_buildingShade.CalculateBuildingPlace(pos, planet);
+			if (_buildingShade.SnapToPlanet == SnapOption.Planet) {
+				var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
+				_buildingShade.CalculateBuildingPlace(pos, planet);
+			} else {
+				_buildingShade.CalculateBuildingGridPlace(pos);				
+			}
 		}
-		
+
 		CurrentSectorObj.CameraPosition = _camera.Position;
 	}
 
@@ -213,42 +215,16 @@ public partial class PlayerController : Node {
 		}
 	}
 
-	public void CreateBuilding1() {
+	public void CreateBuilding(string name) {
 		BuildingMode = true;
-		if (_buildingShade?.Wide == 1) {
+		if (_buildingShade?.BuildingName == name) {
 			return;
 		}
-
 		FreeBuildingShade();
-		_buildingShade = _base1.Instantiate<BuildingNode2D>();
-		_buildingShade.Init(this);
+		_buildingShade = Faction.Create(this, name);
 		AddChild(_buildingShade);
 	}
-
-	public void CreateBuilding2() {
-		BuildingMode = true;
-		if (_buildingShade?.Wide == 2) {
-			return;
-		}
-
-		FreeBuildingShade();
-		_buildingShade = _base2.Instantiate<BuildingNode2D>();
-		_buildingShade.Init(this);
-		AddChild(_buildingShade);
-	}
-
-	public void CreateBuilding3() {
-		BuildingMode = true;
-		if (_buildingShade?.Wide == 3) {
-			return;
-		}
-
-		FreeBuildingShade();
-		_buildingShade = _base3.Instantiate<BuildingNode2D>();
-		_buildingShade.Init(this);
-		AddChild(_buildingShade);
-	}
-
+	
 	public void BuildBuilding(BuildingNode2D buildingNode2D) {
 		var building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
 		if (building is not null) {
@@ -350,4 +326,5 @@ public partial class PlayerController : Node {
 	public void IncreaseOre(int amount) => _playerStats.CurrentOre += amount;
 	public void IncreaseGas(int amount) => _playerStats.CurrentGas += amount;
 	public void IncreaseCrew(int amount) => _playerStats.CurrentCrew += amount;
+
 }
