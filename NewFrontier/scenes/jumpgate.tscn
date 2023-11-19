@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://covagukijnsba"]
+
+[ext_resource type="Texture2D" uid="uid://ct0gshyqjllb0" path="res://gfx/Jumpgate1.png" id="1_3ghm4"]
+
+[node name="Jumpgate" type="Node2D"]
+scale = Vector2(3, 3)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_3ghm4")
