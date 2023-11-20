@@ -11,8 +11,7 @@ using NewFrontier.scripts.UI;
 namespace NewFrontier.scripts.Controllers;
 
 public partial class PlayerController : Node {
-
-	public Faction Faction;
+	private Faction _faction;
 
 	private readonly List<BuildingNode2D> _buildings = new();
 	private BuildingNode2D _buildingShade;
@@ -53,14 +52,11 @@ public partial class PlayerController : Node {
 
 	#endregion
 
-	public bool BuildingMode {
-		get;
-		private set;
-	}
+	private bool _buildingMode;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		Faction = Faction.CreateTerran();
+		_faction = Faction.CreateTerran();
 		_harvester = GD.Load<PackedScene>("res://scenes/harvester.tscn");
 		_fabricator = GD.Load<PackedScene>("res://scenes/fabricator.tscn");
 		_camera = GetNode<CameraController>("../../Camera2D");
@@ -100,9 +96,9 @@ public partial class PlayerController : Node {
 				_camera.EnableEdgePanning = false;
 			}
 		} else if (Input.IsActionJustPressed("RMB")) {
-			if (BuildingMode) {
+			if (_buildingMode) {
 				FreeBuildingShade();
-				BuildingMode = false;
+				_buildingMode = false;
 			} else {
 				_dragStart = _camera.GetGlobalMousePosition();
 				_dragStartV = _mousePosition;
@@ -131,13 +127,13 @@ public partial class PlayerController : Node {
 			DrawArea();
 		}
 
-		if (BuildingMode && _buildingShade is not null) {
+		if (_buildingMode && _buildingShade is not null) {
 			var pos = _camera.GetGlobalMousePosition();
 			if (_buildingShade.SnapToPlanet == SnapOption.Planet) {
 				var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
 				_buildingShade.CalculateBuildingPlace(pos, planet);
 			} else {
-				_buildingShade.CalculateBuildingGridPlace(pos);				
+				_buildingShade.CalculateBuildingGridPlace(pos);
 			}
 		}
 
@@ -173,7 +169,7 @@ public partial class PlayerController : Node {
 		_camera.Position = sector.CameraPosition;
 	}
 
-	public void DrawArea(bool s = true) {
+	private void DrawArea(bool s = true) {
 		var panel = _uiController.SelectionPanel;
 		panel.Size = new Vector2(Math.Abs(_dragStartV.X - _dragEndV.X), Math.Abs(_dragStartV.Y - _dragEndV.Y));
 		var pos = Vector2.Zero;
@@ -192,18 +188,6 @@ public partial class PlayerController : Node {
 	}
 
 
-	public int AvailableOreStorage() {
-		return _playerStats.MaxOre - _playerStats.CurrentOre;
-	}
-
-	public int AvailableGasStorage() {
-		return _playerStats.MaxGas - _playerStats.CurrentGas;
-	}
-
-	public int AvailableCrewStorage() {
-		return _playerStats.MaxCrew - _playerStats.CurrentCrew;
-	}
-
 	private void FreeBuildingShade() {
 		_buildingShade?.QueueFree();
 		_buildingShade = null;
@@ -216,15 +200,16 @@ public partial class PlayerController : Node {
 	}
 
 	public void CreateBuilding(string name) {
-		BuildingMode = true;
+		_buildingMode = true;
 		if (_buildingShade?.BuildingName == name) {
 			return;
 		}
+
 		FreeBuildingShade();
-		_buildingShade = Faction.Create(this, name);
+		_buildingShade = _faction.Create(this, name);
 		AddChild(_buildingShade);
 	}
-	
+
 	public void BuildBuilding(BuildingNode2D buildingNode2D) {
 		var building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
 		if (building is not null) {
@@ -234,7 +219,7 @@ public partial class PlayerController : Node {
 
 	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
-		BuildingMode = false;
+		_buildingMode = false;
 
 		if (shiftDown) {
 			var units = _units.Where(unit => AreaHelper.InRect(unit.Position, start, end)).ToList();
@@ -260,7 +245,7 @@ public partial class PlayerController : Node {
 	}
 
 	private void SelectUnitNearPoint(Vector2 point) {
-		if (_uiController.MouseOverGui(_mousePosition) || BuildingMode) {
+		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode) {
 			return;
 		}
 
@@ -323,8 +308,13 @@ public partial class PlayerController : Node {
 			);
 	}
 
+	public int AvailableOreStorage() => _playerStats.MaxOre - _playerStats.CurrentOre;
+
+	public int AvailableGasStorage() => _playerStats.MaxGas - _playerStats.CurrentGas;
+
+	public int AvailableCrewStorage() => _playerStats.MaxCrew - _playerStats.CurrentCrew;
+
 	public void IncreaseOre(int amount) => _playerStats.CurrentOre += amount;
 	public void IncreaseGas(int amount) => _playerStats.CurrentGas += amount;
 	public void IncreaseCrew(int amount) => _playerStats.CurrentCrew += amount;
-
 }

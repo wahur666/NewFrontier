@@ -7,15 +7,13 @@ namespace NewFrontier.scripts.Model.Factions;
 
 public class Faction {
 	public string Name;
-	public Dictionary<string, PackedScene> Scenes = new();
+	private Dictionary<string, PackedScene> _scenes = new();
 
-	private Faction(string name) {
-		Name = name;
-	}
+	private Faction(string name) => Name = name;
 
 	private void LoadScene(string name, string path) {
 		var scene = GD.Load<PackedScene>(path);
-		Scenes.Add(name, scene);
+		_scenes.Add(name, scene);
 	}
 
 
@@ -33,7 +31,7 @@ public class Faction {
 	}
 
 	public BuildingNode2D Create(PlayerController playerController, string name) {
-		var instance = Scenes[name].Instantiate<BuildingNode2D>();
+		var instance = _scenes[name].Instantiate<BuildingNode2D>();
 		if (name == Terran.Jumpgate) {
 			instance.SnapToPlanet = SnapOption.Wormhole;
 		}

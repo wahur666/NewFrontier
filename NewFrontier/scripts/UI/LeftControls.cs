@@ -50,6 +50,7 @@ public partial class LeftControls : Control {
 		_button1.MouseEntered += MouseEnteredPanelElement;
 		_button2.MouseEntered += MouseEnteredPanelElement;
 		_button3.MouseEntered += MouseEnteredPanelElement;
+		_button4.MouseEntered += MouseEnteredPanelElement;
 
 		_iconContainer.MouseEntered += MouseEnteredPanelElement;
 		_iconContainer.MouseExited += MouseExitedPanelElement;
