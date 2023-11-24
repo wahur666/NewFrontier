@@ -71,6 +71,12 @@ public partial class BuildingNode2D : Node2D {
 			GlobalPosition = MapHelpers.GridCoordToGridCenterPos(gridPos);
 		} else if (Wide == 2) {
 			var gridPos = MapHelpers.PosToGrid(pos);
+			if (gridPos.X % 2 != 1) {
+				gridPos += new Vector2I(1, 0);
+			}
+			if (gridPos.Y % 2 != 1) {
+				gridPos += new Vector2I(0, 1);
+			}
 			GlobalPosition = MapHelpers.GridCoordToGridPointPos(gridPos);
 		} else {
 			GlobalPosition = pos;
