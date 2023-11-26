@@ -12,6 +12,7 @@ namespace NewFrontier.scripts.Controllers;
 
 public partial class PlayerController : Node {
 	private Faction _faction;
+	private Node _buildingContainer;
 
 	private readonly List<BuildingNode2D> _buildings = new();
 	private BuildingNode2D _buildingShade;
@@ -59,6 +60,7 @@ public partial class PlayerController : Node {
 		_faction = Faction.CreateTerran();
 		_harvester = GD.Load<PackedScene>("res://scenes/harvester.tscn");
 		_fabricator = GD.Load<PackedScene>("res://scenes/fabricator.tscn");
+		_buildingContainer = GetNode<Node>("BuildingsContainer");
 		_camera = GetNode<CameraController>("../../Camera2D");
 		_camera.PlayerControllerInstance = this;
 		_mapGrid = GetNode<MapGrid>("../../MapGrid");
@@ -215,11 +217,27 @@ public partial class PlayerController : Node {
 	}
 
 	public void BuildBuilding(BuildingNode2D buildingNode2D) {
-		var building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
+		BuildingNode2D building = null;
+		if (buildingNode2D.SnapOption == SnapOption.Planet) {
+			building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
+		} else {
+			if (buildingNode2D.SnapOption == SnapOption.Grid) {
+				if (buildingNode2D.Wide == 1) {
+				} else if (buildingNode2D.Wide == 2) {
+				}
+
+				building = buildingNode2D.Duplicate() as BuildingNode2D;
+				building.BuildingShade = false;
+				_buildingContainer.AddChild(building);
+			} else if (buildingNode2D.SnapOption == SnapOption.Wormhole) {
+			}
+		}
+
 		if (building is not null) {
 			_buildings.Add(building);
 		}
 	}
+
 
 	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
 		var shiftDown = Input.IsKeyPressed(Key.Shift);

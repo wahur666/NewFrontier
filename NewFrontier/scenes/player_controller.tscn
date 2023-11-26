@@ -4,3 +4,5 @@
 
 [node name="PlayerController" type="Node" groups=["player"]]
 script = ExtResource("1_bildt")
+
+[node name="BuildingsContainer" type="Node" parent="."]
