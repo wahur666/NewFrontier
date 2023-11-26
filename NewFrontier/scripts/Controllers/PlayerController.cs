@@ -85,8 +85,10 @@ public partial class PlayerController : Node {
 		if (Input.IsActionJustPressed("LMB")) {
 			_dragStart = _camera.GetGlobalMousePosition();
 			_dragStartV = _mousePosition;
-			if (_buildingShade?.Planet is not null) {
-				BuildBuilding(_buildingShade);
+			if (_buildingMode) {
+				if (_buildingShade?.Planet is not null) {
+					BuildBuilding(_buildingShade);
+				}
 			} else if (_uiController.MouseOverSectorMap(_mousePosition)) {
 				CheckSectorMapClick();
 			} else if (_mapGrid.Wormholes.Any(x => x.MousePointerIsOver)) {

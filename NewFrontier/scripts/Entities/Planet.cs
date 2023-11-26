@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using NewFrontier.scripts.Model;
 
 namespace NewFrontier.scripts.Entities;
 
@@ -12,6 +13,8 @@ public partial class Planet : Node2D {
 	private Node _buildingsContainer;
 	private PlanetBuildingScheme _planetBuildingScheme;
 	private readonly bool[] _slotOccupiedStatus = new Boolean[12];
+
+	[Export] public PlanetType PlanetType = PlanetType.Earth;
 
 	public override void _Ready() {
 		_buildingsContainer = GetNode<Node>("BuildingsContainer");
