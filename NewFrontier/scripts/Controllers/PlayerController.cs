@@ -67,6 +67,7 @@ public partial class PlayerController : Node {
 		CreateStartingUnits();
 		_camera.CenterOnGridPosition(new Vector2(12, 17));
 		CurrentSector = 0;
+		UpdateUi();
 	}
 
 	private void CreateStartingUnits() {
@@ -131,7 +132,7 @@ public partial class PlayerController : Node {
 
 		if (_buildingMode && _buildingShade is not null) {
 			var pos = _camera.GetGlobalMousePosition();
-			if (_buildingShade.SnapToPlanet == SnapOption.Planet) {
+			if (_buildingShade.SnapOption == SnapOption.Planet) {
 				var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
 				_buildingShade.CalculateBuildingPlace(pos, planet);
 			} else {
@@ -203,12 +204,13 @@ public partial class PlayerController : Node {
 
 	public void CreateBuilding(string name) {
 		_buildingMode = true;
-		if (_buildingShade?.BuildingName == name) {
+		if (_buildingShade?.Name == name) {
 			return;
 		}
 
 		FreeBuildingShade();
 		_buildingShade = _faction.Create(this, name);
+		_buildingShade.Visible = false;
 		AddChild(_buildingShade);
 	}
 

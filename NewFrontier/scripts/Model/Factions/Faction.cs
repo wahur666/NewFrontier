@@ -34,7 +34,7 @@ public class Faction {
 		var instance = _scenes[name].Instantiate<BuildingNode2D>();
 		if (name == Terran.Jumpgate) {
 			instance.Wide = 2;
-			instance.SnapToPlanet = SnapOption.Wormhole;
+			instance.SnapOption = SnapOption.Wormhole;
 		}
 		return instance.Init(playerController, name);
 	}

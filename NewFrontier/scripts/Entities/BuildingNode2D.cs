@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.helpers;
@@ -13,20 +14,21 @@ public partial class BuildingNode2D : Node2D {
 	private PlayerController _playerController;
 	private Sprite2D _sprite;
 	public bool BuildingShade = true;
+	private const int PlanetImgSize = 34;
 
-	private const int ImgSize = 34;
 	[Export] public int Wide = 1;
-
+	
+	public int Health;
 	public string BuildingName;
-
-	/// <summary>
-	///		Snap to planet or snap to grid
-	/// </summary>
-	public SnapOption SnapToPlanet = SnapOption.Planet;
+	
+	public SnapOption SnapOption = SnapOption.Planet;
+	public List<string> PreRequisites;
+	public List<object> BuildQueue;
+	public List<object> Items;
 
 	public override void _Ready() {
-		if (SnapToPlanet == SnapOption.Planet) {
-			Scale = new Vector2(Planet.Radius / (float)ImgSize, Planet.Radius / (float)ImgSize);
+		if (SnapOption == SnapOption.Planet) {
+			Scale = new Vector2(Planet.Radius / (float)PlanetImgSize, Planet.Radius / (float)PlanetImgSize);
 		}
 		_sprite = GetNode<Sprite2D>("Sprite2D");
 	}
