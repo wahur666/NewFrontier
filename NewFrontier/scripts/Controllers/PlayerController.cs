@@ -132,6 +132,7 @@ public partial class PlayerController : Node {
 			DrawArea();
 		}
 
+		// Updates the building shade position every frame
 		if (_buildingMode && _buildingShade is not null) {
 			var pos = _camera.GetGlobalMousePosition();
 			if (_buildingShade.SnapOption == SnapOption.Planet) {
@@ -221,16 +222,16 @@ public partial class PlayerController : Node {
 		if (buildingNode2D.SnapOption == SnapOption.Planet) {
 			building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
 		} else {
-			if (buildingNode2D.SnapOption == SnapOption.Grid) {
-				if (buildingNode2D.Wide == 1) {
-				} else if (buildingNode2D.Wide == 2) {
-				}
-
-				building = buildingNode2D.Duplicate() as BuildingNode2D;
-				building.BuildingShade = false;
-				_buildingContainer.AddChild(building);
-			} else if (buildingNode2D.SnapOption == SnapOption.Wormhole) {
-			}
+			// if (buildingNode2D.SnapOption == SnapOption.Grid) {
+			// 	if (buildingNode2D.Wide == 1) {
+			// 	} else if (buildingNode2D.Wide == 2) {
+			// 	}
+			//
+			// 	building = buildingNode2D.Duplicate() as BuildingNode2D;
+			// 	building.BuildingShade = false;
+			// 	_buildingContainer.AddChild(building);
+			// } else if (buildingNode2D.SnapOption == SnapOption.Wormhole) {
+			// }
 		}
 
 		if (building is not null) {
