@@ -22,6 +22,7 @@ public partial class UnitNode2D : CharacterBody2D {
 
 	private Vector2 _targetDestination;
 	private UiController _uiController;
+	private float _rotationSpeed = 2.0f;
 
 	[Export]
 	public bool Selected {
@@ -48,6 +49,10 @@ public partial class UnitNode2D : CharacterBody2D {
 	}
 
 	private void CanvasOnDraw() {
+		if (!Selected) {
+			return;
+		}
+
 		var points = new List<Vector2> { Position, _targetDestination };
 		points.AddRange(_navPoints.Select(x => MapHelpers.GridCoordToGridCenterPos(x.Position)));
 		DrawPath(points);
@@ -62,66 +67,17 @@ public partial class UnitNode2D : CharacterBody2D {
 	public override void _PhysicsProcess(double delta) {
 		base._PhysicsProcess(delta);
 
-		// switch (_travelState) {
-		// 	case TravelState.PrepareForTraveling:
-		// 		break;
-		// 	case TravelState.Traveling:
-		// 		break;
-		// 	case TravelState.EndTraveling:
-		// 		break;
-		// 	case TravelState.NotTraveling:
-		// 	default:
-		// 		throw new ArgumentOutOfRangeException();
-		// }
-
-		if (Position.DistanceTo(_targetDestination) < 5) {
-			if (_navPoints.Count > 0) {
-				_moving = true;
-				_targetDestination = MapHelpers.GridCoordToGridCenterPos(_navPoints.Dequeue().Position);
-			} else {
-				_moving = false;
-				Velocity = Vector2.Zero;
-			}
-
-			return;
-		}
-
-		var direction = _targetDestination - GlobalPosition;
-		direction = direction.Normalized();
-
-		// Calculate the angle between the current rotation and the direction vector
-		var targetRotation = Mathf.Atan2(direction.Y, direction.X);
-
-		// Ensure the angle is between -PI and PI
-		while (targetRotation - Rotation > Mathf.Pi) {
-			targetRotation -= Mathf.Tau;
-		}
-
-		while (targetRotation - Rotation < -Mathf.Pi) {
-			targetRotation += Mathf.Tau;
-		}
-
-		// Define a constant rotation speed
-		var rotationSpeed = 2.0f; // You can adjust this value as needed
-
-		// Calculate the rotation difference
-		var rotationDifference = targetRotation - Rotation + (Mathf.Pi / 2);
-
-		// Determine the shortest path to the target rotation
-		if (rotationDifference > Mathf.Pi) {
-			rotationDifference -= Mathf.Tau;
-		} else if (rotationDifference < -Mathf.Pi) {
-			rotationDifference += Mathf.Tau;
-		}
-
-		// Rotate at a constant speed
-		if (Mathf.Abs(rotationDifference) > 0.03) {
-			float rotationDirection = Mathf.Sign(rotationDifference);
-			Rotation += rotationDirection * rotationSpeed * (float)delta;
-		} else {
-			// When the rotation aligns with the direction vector, assign the velocity
-			Velocity = direction * _speed * (float)delta * 20;
-			MoveAndSlide();
+		switch (_travelState) {
+			// case TravelState.PrepareForTraveling:
+			// break;
+			// 	case TravelState.Traveling:
+			// 		break;
+			// 	case TravelState.EndTraveling:
+			// 		break;
+			case TravelState.NotTraveling:
+			default:
+				UpdateNotTraveling(delta);
+				break;
 		}
 	}
 
@@ -156,25 +112,86 @@ public partial class UnitNode2D : CharacterBody2D {
 		_navPoints = new Queue<GameNode>(vector2S);
 	}
 
-	// updateNotTraveling(delta: number) {
-	//        if (this.selected) {
-	//            this.drawPath();
-	//        }
-	//        if (this.navNodes.value.length > 0) {
-	//            const target = this.navPoints.value[0];
-	//            if (this.pos.distance(target) < 5) {
-	//                this.navNodes.value = this.navNodes.value.slice(1);
-	//                if (this.navNodes.value.length === 0) {
-	//                    this.stopNav();
-	//                } else if (this.navNodes.value.length > 1 && this.navNodes.value[0].hasWormhole && this.navNodes.value[1].hasWormhole) {
-	//                    this.traveling = TravelState.PREPARE_FOR_TRAVELING;
-	//                }
-	//            } else {
-	//                this.moveToTarget(target, 50);
-	//            }
-	//        }
-	//    }
-	//
+	void UpdateNotTraveling(double delta) {
+		if (Position.DistanceTo(_targetDestination) < 5) {
+			if (_navPoints.Count > 0) {
+				_moving = true;
+				_targetDestination = MapHelpers.GridCoordToGridCenterPos(_navPoints.Dequeue().Position);
+			} else {
+				_moving = false;
+				Velocity = Vector2.Zero;
+			}
+			return;
+		}
+		MoveToTarget(delta);
+
+
+		// if (this.navNodes.value.length > 0) {
+		// 	const target  = this.navPoints.value[0];
+		// 	if (this.pos.distance(target) < 5) {
+		// 		this.navNodes.value = this.navNodes.value.slice(1);
+		// 		if (this.navNodes.value.length == = 0) {
+		// 			this.stopNav();
+		// 		} else if (this.navNodes.value.length > 1 && this.navNodes.value[0].hasWormhole &&
+		// 		           this.navNodes.value[1].hasWormhole) {
+		// 			this.traveling = TravelState.PREPARE_FOR_TRAVELING;
+		// 		}
+		// 	} else {
+		// 		this.moveToTarget(target, 50);
+		// 	}
+		// }
+	}
+
+	private void MoveToTarget(double delta)
+	{
+		var rotationDifference = CalculateRotationDifference();
+		if (Mathf.Abs(rotationDifference) > 0.03)
+		{
+			RotateTowardsTarget(delta, rotationDifference, _rotationSpeed);
+			return;
+		}
+
+		MoveTowardsTarget(delta);
+	}
+
+	private void RotateTowardsTarget(double delta, float rotationDifference, float rotationSpeed)
+	{
+		var rotationDirection = Mathf.Sign(rotationDifference);
+		Rotation += rotationDirection * rotationSpeed * (float)delta;
+	}
+
+	private void MoveTowardsTarget(double delta) {
+		// When the rotation aligns with the direction vector, assign the velocity
+		var direction = GlobalPosition.DirectionTo(_targetDestination);
+		Velocity = direction * _speed * (float)delta * 20;
+		MoveAndSlide();
+	}
+
+	private float CalculateRotationDifference() {
+		var targetRotation = CalculateTargetRotation();
+		var rotationDifference = targetRotation - Rotation + (Mathf.Pi / 2);
+
+		// Determine the shortest path to the target rotation
+		if (rotationDifference > Mathf.Pi) {
+			rotationDifference -= Mathf.Tau;
+		} else if (rotationDifference < -Mathf.Pi) {
+			rotationDifference += Mathf.Tau;
+		}
+
+		return rotationDifference;
+	}
+
+	private float CalculateTargetRotation() {
+		var targetRotation = GlobalPosition.AngleToPoint(_targetDestination);
+		while (targetRotation - Rotation > Mathf.Pi) {
+			targetRotation -= Mathf.Tau;
+		}
+		while (targetRotation - Rotation < -Mathf.Pi) {
+			targetRotation += Mathf.Tau;
+		}
+		return targetRotation;
+	}
+
 	//    updatePrepareForTraveling(delta: number) {
 	//        // Wait until everybody is read for jump
 	//        this.selectedGraphics.clear();
