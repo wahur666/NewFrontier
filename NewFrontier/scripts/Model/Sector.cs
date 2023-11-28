@@ -37,6 +37,7 @@ public class Sector {
 		_size = size;
 		SectorPosition = sectorPosition;
 		Index = index;
+		CameraPosition = MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(size - 1, size - 1), index));
 		CreateSector();
 	}
 
