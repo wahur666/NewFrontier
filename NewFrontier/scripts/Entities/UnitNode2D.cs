@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -14,6 +15,10 @@ public partial class UnitNode2D : CharacterBody2D {
 	private int _speed = 300;
 	private TravelState _travelState = TravelState.NotTraveling;
 	private Node2D _canvas;
+
+	private double _travelTime = 1d;
+	private double _currentTravelTime = 0d;
+
 
 	private Queue<GameNode> _navPoints = new();
 	private PlayerController _playerController;
@@ -68,12 +73,15 @@ public partial class UnitNode2D : CharacterBody2D {
 		base._PhysicsProcess(delta);
 
 		switch (_travelState) {
-			// case TravelState.PrepareForTraveling:
-			// break;
-			// 	case TravelState.Traveling:
-			// 		break;
-			// 	case TravelState.EndTraveling:
-			// 		break;
+			case TravelState.PrepareForTraveling:
+				UpdatePrepareForTraveling(delta);
+				break;
+			case TravelState.Traveling:
+				UpdateTraveling(delta);
+				break;
+			case TravelState.EndTraveling:
+				UpdateEndTraveling(delta);
+				break;
 			case TravelState.NotTraveling:
 			default:
 				UpdateNotTraveling(delta);
@@ -112,58 +120,50 @@ public partial class UnitNode2D : CharacterBody2D {
 		_navPoints = new Queue<GameNode>(vector2S);
 	}
 
-	void UpdateNotTraveling(double delta) {
+	private void StopBody() {
+		_moving = false;
+		Velocity = Vector2.Zero;
+	}
+
+	private void UpdateNotTraveling(double delta) {
 		if (Position.DistanceTo(_targetDestination) < 5) {
 			if (_navPoints.Count > 0) {
 				_moving = true;
-				_targetDestination = MapHelpers.GridCoordToGridCenterPos(_navPoints.Dequeue().Position);
+				var target = _navPoints.Dequeue();
+				_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+				if (target.HasWormhole && _navPoints.Count > 0 && _navPoints.Peek().HasWormhole) {
+					this._travelState = TravelState.PrepareForTraveling;
+					GD.Print("prepare for travelling");
+				}
 			} else {
-				_moving = false;
-				Velocity = Vector2.Zero;
+				StopBody();
 			}
+
 			return;
 		}
+
 		MoveToTarget(delta);
-
-
-		// if (this.navNodes.value.length > 0) {
-		// 	const target  = this.navPoints.value[0];
-		// 	if (this.pos.distance(target) < 5) {
-		// 		this.navNodes.value = this.navNodes.value.slice(1);
-		// 		if (this.navNodes.value.length == = 0) {
-		// 			this.stopNav();
-		// 		} else if (this.navNodes.value.length > 1 && this.navNodes.value[0].hasWormhole &&
-		// 		           this.navNodes.value[1].hasWormhole) {
-		// 			this.traveling = TravelState.PREPARE_FOR_TRAVELING;
-		// 		}
-		// 	} else {
-		// 		this.moveToTarget(target, 50);
-		// 	}
-		// }
 	}
 
-	private void MoveToTarget(double delta)
-	{
+	private void MoveToTarget(double delta, float speed = 1) {
 		var rotationDifference = CalculateRotationDifference();
-		if (Mathf.Abs(rotationDifference) > 0.03)
-		{
+		if (Mathf.Abs(rotationDifference) > 0.03) {
 			RotateTowardsTarget(delta, rotationDifference, _rotationSpeed);
 			return;
 		}
 
-		MoveTowardsTarget(delta);
+		MoveTowardsTarget(delta, speed);
 	}
 
-	private void RotateTowardsTarget(double delta, float rotationDifference, float rotationSpeed)
-	{
+	private void RotateTowardsTarget(double delta, float rotationDifference, float rotationSpeed) {
 		var rotationDirection = Mathf.Sign(rotationDifference);
 		Rotation += rotationDirection * rotationSpeed * (float)delta;
 	}
 
-	private void MoveTowardsTarget(double delta) {
+	private void MoveTowardsTarget(double delta, float speed = 1) {
 		// When the rotation aligns with the direction vector, assign the velocity
 		var direction = GlobalPosition.DirectionTo(_targetDestination);
-		Velocity = direction * _speed * (float)delta * 20;
+		Velocity = direction * _speed * (float)delta * 20 * speed;
 		MoveAndSlide();
 	}
 
@@ -186,61 +186,70 @@ public partial class UnitNode2D : CharacterBody2D {
 		while (targetRotation - Rotation > Mathf.Pi) {
 			targetRotation -= Mathf.Tau;
 		}
+
 		while (targetRotation - Rotation < -Mathf.Pi) {
 			targetRotation += Mathf.Tau;
 		}
+
 		return targetRotation;
 	}
 
-	//    updatePrepareForTraveling(delta: number) {
-	//        // Wait until everybody is read for jump
-	//        this.selectedGraphics.clear();
-	//        this.selectedGraphics.lineStyle(2, 0x00ff00, 1);
-	//        this.selectedGraphics.lineBetween(this.x, this.y, this.navPoints.value[0].x, this.navPoints.value[0].y);
-	//        this.body?.stop();
-	//        const target = this.navPoints.value[0];
-	//        this.setRotation(Math.atan2(-this.y + target.y, -this.x + target.x) + Math.PI / 2);
-	//        if (this.currentTravelTime < this.travelTime) {
-	//            this.currentTravelTime += delta;
-	//            return;
-	//        }
-	//        if (this.pos.distance(target) < 5) {
-	//            this.navNodes.value = this.navNodes.value.slice(1);
-	//        } else {
-	//            this.moveToTarget(target, 200);
-	//            return;
-	//        }
-	//        this.currentTravelTime = 0;
-	//        this.traveling = TravelState.TRAVELING;
-	//    }
-	//
-	//    updateTraveling(delta: number) {
-	//        this.visible = false;
-	//        if (this.currentTravelTime < this.travelTime) {
-	//            this.currentTravelTime += delta;
-	//            return;
-	//        }
-	//        const target = this.navPoints.value[0];
-	//        this.x = target.x;
-	//        this.y = target.y;
-	//        this.currentTravelTime = 0;
-	//        this.navNodes.value = this.navNodes.value.slice(1);
-	//        this.traveling = TravelState.END_TRAVELING;
-	//    }
-	//
-	//    private void UpdateEndTraveling(double delta) {
-	//        Visible = true;
-	//        // speed up ship until its reached the next position
-	//        var target = this.navPoints.value[0];
-	//        if (this.pos.distance(target) < 5) {
-	//            this.navNodes.value = this.navNodes.value.slice(1);
-	//        } else {
-	//            this.moveToTarget(target, 200);
-	//            return;
-	//        }
-	//        if (this.navNodes.value.length === 0) {
-	//            this.stopNav();
-	//        }
-	//        this.traveling = TravelState.NOT_TRAVELING;
-	//    }
+	private void UpdatePrepareForTraveling(double delta) {
+		// Wait until everybody is read for jump
+		StopBody();
+		var rotationDifference = CalculateRotationDifference();
+		if (Mathf.Abs(rotationDifference) > 0.03) {
+			RotateTowardsTarget(delta, rotationDifference, _rotationSpeed);
+			return;
+		}
+
+		if (_currentTravelTime < _travelTime) {
+			_currentTravelTime += delta;
+			return;
+		}
+
+		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
+			var target = _navPoints.Dequeue();
+			_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+		} else {
+			MoveToTarget(delta, 4);
+			return;
+		}
+
+		_currentTravelTime = 0;
+		_travelState = TravelState.Traveling;
+	}
+
+	private void UpdateTraveling(double delta) {
+		Visible = false;
+		if (_currentTravelTime < _travelTime) {
+			_currentTravelTime += delta;
+			return;
+		}
+
+		GlobalPosition = _targetDestination;
+		_currentTravelTime = 0;
+		var target = _navPoints.Dequeue();
+		_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+		Rotation = GlobalPosition.AngleToPoint(_targetDestination) + Mathf.Pi / 2;
+		_travelState = TravelState.EndTraveling;
+	}
+
+	private void UpdateEndTraveling(double delta) {
+		Visible = true;
+		// speed up ship until its reached the next position
+		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
+			var target = _navPoints.Dequeue();
+			_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+		} else {
+			MoveToTarget(delta, 4);
+			return;
+		}
+
+		if (_navPoints.Count == 0) {
+			StopBody();
+		}
+
+		_travelState = TravelState.NotTraveling;
+	}
 }

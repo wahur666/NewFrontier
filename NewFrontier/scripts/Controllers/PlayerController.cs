@@ -54,6 +54,7 @@ public partial class PlayerController : Node {
 	#endregion
 
 	private bool _buildingMode;
+	private bool _wormholeClick;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
@@ -95,6 +96,7 @@ public partial class PlayerController : Node {
 			} else if (_uiController.MouseOverSectorMap(_mousePosition)) {
 				CheckSectorMapClick();
 			} else if (_mapGrid.Wormholes.Any(x => x.MousePointerIsOver)) {
+				_wormholeClick = true;
 				SwitchCameraToJoinedWormhole();
 			} else {
 				_dragging = true;
@@ -124,6 +126,7 @@ public partial class PlayerController : Node {
 			} else {
 				SelectUnitNearPoint(_dragStart);
 			}
+			_wormholeClick = false;
 		}
 
 		if (_dragging) {
@@ -268,7 +271,7 @@ public partial class PlayerController : Node {
 	}
 
 	private void SelectUnitNearPoint(Vector2 point) {
-		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode) {
+		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
 			return;
 		}
 
