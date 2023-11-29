@@ -101,6 +101,10 @@ public partial class MapGrid : Node2D {
 		WormholeObjects.Add(new WormholeObject(w1Node, w2Node));
 	}
 
+	public GameNode GetConnectedWormholeNode(GameNode gameNode) {
+		return WormholeObjects.Find(x => x.IsConnected(gameNode)).GetOtherNode(gameNode);
+	}
+
 	private GameNode SetupWormholeGameNode(Vector2 position, int sector) {
 		var offset = MapHelpers.CalculateOffset(position, sector);
 		var gameNode = new GameNode(offset - new Vector2(0.5f, 0.5f)) {

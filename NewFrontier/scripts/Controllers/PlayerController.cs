@@ -112,7 +112,7 @@ public partial class PlayerController : Node {
 				_dragging = false;
 				_camera.EnableEdgePanning = true;
 				DrawArea(false);
-				MoveToPoint(_dragStart);
+				MoveToPoint(_camera.GetGlobalMousePosition());
 			}
 		} else if (Input.IsActionJustReleased("LMB")) {
 			_dragEnd = _camera.GetGlobalMousePosition();
@@ -126,6 +126,7 @@ public partial class PlayerController : Node {
 			} else {
 				SelectUnitNearPoint(_dragStart);
 			}
+
 			_wormholeClick = false;
 		}
 
@@ -321,17 +322,32 @@ public partial class PlayerController : Node {
 	}
 
 	private void MoveToPoint(Vector2 targetVector2) {
-		_units.Where(x => x.Selected)
-			.ToList()
-			.ForEach(unitNode2D => {
-					var start = MapHelpers.PosToGrid(unitNode2D.Position);
-					var end = MapHelpers.PosToGrid(targetVector2);
-					var path = _mapGrid.Navigation
-						.FindPath(start, end)
-						.ToList();
-					unitNode2D.SetNavigation(path);
-				}
-			);
+		var units = _units.Where(x => x.Selected).ToList();
+		var endVector = MapHelpers.PosToGrid(targetVector2);
+		var end = _mapGrid.GridLayer[endVector.X, endVector.Y];
+		if (end is null || end.Blocking) {
+			return;
+		}
+
+		if (end.HasWormhole) {
+			var random = new Random();
+			var otherNode = _mapGrid.GetConnectedWormholeNode(end.WormholeNode);
+			var arr = otherNode.Neighbours.Keys.Where(x => !x.HasWormhole).ToArray();
+			end = arr[random.Next(arr.Length)];
+		}
+
+		units.ForEach(unitNode2D => {
+			var startVector2 = MapHelpers.PosToGrid(unitNode2D.Position);
+			var start = _mapGrid.GridLayer[startVector2.X, startVector2.Y];
+			List<GameNode> path = new List<GameNode>();
+			if (start is not null) {
+				path = _mapGrid.Navigation
+					.FindPath(start, end)
+					.ToList();
+			}
+
+			unitNode2D.SetNavigation(path);
+		});
 	}
 
 	public int AvailableOreStorage() => _playerStats.MaxOre - _playerStats.CurrentOre;

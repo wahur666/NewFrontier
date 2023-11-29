@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using NewFrontier.scripts.helpers;
 
@@ -14,17 +15,7 @@ public class Navigation {
 		_mapGrid = mapGrid;
 	}
 
-	public IEnumerable<GameNode> FindPath(Vector2I startVector2, Vector2I endVector2) {
-		var start = _mapGrid.GridLayer[startVector2.X, startVector2.Y];
-		var end = _mapGrid.GridLayer[endVector2.X, endVector2.Y];
-		return FindPath(start, end);
-	}
-
-	private IEnumerable<GameNode> FindPath(GameNode start, GameNode end) {
-		if (start is null || end is null || end.Blocking) {
-			return Array.Empty<GameNode>();
-		}
-
+	public IEnumerable<GameNode> FindPath(GameNode start, GameNode end) {
 		var frontier = new Heap<PriorityNode>((a, b) => b.Priority.CompareTo(a.Priority));
 		frontier.Add(new PriorityNode(start, 0));
 		var cameFrom = new Dictionary<GameNode, GameNode>();

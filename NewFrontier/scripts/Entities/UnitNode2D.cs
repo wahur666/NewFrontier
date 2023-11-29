@@ -28,6 +28,7 @@ public partial class UnitNode2D : CharacterBody2D {
 	private Vector2 _targetDestination;
 	private UiController _uiController;
 	private float _rotationSpeed = 2.0f;
+	private bool _rotatedCorrectly;
 
 	[Export]
 	public bool Selected {
@@ -112,6 +113,10 @@ public partial class UnitNode2D : CharacterBody2D {
 	}
 
 	public void SetNavigation(List<GameNode> vector2S) {
+		if (_travelState is TravelState.Traveling or TravelState.EndTraveling) {
+			return;
+		}
+
 		_targetDestination = Position;
 		if (vector2S.Count > 1) {
 			vector2S.RemoveAt(0);
@@ -134,6 +139,7 @@ public partial class UnitNode2D : CharacterBody2D {
 				if (target.HasWormhole && _navPoints.Count > 0 && _navPoints.Peek().HasWormhole) {
 					this._travelState = TravelState.PrepareForTraveling;
 					GD.Print("prepare for travelling");
+					_rotatedCorrectly = false;
 				}
 			} else {
 				StopBody();
@@ -197,12 +203,15 @@ public partial class UnitNode2D : CharacterBody2D {
 	private void UpdatePrepareForTraveling(double delta) {
 		// Wait until everybody is read for jump
 		StopBody();
-		var rotationDifference = CalculateRotationDifference();
-		if (Mathf.Abs(rotationDifference) > 0.03) {
-			RotateTowardsTarget(delta, rotationDifference, _rotationSpeed);
-			return;
+		if (!_rotatedCorrectly) {
+			var rotationDifference = CalculateRotationDifference();
+			if (Mathf.Abs(rotationDifference) > 0.03) {
+				RotateTowardsTarget(delta, rotationDifference, _rotationSpeed);
+				return;
+			}
 		}
 
+		_rotatedCorrectly = true;
 		if (_currentTravelTime < _travelTime) {
 			_jumpDistance = GlobalPosition.DistanceTo(_targetDestination);
 			_currentTravelTime += delta;
@@ -212,15 +221,14 @@ public partial class UnitNode2D : CharacterBody2D {
 		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
 			var target = _navPoints.Dequeue();
 			_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+			_currentTravelTime = 0;
+			_travelState = TravelState.Traveling;
+			GD.Print("Travelling");
 		} else {
 			MoveToTarget(delta, 4);
-			var scale = GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance;
+			var scale = Mathf.Clamp(GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance, 0.1f, 1);
 			Scale = new Vector2(scale, scale);
-			return;
 		}
-
-		_currentTravelTime = 0;
-		_travelState = TravelState.Traveling;
 	}
 
 	private void UpdateTraveling(double delta) {
@@ -236,6 +244,7 @@ public partial class UnitNode2D : CharacterBody2D {
 		_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
 		Rotation = GlobalPosition.AngleToPoint(_targetDestination) + Mathf.Pi / 2;
 		_travelState = TravelState.EndTraveling;
+		GD.Print("End traveling");
 	}
 
 	private void UpdateEndTraveling(double delta) {
@@ -247,7 +256,7 @@ public partial class UnitNode2D : CharacterBody2D {
 				_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
 			}
 		} else {
-			var scale = 1 - GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance;
+			var scale = Mathf.Clamp(1 - GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance, 0.1f, 1);
 			Scale = new Vector2(scale, scale);
 			MoveToTarget(delta, 4);
 			return;
