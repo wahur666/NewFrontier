@@ -18,7 +18,7 @@ public partial class UnitNode2D : CharacterBody2D {
 
 	private double _travelTime = 1d;
 	private double _currentTravelTime = 0d;
-
+	private float _jumpDistance;
 
 	private Queue<GameNode> _navPoints = new();
 	private PlayerController _playerController;
@@ -204,6 +204,7 @@ public partial class UnitNode2D : CharacterBody2D {
 		}
 
 		if (_currentTravelTime < _travelTime) {
+			_jumpDistance = GlobalPosition.DistanceTo(_targetDestination);
 			_currentTravelTime += delta;
 			return;
 		}
@@ -213,6 +214,8 @@ public partial class UnitNode2D : CharacterBody2D {
 			_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
 		} else {
 			MoveToTarget(delta, 4);
+			var scale = GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance;
+			Scale = new Vector2(scale, scale);
 			return;
 		}
 
@@ -239,9 +242,13 @@ public partial class UnitNode2D : CharacterBody2D {
 		Visible = true;
 		// speed up ship until its reached the next position
 		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
-			var target = _navPoints.Dequeue();
-			_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+			if (_navPoints.Count > 0) {
+				var target = _navPoints.Dequeue();
+				_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+			}
 		} else {
+			var scale = 1 - GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance;
+			Scale = new Vector2(scale, scale);
 			MoveToTarget(delta, 4);
 			return;
 		}
@@ -250,6 +257,7 @@ public partial class UnitNode2D : CharacterBody2D {
 			StopBody();
 		}
 
+		Scale = Vector2.One;
 		_travelState = TravelState.NotTraveling;
 	}
 }
