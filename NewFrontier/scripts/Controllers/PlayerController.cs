@@ -329,6 +329,13 @@ public partial class PlayerController : Node {
 			return;
 		}
 
+		var unitSectors = units.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition())).ToHashSet();
+		if (unitSectors.Count == 1) {
+			GD.Print("Same sector everybody");
+		} else {
+			GD.Print($"Oh shit im sorry {unitSectors.Count}");
+		}
+		
 		if (end.HasWormhole) {
 			var random = new Random();
 			var otherNode = _mapGrid.GetConnectedWormholeNode(end.WormholeNode);

@@ -136,11 +136,14 @@ public partial class UnitNode2D : CharacterBody2D {
 				_moving = true;
 				var target = _navPoints.Dequeue();
 				_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
-				if (target.HasWormhole && _navPoints.Count > 0 && _navPoints.Peek().HasWormhole) {
-					this._travelState = TravelState.PrepareForTraveling;
-					GD.Print("prepare for travelling");
-					_rotatedCorrectly = false;
+				if (!target.HasWormhole || _navPoints.Count <= 0 || !_navPoints.Peek().HasWormhole ||
+				    _navPoints.Peek().Index == target.Index) {
+					return;
 				}
+
+				this._travelState = TravelState.PrepareForTraveling;
+				GD.Print("prepare for travelling");
+				_rotatedCorrectly = false;
 			} else {
 				StopBody();
 			}
@@ -149,6 +152,10 @@ public partial class UnitNode2D : CharacterBody2D {
 		}
 
 		MoveToTarget(delta);
+	}
+
+	public Vector2 GridPosition() {
+		return MapHelpers.PosToGrid(GlobalPosition);
 	}
 
 	private void MoveToTarget(double delta, float speed = 1) {
