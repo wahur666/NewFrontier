@@ -323,6 +323,9 @@ public partial class PlayerController : Node {
 
 	private void MoveToPoint(Vector2 targetVector2) {
 		var units = _units.Where(x => x.Selected).ToList();
+		if (units.Count == 0) {
+			return;
+		}
 		var endVector = MapHelpers.PosToGrid(targetVector2);
 		var end = _mapGrid.GridLayer[endVector.X, endVector.Y];
 		if (end is null || end.Blocking) {
@@ -330,13 +333,14 @@ public partial class PlayerController : Node {
 		}
 
 		var unitSectors = units.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition())).ToHashSet();
-		if (unitSectors.Count == 1) {
-			GD.Print("Same sector everybody");
-		} else {
-			GD.Print($"Oh shit im sorry {unitSectors.Count}");
-		}
-		
 		if (end.HasWormhole) {
+			if (unitSectors.Count > 1) {
+				return;
+			}
+
+			if (end.Index != unitSectors.First()) {
+				return;
+			}
 			var random = new Random();
 			var otherNode = _mapGrid.GetConnectedWormholeNode(end.WormholeNode);
 			var arr = otherNode.Neighbours.Keys.Where(x => !x.HasWormhole).ToArray();
