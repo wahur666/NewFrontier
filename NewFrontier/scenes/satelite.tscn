@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://2jwalneqdrnf"]
+
+[ext_resource type="Texture2D" uid="uid://btk10rm5wfhl4" path="res://gfx/aseprite/satelite.png" id="1_7oevl"]
+[ext_resource type="Script" path="res://scripts/Entities/OffensiveBuildingNode2D.cs" id="1_ob5qu"]
+
+[node name="Satelite" type="Node2D"]
+script = ExtResource("1_ob5qu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_7oevl")

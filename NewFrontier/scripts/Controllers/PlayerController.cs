@@ -5,14 +5,14 @@ using Godot;
 using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
+using NewFrontier.scripts.Model.Factions;
 using NewFrontier.scripts.UI;
 
 namespace NewFrontier.scripts.Controllers;
 
 public partial class PlayerController : Node {
-	private PackedScene _base1;
-	private PackedScene _base2;
-	private PackedScene _base3;
+	private Faction _faction;
+	private Node _buildingContainer;
 
 	private readonly List<BuildingNode2D> _buildings = new();
 	private BuildingNode2D _buildingShade;
@@ -26,7 +26,17 @@ public partial class PlayerController : Node {
 	private List<UnitNode2D> _selectedUnits = new();
 	private PlayerStats _playerStats = new();
 
-	public byte CurrentSector;
+	private byte _currentSector;
+
+	public byte CurrentSector {
+		get => _currentSector;
+		private set {
+			_currentSector = value;
+			CurrentSectorObj = _mapGrid.GetSector(_currentSector);
+		}
+	}
+
+	public Sector CurrentSectorObj { get; private set; }
 
 	public LeftControls LeftControls;
 	private UiController _uiController;
@@ -43,18 +53,15 @@ public partial class PlayerController : Node {
 
 	#endregion
 
-	public bool BuildingMode {
-		get;
-		private set;
-	}
+	private bool _buildingMode;
+	private bool _wormholeClick;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		_base1 = GD.Load<PackedScene>("res://scenes/base_1.tscn");
-		_base2 = GD.Load<PackedScene>("res://scenes/base_2.tscn");
-		_base3 = GD.Load<PackedScene>("res://scenes/base_3.tscn");
+		_faction = Faction.CreateTerran();
 		_harvester = GD.Load<PackedScene>("res://scenes/harvester.tscn");
 		_fabricator = GD.Load<PackedScene>("res://scenes/fabricator.tscn");
+		_buildingContainer = GetNode<Node>("BuildingsContainer");
 		_camera = GetNode<CameraController>("../../Camera2D");
 		_camera.PlayerControllerInstance = this;
 		_mapGrid = GetNode<MapGrid>("../../MapGrid");
@@ -62,6 +69,8 @@ public partial class PlayerController : Node {
 		_uiController.Init(this, _mapGrid);
 		CreateStartingUnits();
 		_camera.CenterOnGridPosition(new Vector2(12, 17));
+		CurrentSector = 0;
+		UpdateUi();
 	}
 
 	private void CreateStartingUnits() {
@@ -80,25 +89,30 @@ public partial class PlayerController : Node {
 		if (Input.IsActionJustPressed("LMB")) {
 			_dragStart = _camera.GetGlobalMousePosition();
 			_dragStartV = _mousePosition;
-			if (_buildingShade?.Planet is not null) {
-				BuildBuilding(_buildingShade);
+			if (_buildingMode) {
+				if (_buildingShade?.Planet is not null) {
+					BuildBuilding(_buildingShade);
+				}
 			} else if (_uiController.MouseOverSectorMap(_mousePosition)) {
 				CheckSectorMapClick();
+			} else if (_mapGrid.Wormholes.Any(x => x.MousePointerIsOver)) {
+				_wormholeClick = true;
+				SwitchCameraToJoinedWormhole();
 			} else {
 				_dragging = true;
 				_camera.EnableEdgePanning = false;
 			}
 		} else if (Input.IsActionJustPressed("RMB")) {
-			if (BuildingMode) {
+			if (_buildingMode) {
 				FreeBuildingShade();
-				BuildingMode = false;
+				_buildingMode = false;
 			} else {
 				_dragStart = _camera.GetGlobalMousePosition();
 				_dragStartV = _mousePosition;
 				_dragging = false;
 				_camera.EnableEdgePanning = true;
 				DrawArea(false);
-				MoveToPoint(_dragStart);
+				MoveToPoint(_camera.GetGlobalMousePosition());
 			}
 		} else if (Input.IsActionJustReleased("LMB")) {
 			_dragEnd = _camera.GetGlobalMousePosition();
@@ -112,6 +126,8 @@ public partial class PlayerController : Node {
 			} else {
 				SelectUnitNearPoint(_dragStart);
 			}
+
+			_wormholeClick = false;
 		}
 
 		if (_dragging) {
@@ -120,10 +136,28 @@ public partial class PlayerController : Node {
 			DrawArea();
 		}
 
-		if (BuildingMode && _buildingShade is not null) {
+		// Updates the building shade position every frame
+		if (_buildingMode && _buildingShade is not null) {
 			var pos = _camera.GetGlobalMousePosition();
-			var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
-			_buildingShade.CalculateBuildingPlace(pos, planet);
+			if (_buildingShade.SnapOption == SnapOption.Planet) {
+				var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
+				_buildingShade.CalculateBuildingPlace(pos, planet);
+			} else {
+				_buildingShade.CalculateBuildingGridPlace(pos);
+			}
+		}
+
+		CurrentSectorObj.CameraPosition = _camera.Position;
+	}
+
+	private void SwitchCameraToJoinedWormhole() {
+		var wormhole = _mapGrid.Wormholes.Find(x => x.MousePointerIsOver);
+		var who = _mapGrid.WormholeObjects.Find(x => x.IsConnected(wormhole.GameNode));
+		var otherNode = who.GetOtherNode(wormhole.GameNode);
+		var sector = _mapGrid.GetSector(otherNode.Index);
+		if (sector?.Discovered == true) {
+			CurrentSector = otherNode.Index;
+			_camera.CenterOnGridPosition(otherNode.Position);
 		}
 	}
 
@@ -136,12 +170,16 @@ public partial class PlayerController : Node {
 			return;
 		}
 
-		_camera.Position =
-			MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(15, 15), z.Index));
+		var sector = _mapGrid.GetSector(z.Index);
+		if (sector is null) {
+			return;
+		}
+
 		CurrentSector = z.Index;
+		_camera.Position = sector.CameraPosition;
 	}
 
-	public void DrawArea(bool s = true) {
+	private void DrawArea(bool s = true) {
 		var panel = _uiController.SelectionPanel;
 		panel.Size = new Vector2(Math.Abs(_dragStartV.X - _dragEndV.X), Math.Abs(_dragStartV.Y - _dragEndV.Y));
 		var pos = Vector2.Zero;
@@ -160,18 +198,6 @@ public partial class PlayerController : Node {
 	}
 
 
-	public int AvailableOreStorage() {
-		return _playerStats.MaxOre - _playerStats.CurrentOre;
-	}
-
-	public int AvailableGasStorage() {
-		return _playerStats.MaxGas - _playerStats.CurrentGas;
-	}
-
-	public int AvailableCrewStorage() {
-		return _playerStats.MaxCrew - _playerStats.CurrentCrew;
-	}
-
 	private void FreeBuildingShade() {
 		_buildingShade?.QueueFree();
 		_buildingShade = null;
@@ -183,53 +209,44 @@ public partial class PlayerController : Node {
 		}
 	}
 
-
-	public void CreateBuilding1() {
-		BuildingMode = true;
-		if (_buildingShade?.Wide == 1) {
+	public void CreateBuilding(string name) {
+		_buildingMode = true;
+		if (_buildingShade?.Name == name) {
 			return;
 		}
 
 		FreeBuildingShade();
-		_buildingShade = _base1.Instantiate<BuildingNode2D>();
-		_buildingShade.Init(this);
-		AddChild(_buildingShade);
-	}
-
-	public void CreateBuilding2() {
-		BuildingMode = true;
-		if (_buildingShade?.Wide == 2) {
-			return;
-		}
-
-		FreeBuildingShade();
-		_buildingShade = _base2.Instantiate<BuildingNode2D>();
-		_buildingShade.Init(this);
-		AddChild(_buildingShade);
-	}
-
-	public void CreateBuilding3() {
-		BuildingMode = true;
-		if (_buildingShade?.Wide == 3) {
-			return;
-		}
-
-		FreeBuildingShade();
-		_buildingShade = _base3.Instantiate<BuildingNode2D>();
-		_buildingShade.Init(this);
+		_buildingShade = _faction.Create(this, name);
+		_buildingShade.Visible = false;
 		AddChild(_buildingShade);
 	}
 
 	public void BuildBuilding(BuildingNode2D buildingNode2D) {
-		var building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
+		BuildingNode2D building = null;
+		if (buildingNode2D.SnapOption == SnapOption.Planet) {
+			building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
+		} else {
+			// if (buildingNode2D.SnapOption == SnapOption.Grid) {
+			// 	if (buildingNode2D.Wide == 1) {
+			// 	} else if (buildingNode2D.Wide == 2) {
+			// 	}
+			//
+			// 	building = buildingNode2D.Duplicate() as BuildingNode2D;
+			// 	building.BuildingShade = false;
+			// 	_buildingContainer.AddChild(building);
+			// } else if (buildingNode2D.SnapOption == SnapOption.Wormhole) {
+			// }
+		}
+
 		if (building is not null) {
 			_buildings.Add(building);
 		}
 	}
 
+
 	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
-		BuildingMode = false;
+		_buildingMode = false;
 
 		if (shiftDown) {
 			var units = _units.Where(unit => AreaHelper.InRect(unit.Position, start, end)).ToList();
@@ -240,12 +257,14 @@ public partial class PlayerController : Node {
 				foreach (var unit in units) {
 					unit.Selected = !unit.Selected;
 				}
+
 				_selectedUnits = _units.Where(x => x.Selected).ToList();
 			}
 		} else {
 			foreach (var unit in _units) {
 				unit.Selected = AreaHelper.InRect(unit.Position, start, end);
 			}
+
 			_selectedUnits = _units.Where(x => x.Selected).ToList();
 		}
 
@@ -253,7 +272,7 @@ public partial class PlayerController : Node {
 	}
 
 	private void SelectUnitNearPoint(Vector2 point) {
-		if (_uiController.MouseOverGui(_mousePosition) || BuildingMode) {
+		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
 			return;
 		}
 
@@ -303,18 +322,50 @@ public partial class PlayerController : Node {
 	}
 
 	private void MoveToPoint(Vector2 targetVector2) {
-		_units.Where(x => x.Selected)
-			.ToList()
-			.ForEach(unitNode2D => {
-					var start = MapHelpers.PosToGrid(unitNode2D.Position);
-					var end = MapHelpers.PosToGrid(targetVector2);
-					var path = _mapGrid.Navigation
-						.FindPath(start, end)
-						.ToList();
-					unitNode2D.SetNavigation(path);
-				}
-			);
+		var units = _units.Where(x => x.Selected).ToList();
+		if (units.Count == 0) {
+			return;
+		}
+		var endVector = MapHelpers.PosToGrid(targetVector2);
+		var end = _mapGrid.GridLayer[endVector.X, endVector.Y];
+		if (end is null || end.Blocking) {
+			return;
+		}
+
+		var unitSectors = units.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition())).ToHashSet();
+		if (end.HasWormhole) {
+			if (unitSectors.Count > 1) {
+				return;
+			}
+
+			if (end.Index != unitSectors.First()) {
+				return;
+			}
+			var random = new Random();
+			var otherNode = _mapGrid.GetConnectedWormholeNode(end.WormholeNode);
+			var arr = otherNode.Neighbours.Keys.Where(x => !x.HasWormhole).ToArray();
+			end = arr[random.Next(arr.Length)];
+		}
+
+		units.ForEach(unitNode2D => {
+			var startVector2 = MapHelpers.PosToGrid(unitNode2D.Position);
+			var start = _mapGrid.GridLayer[startVector2.X, startVector2.Y];
+			List<GameNode> path = new List<GameNode>();
+			if (start is not null) {
+				path = _mapGrid.Navigation
+					.FindPath(start, end)
+					.ToList();
+			}
+
+			unitNode2D.SetNavigation(path);
+		});
 	}
+
+	public int AvailableOreStorage() => _playerStats.MaxOre - _playerStats.CurrentOre;
+
+	public int AvailableGasStorage() => _playerStats.MaxGas - _playerStats.CurrentGas;
+
+	public int AvailableCrewStorage() => _playerStats.MaxCrew - _playerStats.CurrentCrew;
 
 	public void IncreaseOre(int amount) => _playerStats.CurrentOre += amount;
 	public void IncreaseGas(int amount) => _playerStats.CurrentGas += amount;

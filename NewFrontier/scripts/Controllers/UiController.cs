@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using NewFrontier.scripts.helpers;
@@ -37,9 +36,7 @@ public partial class UiController : CanvasLayer {
 		SetupSectorPanelConstants();
 		SetupLeftPanelConstants();
 	}
-
-	private byte CurrentSector => _playerController.CurrentSector;
-
+	
 	private void SectorPanelOnDraw() {
 		var shorterSide = Math.Min(SectorPanel.Size.X, SectorPanel.Size.Y);
 		var center = new Vector2(shorterSide, shorterSide) / 2;
@@ -115,8 +112,8 @@ public partial class UiController : CanvasLayer {
 		}
 
 		foreach (var mapGridWormhole in _mapGrid.WormholeObjects) {
-			var sector1 = _mapGrid.Sectors.Find(x => x.Index == mapGridWormhole.GetNode1Sector);
-			var sector2 = _mapGrid.Sectors.Find(x => x.Index == mapGridWormhole.GetNode2Sector);
+			var sector1 = _mapGrid.GetSector(mapGridWormhole.GetNode1Sector);
+			var sector2 = _mapGrid.GetSector(mapGridWormhole.GetNode2Sector);
 			if (sector1 is null || sector2 is null) {
 				continue;
 			}
@@ -141,11 +138,6 @@ public partial class UiController : CanvasLayer {
 			}
 		}
 
-		var currentSector = _mapGrid.Sectors.Find(x => x.Index == CurrentSector);
-		if (currentSector is null) {
-			return;
-		}
-
-		sectorPanel.DrawArc(currentSector.SectorPosition, selectorPointRadius, 0, Mathf.Tau, 32, Colors.White, 2);
+		sectorPanel.DrawArc(_playerController.CurrentSectorObj.SectorPosition, selectorPointRadius, 0, Mathf.Tau, 32, Colors.White, 2);
 	}
 }

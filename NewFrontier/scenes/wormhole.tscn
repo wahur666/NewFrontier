@@ -52,13 +52,13 @@ script = ExtResource("1_etnkx")
 texture = ExtResource("1_p5e8v")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-autoplay = "default"
 libraries = {
 "": SubResource("AnimationLibrary_qm3pw")
 }
+autoplay = "default"
 
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-scale = Vector2(1, 1)
+visible = false
 shape = SubResource("CircleShape2D_y78de")

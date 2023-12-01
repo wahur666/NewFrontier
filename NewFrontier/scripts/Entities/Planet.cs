@@ -2,13 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using NewFrontier.scripts.Model;
 
 namespace NewFrontier.scripts.Entities;
-
-internal enum SlotStatus {
-	Free,
-	Occupied
-}
 
 public partial class Planet : Node2D {
 	public static readonly int Radius = 150;
@@ -16,7 +12,9 @@ public partial class Planet : Node2D {
 	private readonly List<BuildingNode2D> _buildings = new();
 	private Node _buildingsContainer;
 	private PlanetBuildingScheme _planetBuildingScheme;
-	private readonly SlotStatus[] _slots = new SlotStatus[12];
+	private readonly bool[] _slotOccupiedStatus = new Boolean[12];
+
+	[Export] public PlanetType PlanetType = PlanetType.Earth;
 
 	public override void _Ready() {
 		_buildingsContainer = GetNode<Node>("BuildingsContainer");
@@ -33,12 +31,12 @@ public partial class Planet : Node2D {
 
 	public BuildingNode2D BuildBuilding(BuildingNode2D building) {
 		var slots = building.Place;
-		if (slots.Any(slot => _slots[slot] == SlotStatus.Occupied)) {
+		if (slots.Any(slot => _slotOccupiedStatus[slot])) {
 			return null;
 		}
 
 		foreach (var slot in slots) {
-			_slots[slot] = SlotStatus.Occupied;
+			_slotOccupiedStatus[slot] = true;
 		}
 
 		var newBuilding = building.Duplicate() as BuildingNode2D;

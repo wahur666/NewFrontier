@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Godot;
+using NewFrontier.scripts.Entities;
+using NewFrontier.scripts.helpers;
 
 namespace NewFrontier.scripts.Model;
 
@@ -7,7 +9,12 @@ public class GameNode {
 	public bool HasWormhole;
 	public Dictionary<GameNode, float> Neighbours;
 	public Vector2 Position;
+	public BuildingNode2D Building;
 
+	public byte Index {
+		get => MapHelpers.GetSectorIndexFromOffset(Position);
+	}
+	
 	// TODO: remove this in favour of the attributes
 	public int ActiveAttribute;
 	public int PassiveAttribute;
@@ -49,5 +56,12 @@ public class GameNode {
 	public void SetWormhole(GameNode wormholeNode) {
 		WormholeNode = wormholeNode;
 		HasWormhole = true;
+	}
+
+	public void SetBuilding(BuildingNode2D buildingNode2D, bool attach) {
+		Building = buildingNode2D;
+		if (attach) {
+			buildingNode2D.Position = MapHelpers.GridCoordToGridCenterPos(Position);
+		}
 	}
 }

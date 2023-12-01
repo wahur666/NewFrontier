@@ -34,6 +34,7 @@ script = ExtResource("1_qu86p")
 theme_override_styles/panel = SubResource("StyleBoxFlat_6hh77")
 
 [node name="LeftControls" parent="." instance=ExtResource("1_mnjuk")]
+mouse_filter = 2
 
 [node name="SectorMap" type="Control" parent="."]
 layout_mode = 3

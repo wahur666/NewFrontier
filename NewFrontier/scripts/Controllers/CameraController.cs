@@ -25,19 +25,12 @@ public partial class CameraController : Camera2D {
 		}
 	}
 
-	public void Init(MapGrid mapGrid) {
-		_mapGrid = mapGrid;
-	}
+	public void Init(MapGrid mapGrid) => _mapGrid = mapGrid;
 
-	public void CenterOnGridPosition(Vector2 pos) {
-		CenterOnPosition(MapHelpers.GridCoordToGridCenterPos(pos));
-	}
+	public void CenterOnGridPosition(Vector2 pos) => CenterOnPosition(MapHelpers.GridCoordToGridCenterPos(pos));
 
-	public void CenterOnPosition(Vector2 pos) {
-		Position = pos;
-	}
+	public void CenterOnPosition(Vector2 pos) => Position = pos;
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta) {
 		var inpx = 0;
 		var inpy = 0;

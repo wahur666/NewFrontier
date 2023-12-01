@@ -4,6 +4,7 @@ using System.Linq;
 using Godot;
 using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.Entities;
+using NewFrontier.scripts.Model.Factions;
 
 namespace NewFrontier.scripts.UI;
 
@@ -11,6 +12,7 @@ public partial class LeftControls : Control {
 	private Button _button1;
 	private Button _button2;
 	private Button _button3;
+	private Button _button4;
 	private Control _buttonContainer;
 	private PackedScene _fabricatorIcon;
 	private PackedScene _harvesterIcon;
@@ -36,16 +38,19 @@ public partial class LeftControls : Control {
 		_button1 = GetNode<Button>("Panel/Container/Button");
 		_button2 = GetNode<Button>("Panel/Container/Button2");
 		_button3 = GetNode<Button>("Panel/Container/Button3");
+		_button4 = GetNode<Button>("Panel/Container/Button4");
 	}
 
 	public void Init(PlayerController playerController) {
 		PlayerController = playerController;
-		_button1.Pressed += PlayerController.CreateBuilding1;
-		_button2.Pressed += PlayerController.CreateBuilding2;
-		_button3.Pressed += PlayerController.CreateBuilding3;
+		_button1.Pressed += () => PlayerController.CreateBuilding(Terran.Building1);
+		_button2.Pressed += () => PlayerController.CreateBuilding(Terran.Building2);
+		_button3.Pressed += () => PlayerController.CreateBuilding(Terran.Building3);
+		_button4.Pressed += () => PlayerController.CreateBuilding(Terran.Jumpgate);
 		_button1.MouseEntered += MouseEnteredPanelElement;
 		_button2.MouseEntered += MouseEnteredPanelElement;
 		_button3.MouseEntered += MouseEnteredPanelElement;
+		_button4.MouseEntered += MouseEnteredPanelElement;
 
 		_iconContainer.MouseEntered += MouseEnteredPanelElement;
 		_iconContainer.MouseExited += MouseExitedPanelElement;
