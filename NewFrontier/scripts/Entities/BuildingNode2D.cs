@@ -33,11 +33,10 @@ public partial class BuildingNode2D : Node2D {
 		_sprite = GetNode<Sprite2D>("Sprite2D");
 	}
 
-	public BuildingNode2D Init(PlayerController playerController, string name, int zIndex = 10) {
+	public void Init(PlayerController playerController, string name, int zIndex = 10) {
 		_playerController = playerController;
 		BuildingName = name;
 		ZIndex = zIndex;
-		return this;
 	}
 
 	private int[] CalculatePlaceOnPlanet(Node2D planet, Vector2 pos) {

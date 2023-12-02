@@ -43,10 +43,10 @@ public partial class LeftControls : Control {
 
 	public void Init(PlayerController playerController) {
 		PlayerController = playerController;
-		_button1.Pressed += () => PlayerController.CreateBuilding(Terran.Building1);
-		_button2.Pressed += () => PlayerController.CreateBuilding(Terran.Building2);
-		_button3.Pressed += () => PlayerController.CreateBuilding(Terran.Building3);
-		_button4.Pressed += () => PlayerController.CreateBuilding(Terran.Jumpgate);
+		_button1.Pressed += () => PlayerController.CreateBuilding(Terran.Building1, FactionController.Terran.CreateBuilding1);
+		_button2.Pressed += () => PlayerController.CreateBuilding(Terran.Building2, FactionController.Terran.CreateBuilding2);
+		_button3.Pressed += () => PlayerController.CreateBuilding(Terran.Building3, FactionController.Terran.CreateBuilding3);
+		_button4.Pressed += () => PlayerController.CreateBuilding(Terran.Jumpgate, FactionController.Terran.CreateJumpgate);
 		_button1.MouseEntered += MouseEnteredPanelElement;
 		_button2.MouseEntered += MouseEnteredPanelElement;
 		_button3.MouseEntered += MouseEnteredPanelElement;

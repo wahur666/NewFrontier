@@ -44,14 +44,14 @@ public partial class UnitNode2D : CharacterBody2D {
 	public override void _Ready() {
 		_selectionRect = GetNode<SelectionRect>("SelectionRect");
 		_targetDestination = Position;
-		_canvas = _uiController.Canvas;
-		_canvas.Draw += CanvasOnDraw;
 	}
 
 	public void Init(Vector2 pos, PlayerController playerController, UiController uiController) {
 		Position = MapHelpers.GridCoordToGridCenterPos(pos);
 		_playerController = playerController;
 		_uiController = uiController;
+		_canvas = _uiController.Canvas;
+		_canvas.Draw += CanvasOnDraw;
 	}
 
 	private void CanvasOnDraw() {
@@ -137,7 +137,7 @@ public partial class UnitNode2D : CharacterBody2D {
 				var target = _navPoints.Dequeue();
 				_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
 				if (!target.HasWormhole || _navPoints.Count <= 0 || !_navPoints.Peek().HasWormhole ||
-				    _navPoints.Peek().Index == target.Index) {
+					_navPoints.Peek().Index == target.Index) {
 					return;
 				}
 

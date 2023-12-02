@@ -11,14 +11,12 @@ using NewFrontier.scripts.UI;
 namespace NewFrontier.scripts.Controllers;
 
 public partial class PlayerController : Node {
-	private Faction _faction;
 	private Node _buildingContainer;
 
 	private readonly List<BuildingNode2D> _buildings = new();
 	private BuildingNode2D _buildingShade;
 	private CameraController _camera;
-	private PackedScene _fabricator;
-	private PackedScene _harvester;
+	private FactionController _factionController;
 
 	private MapGrid _mapGrid;
 	private bool _overGui;
@@ -58,9 +56,6 @@ public partial class PlayerController : Node {
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-		_faction = Faction.CreateTerran();
-		_harvester = GD.Load<PackedScene>("res://scenes/harvester.tscn");
-		_fabricator = GD.Load<PackedScene>("res://scenes/fabricator.tscn");
 		_buildingContainer = GetNode<Node>("BuildingsContainer");
 		_camera = GetNode<CameraController>("../../Camera2D");
 		_camera.PlayerControllerInstance = this;
@@ -75,12 +70,12 @@ public partial class PlayerController : Node {
 
 	private void CreateStartingUnits() {
 		_units = new List<UnitNode2D>();
-		var harvester = _harvester.Instantiate<Harvester>();
-		harvester.Init(new Vector2(10, 10), this, _uiController);
+		var harvester = FactionController.Terran.CreateHarvester(new Vector2(10, 10), this, _uiController);
 		_units.Add(harvester);
-		var fabricator = _fabricator.Instantiate<Fabricator>();
-		fabricator.Init(new Vector2(12, 17), this, _uiController);
+		var fabricator = FactionController.Terran.CreateFabricator(new Vector2(12, 17), this, _uiController);
 		_units.Add(fabricator);
+		var dreadnought = FactionController.Terran.CreateDreadnought(new Vector2(12, 19), this, _uiController);
+		_units.Add(dreadnought);
 		_units.ForEach(e => AddChild(e));
 	}
 
@@ -209,14 +204,15 @@ public partial class PlayerController : Node {
 		}
 	}
 
-	public void CreateBuilding(string name) {
+	public void CreateBuilding(string name, Func<PlayerController, BuildingNode2D> func) {
 		_buildingMode = true;
 		if (_buildingShade?.Name == name) {
 			return;
 		}
 
 		FreeBuildingShade();
-		_buildingShade = _faction.Create(this, name);
+		
+		_buildingShade = func(this);
 		_buildingShade.Visible = false;
 		AddChild(_buildingShade);
 	}
@@ -326,6 +322,7 @@ public partial class PlayerController : Node {
 		if (units.Count == 0) {
 			return;
 		}
+
 		var endVector = MapHelpers.PosToGrid(targetVector2);
 		var end = _mapGrid.GridLayer[endVector.X, endVector.Y];
 		if (end is null || end.Blocking) {
@@ -341,6 +338,7 @@ public partial class PlayerController : Node {
 			if (end.Index != unitSectors.First()) {
 				return;
 			}
+
 			var random = new Random();
 			var otherNode = _mapGrid.GetConnectedWormholeNode(end.WormholeNode);
 			var arr = otherNode.Neighbours.Keys.Where(x => !x.HasWormhole).ToArray();

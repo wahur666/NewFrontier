@@ -28,14 +28,55 @@ public class Faction {
 		LoadScene(Terran.Building2, "res://scenes/base_2.tscn");
 		LoadScene(Terran.Building3, "res://scenes/base_3.tscn");
 		LoadScene(Terran.Jumpgate, "res://scenes/jumpgate.tscn");
+		LoadScene(Terran.Harvester, "res://scenes/harvester.tscn");
+		LoadScene(Terran.Fabricator, "res://scenes/fabricator.tscn");
+		LoadScene(Terran.Dreadnought, "res://scenes/dreadnought.tscn");
 	}
 
-	public BuildingNode2D Create(PlayerController playerController, string name) {
+	private BuildingNode2D CreateBuilding(PlayerController playerController, string name) {
 		var instance = _scenes[name].Instantiate<BuildingNode2D>();
-		if (name == Terran.Jumpgate) {
-			instance.Wide = 2;
-			instance.SnapOption = SnapOption.Wormhole;
-		}
-		return instance.Init(playerController, name);
+		instance.Init(playerController, name);
+		return instance;
+	}
+
+	public BuildingNode2D CreateBuilding1(PlayerController playerController) {
+		return CreateBuilding(playerController, Terran.Building1);
+	}
+
+	public BuildingNode2D CreateBuilding2(PlayerController playerController) {
+		return CreateBuilding(playerController, Terran.Building2);
+	}
+
+	public BuildingNode2D CreateBuilding3(PlayerController playerController) {
+		return CreateBuilding(playerController, Terran.Building3);
+	}
+
+	public BuildingNode2D CreateJumpgate(PlayerController playerController) {
+		var instance = CreateBuilding(playerController, Terran.Jumpgate);
+		instance.Wide = 2;
+		instance.SnapOption = SnapOption.Wormhole;
+		return instance;
+	}
+
+	private T CreateUnit<T>(PlayerController playerController, string name, Vector2 position,
+		UiController uiController) where T : UnitNode2D {
+		var instance = _scenes[name].Instantiate<T>();
+		instance.Init(position, playerController, uiController);
+		return instance;
+	}
+
+	public Harvester CreateHarvester(Vector2 position, PlayerController playerController,
+		UiController uiController) {
+		return CreateUnit<Harvester>(playerController, Terran.Harvester, position, uiController);
+	}
+
+	public Fabricator CreateFabricator(Vector2 position, PlayerController playerController,
+		UiController uiController) {
+		return CreateUnit<Fabricator>(playerController, Terran.Fabricator, position, uiController);
+	}
+
+	public Dreadnought CreateDreadnought(Vector2 position, PlayerController playerController,
+		UiController uiController) {
+		return CreateUnit<Dreadnought>(playerController, Terran.Dreadnought, position, uiController);
 	}
 }
