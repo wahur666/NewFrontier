@@ -54,16 +54,16 @@ public partial class MapGrid : Node2D {
 	}
 
 	public override void _Draw() {
-		for (var i = 0; i < GridLayer.GetLength(0); i += 2) {
-			for (var j = 0; j < GridLayer.GetLength(1); j += 2) {
+		for (var i = 0; i < GridLayer.GetLength(0); i += 1) {
+			for (var j = 0; j < GridLayer.GetLength(1); j += 1) {
 				if (GridLayer[i, j] is null) {
 					continue;
 				}
 
 				var valid = GridLayer[i, j].Blocking;
 				DrawRect(
-					new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize * 2,
-						MapHelpers.DrawSize * 2),
+					new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize,
+						MapHelpers.DrawSize),
 					valid ? Color.FromHtml("#FF00001A") : Color.FromHtml("#0000FF"), valid, valid ? -1 : 2);
 			}
 		}

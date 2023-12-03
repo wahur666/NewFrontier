@@ -30,6 +30,12 @@ public partial class UnitNode2D : CharacterBody2D {
 	private float _rotationSpeed = 2.0f;
 	private bool _rotatedCorrectly;
 
+	/// <summary>
+	/// Big ship (2x2 tiles) or little ship (1x1 tile)
+	/// https://youtu.be/1AaNj7W4AKo
+	/// </summary>
+	public bool BigShip;
+	
 	[Export]
 	public bool Selected {
 		get => _selected;
@@ -47,11 +53,15 @@ public partial class UnitNode2D : CharacterBody2D {
 	}
 
 	public void Init(Vector2 pos, PlayerController playerController, UiController uiController) {
-		Position = MapHelpers.GridCoordToGridCenterPos(pos);
+		Position = GetTargetPosition(pos);
 		_playerController = playerController;
 		_uiController = uiController;
 		_canvas = _uiController.Canvas;
 		_canvas.Draw += CanvasOnDraw;
+	}
+
+	private Vector2 GetTargetPosition(Vector2 position) {
+		return BigShip ? MapHelpers.GridCoordToGridPointPos(position) : MapHelpers.GridCoordToGridCenterPos(position);
 	}
 
 	private void CanvasOnDraw() {
@@ -60,7 +70,7 @@ public partial class UnitNode2D : CharacterBody2D {
 		}
 
 		var points = new List<Vector2> { Position, _targetDestination };
-		points.AddRange(_navPoints.Select(x => MapHelpers.GridCoordToGridCenterPos(x.Position)));
+		points.AddRange(_navPoints.Select(x => GetTargetPosition(x.Position)));
 		DrawPath(points);
 	}
 
@@ -135,7 +145,7 @@ public partial class UnitNode2D : CharacterBody2D {
 			if (_navPoints.Count > 0) {
 				_moving = true;
 				var target = _navPoints.Dequeue();
-				_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+				_targetDestination = GetTargetPosition(target.Position);
 				if (!target.HasWormhole || _navPoints.Count <= 0 || !_navPoints.Peek().HasWormhole ||
 					_navPoints.Peek().Index == target.Index) {
 					return;
@@ -227,7 +237,7 @@ public partial class UnitNode2D : CharacterBody2D {
 
 		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
 			var target = _navPoints.Dequeue();
-			_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+			_targetDestination = GetTargetPosition(target.Position);
 			_currentTravelTime = 0;
 			_travelState = TravelState.Traveling;
 			GD.Print("Travelling");
@@ -248,7 +258,7 @@ public partial class UnitNode2D : CharacterBody2D {
 		GlobalPosition = _targetDestination;
 		_currentTravelTime = 0;
 		var target = _navPoints.Dequeue();
-		_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+		_targetDestination = GetTargetPosition(target.Position);
 		Rotation = GlobalPosition.AngleToPoint(_targetDestination) + Mathf.Pi / 2;
 		_travelState = TravelState.EndTraveling;
 		GD.Print("End traveling");
@@ -260,7 +270,7 @@ public partial class UnitNode2D : CharacterBody2D {
 		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
 			if (_navPoints.Count > 0) {
 				var target = _navPoints.Dequeue();
-				_targetDestination = MapHelpers.GridCoordToGridCenterPos(target.Position);
+				_targetDestination = GetTargetPosition(target.Position);
 			}
 		} else {
 			var scale = Mathf.Clamp(1 - GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance, 0.1f, 1);
