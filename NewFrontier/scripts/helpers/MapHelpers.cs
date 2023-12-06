@@ -28,6 +28,11 @@ public class MapHelpers {
 		return (node.Position * DrawSize) + new Vector2(DrawSize / 2f, DrawSize / 2f);
 	}
 
+	public static Vector2I PosToGridPoint(Vector2 pos) {
+		const int halfDrawSize = DrawSize / 2;
+		return new Vector2I((int)((pos.X + halfDrawSize) / DrawSize), (int)((pos.Y + halfDrawSize) / DrawSize));
+	}
+
 	public static Vector2I PosToGrid(Vector2 pos) {
 		return new Vector2I((int)pos.X / DrawSize, (int)pos.Y / DrawSize);
 	}
