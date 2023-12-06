@@ -147,7 +147,7 @@ public partial class UnitNode2D : CharacterBody2D {
 				var target = _navPoints.Dequeue();
 				_targetDestination = GetTargetPosition(target.Position);
 				if (!target.HasWormhole || _navPoints.Count <= 0 || !_navPoints.Peek().HasWormhole ||
-					_navPoints.Peek().Index == target.Index) {
+				    _navPoints.Peek().Index == target.Index) {
 					return;
 				}
 
@@ -165,7 +165,7 @@ public partial class UnitNode2D : CharacterBody2D {
 	}
 
 	public Vector2 GridPosition() {
-		return MapHelpers.PosToGrid(GlobalPosition);
+		return BigShip ? MapHelpers.PosToGridPoint(GlobalPosition) : MapHelpers.PosToGrid(GlobalPosition);
 	}
 
 	private void MoveToTarget(double delta, float speed = 1) {

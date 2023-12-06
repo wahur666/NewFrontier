@@ -317,37 +317,44 @@ public partial class PlayerController : Node {
 		UpdateUi();
 	}
 
-	private void MoveToPoint(Vector2 targetVector2) {
+	private void MoveToPoint(Vector2 mouseGlobalPosition) {
 		var units = _units.Where(x => x.Selected).ToList();
 		if (units.Count == 0) {
 			return;
 		}
 
-		var endVector = MapHelpers.PosToGrid(targetVector2);
-		var end = _mapGrid.GridLayer[endVector.X, endVector.Y];
-		if (end is null || end.Blocking) {
+		var mouseEndVector = MapHelpers.PosToGrid(mouseGlobalPosition);
+		var mouseEndNode = _mapGrid.GridLayer[mouseEndVector.X, mouseEndVector.Y];
+		if (mouseEndNode is null || mouseEndNode.Blocking) {
 			return;
 		}
 
 		var unitSectors = units.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition())).ToHashSet();
-		if (end.HasWormhole) {
+		if (mouseEndNode.HasWormhole) {
 			if (unitSectors.Count > 1) {
 				return;
 			}
 
-			if (end.Index != unitSectors.First()) {
+			if (mouseEndNode.Index != unitSectors.First()) {
 				return;
 			}
-
-			var random = new Random();
-			var otherNode = _mapGrid.GetConnectedWormholeNode(end.WormholeNode);
-			var arr = otherNode.Neighbours.Keys.Where(x => !x.HasWormhole).ToArray();
-			end = arr[random.Next(arr.Length)];
 		}
 
 		units.ForEach(unitNode2D => {
-			var startVector2 = MapHelpers.PosToGrid(unitNode2D.Position);
-			var start = _mapGrid.GridLayer[startVector2.X, startVector2.Y];
+			var startVector2 = unitNode2D.GridPosition();
+			var start = _mapGrid.GridLayer[(int)startVector2.X, (int)startVector2.Y];
+			var endVector = unitNode2D.BigShip
+				? MapHelpers.PosToGridPoint(mouseGlobalPosition)
+				: MapHelpers.PosToGrid(mouseGlobalPosition);
+			var end = _mapGrid.GridLayer[endVector.X, endVector.Y];
+
+			if (end.HasWormhole) {
+				var random = new Random();
+				var otherNode = _mapGrid.GetConnectedWormholeNode(end.WormholeNode);
+				var arr = otherNode.Neighbours.Keys.Where(x => !x.HasWormhole).ToArray();
+				end = arr[random.Next(arr.Length)];
+			}
+
 			List<GameNode> path = new List<GameNode>();
 			if (start is not null) {
 				path = _mapGrid.Navigation
