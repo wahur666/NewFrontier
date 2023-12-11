@@ -147,7 +147,7 @@ public partial class UnitNode2D : CharacterBody2D {
 				var target = _navPoints.Dequeue();
 				_targetDestination = GetTargetPosition(target.Position);
 				if (!target.HasWormhole || _navPoints.Count <= 0 || !_navPoints.Peek().HasWormhole ||
-				    _navPoints.Peek().Index == target.Index) {
+				    _navPoints.Peek().SectorIndex == target.SectorIndex) {
 					return;
 				}
 

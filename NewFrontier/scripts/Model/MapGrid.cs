@@ -158,4 +158,8 @@ public partial class MapGrid : Node2D {
 	public GameNode GetGameNode(Vector2 positon) {
 		return GridLayer[(int)positon.X, (int)positon.Y];
 	}
+
+	public GameNode this[int vector2X, int vector2Y] {
+		get => GridLayer[vector2X, vector2Y];
+	}
 }

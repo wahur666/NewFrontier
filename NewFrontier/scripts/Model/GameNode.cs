@@ -11,7 +11,7 @@ public class GameNode {
 	public Vector2 Position;
 	public BuildingNode2D Building;
 
-	public byte Index {
+	public byte SectorIndex {
 		get => MapHelpers.GetSectorIndexFromOffset(Position);
 	}
 	

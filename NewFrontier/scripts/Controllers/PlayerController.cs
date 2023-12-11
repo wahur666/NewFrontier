@@ -149,9 +149,9 @@ public partial class PlayerController : Node {
 		var wormhole = _mapGrid.Wormholes.Find(x => x.MousePointerIsOver);
 		var who = _mapGrid.WormholeObjects.Find(x => x.IsConnected(wormhole.GameNode));
 		var otherNode = who.GetOtherNode(wormhole.GameNode);
-		var sector = _mapGrid.GetSector(otherNode.Index);
+		var sector = _mapGrid.GetSector(otherNode.SectorIndex);
 		if (sector?.Discovered == true) {
-			CurrentSector = otherNode.Index;
+			CurrentSector = otherNode.SectorIndex;
 			_camera.CenterOnGridPosition(otherNode.Position);
 		}
 	}
@@ -335,7 +335,7 @@ public partial class PlayerController : Node {
 				return;
 			}
 
-			if (mouseEndNode.Index != unitSectors.First()) {
+			if (mouseEndNode.SectorIndex != unitSectors.First()) {
 				return;
 			}
 		}
