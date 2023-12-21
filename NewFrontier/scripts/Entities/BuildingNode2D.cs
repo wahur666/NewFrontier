@@ -4,10 +4,11 @@ using Godot;
 using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
+using NewFrontier.scripts.Model.Interfaces;
 
 namespace NewFrontier.scripts.Entities;
 
-public partial class BuildingNode2D : Node2D {
+public partial class BuildingNode2D : Node2D, IBase {
 	public int[] Place = Array.Empty<int>();
 	public Planet Planet;
 
@@ -18,10 +19,9 @@ public partial class BuildingNode2D : Node2D {
 
 	[Export] public int Wide = 1;
 	
-	public int Health;
 	public string BuildingName;
 	
-	public SnapOption SnapOption = SnapOption.Planet;
+	[Export] public SnapOption SnapOption = SnapOption.Planet;
 	public List<string> PreRequisites;
 	public List<object> BuildQueue;
 	public List<object> Items;
@@ -82,5 +82,12 @@ public partial class BuildingNode2D : Node2D {
 		} else {
 			GlobalPosition = pos;
 		}
+	}
+
+	[ExportGroup("Stats")] [Export] public int MaxHealth { get; set; }
+	[ExportGroup("Stats")] [Export] public int CurrentHealth { get; set; }
+	public void DestroySelf() {
+		// Play Anim
+		QueueFree();
 	}
 }

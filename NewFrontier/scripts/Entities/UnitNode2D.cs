@@ -5,11 +5,12 @@ using Godot;
 using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
+using NewFrontier.scripts.Model.Interfaces;
 using NewFrontier.scripts.UI;
 
 namespace NewFrontier.scripts.Entities;
 
-public partial class UnitNode2D : CharacterBody2D {
+public partial class UnitNode2D : CharacterBody2D, IBase {
 	private bool _moving;
 	private bool _selected;
 	private int _speed = 300;
@@ -17,7 +18,7 @@ public partial class UnitNode2D : CharacterBody2D {
 	private Node2D _canvas;
 
 	private double _travelTime = 1d;
-	private double _currentTravelTime = 0d;
+	private double _currentTravelTime;
 	private float _jumpDistance;
 
 	private Queue<GameNode> _navPoints = new();
@@ -34,7 +35,7 @@ public partial class UnitNode2D : CharacterBody2D {
 	/// Big ship (2x2 tiles) or little ship (1x1 tile)
 	/// https://youtu.be/1AaNj7W4AKo
 	/// </summary>
-	public bool BigShip;
+	[Export] public bool BigShip;
 	
 	[Export]
 	public bool Selected {
@@ -285,5 +286,13 @@ public partial class UnitNode2D : CharacterBody2D {
 
 		Scale = Vector2.One;
 		_travelState = TravelState.NotTraveling;
+	}
+
+	[ExportGroup("Stats")] [Export] 
+	public int MaxHealth { get; set; }
+	[ExportGroup("Stats")] [Export] 
+	public int CurrentHealth { get; set; }
+	public void DestroySelf() {
+		throw new NotImplementedException();
 	}
 }

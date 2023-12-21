@@ -52,10 +52,7 @@ public class Faction {
 	}
 
 	public BuildingNode2D CreateJumpgate(PlayerController playerController) {
-		var instance = CreateBuilding(playerController, Terran.Jumpgate);
-		instance.Wide = 2;
-		instance.SnapOption = SnapOption.Wormhole;
-		return instance;
+		return CreateBuilding(playerController, Terran.Jumpgate);
 	}
 
 	private T CreateUnit<T>(PlayerController playerController, string name, Vector2 position,
