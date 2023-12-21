@@ -8,5 +8,6 @@ public static class Terran {
 	public static string Harvester => "Harvester";
 	public static string Fabricator => "Fabricator";
 	public static string Dreadnought => "Dreadnought";
-	
+	public static string IonCanon => "IonCanon";
+	public static string Satellite => "Satellite";
 }

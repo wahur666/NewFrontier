@@ -7,13 +7,17 @@ public interface IBase {
 	public int MaxHealth { protected set; get; }
 	public int CurrentHealth { protected set; get; }
 
+	public void Repair(int amount) {
+		CurrentHealth = Math.Min(MaxHealth, CurrentHealth + amount);
+	}
+	
 	public void TakeDamage(int amount) {
 		CurrentHealth = Math.Max(0, CurrentHealth - amount);
 		if (CurrentHealth == 0) {
-			DestroySelf();
+			Destroy();
 		}
 	}
 
-	protected void DestroySelf();
+	protected void Destroy();
 	
 }

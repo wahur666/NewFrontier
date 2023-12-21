@@ -292,7 +292,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 	public int MaxHealth { get; set; }
 	[ExportGroup("Stats")] [Export] 
 	public int CurrentHealth { get; set; }
-	public void DestroySelf() {
+	public void Destroy() {
 		throw new NotImplementedException();
 	}
 }

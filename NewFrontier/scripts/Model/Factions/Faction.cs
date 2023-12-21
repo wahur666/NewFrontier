@@ -31,6 +31,8 @@ public class Faction {
 		LoadScene(Terran.Harvester, "res://scenes/harvester.tscn");
 		LoadScene(Terran.Fabricator, "res://scenes/fabricator.tscn");
 		LoadScene(Terran.Dreadnought, "res://scenes/dreadnought.tscn");
+		LoadScene(Terran.Satellite, "res://scenes/satelite.tscn");
+		LoadScene(Terran.IonCanon, "res://scenes/ion_canon.tscn");
 	}
 
 	private BuildingNode2D CreateBuilding(PlayerController playerController, string name) {
@@ -54,6 +56,14 @@ public class Faction {
 	public BuildingNode2D CreateJumpgate(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.Jumpgate);
 	}
+	
+	public BuildingNode2D CreateIonCanon(PlayerController playerController) {
+		return CreateBuilding(playerController, Terran.IonCanon);
+	}
+
+	public BuildingNode2D CreateSatellite(PlayerController playerController) {
+		return CreateBuilding(playerController, Terran.Satellite);
+	}
 
 	private T CreateUnit<T>(PlayerController playerController, string name, Vector2 position,
 		UiController uiController) where T : UnitNode2D {
@@ -76,4 +86,6 @@ public class Faction {
 		UiController uiController) {
 		return CreateUnit<Dreadnought>(playerController, Terran.Dreadnought, position, uiController);
 	}
+
+	
 }

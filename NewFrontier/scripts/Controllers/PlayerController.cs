@@ -16,7 +16,6 @@ public partial class PlayerController : Node {
 	private readonly List<BuildingNode2D> _buildings = new();
 	private BuildingNode2D _buildingShade;
 	private CameraController _camera;
-	private FactionController _factionController;
 
 	private MapGrid _mapGrid;
 	private bool _overGui;

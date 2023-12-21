@@ -86,7 +86,7 @@ public partial class BuildingNode2D : Node2D, IBase {
 
 	[ExportGroup("Stats")] [Export] public int MaxHealth { get; set; }
 	[ExportGroup("Stats")] [Export] public int CurrentHealth { get; set; }
-	public void DestroySelf() {
+	public void Destroy() {
 		// Play Anim
 		QueueFree();
 	}
