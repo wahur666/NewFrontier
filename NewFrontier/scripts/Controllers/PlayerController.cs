@@ -5,25 +5,29 @@ using Godot;
 using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
-using NewFrontier.scripts.Model.Factions;
 using NewFrontier.scripts.UI;
 
 namespace NewFrontier.scripts.Controllers;
 
 public partial class PlayerController : Node {
+	private readonly List<BuildingNode2D> _buildings = [];
 	private Node _buildingContainer;
 
-	private readonly List<BuildingNode2D> _buildings = new();
+	private bool _buildingMode;
 	private BuildingNode2D _buildingShade;
 	private CameraController _camera;
 
+	private byte _currentSector;
+
 	private MapGrid _mapGrid;
 	private bool _overGui;
-	private List<UnitNode2D> _units = new();
-	private List<UnitNode2D> _selectedUnits = new();
 	private PlayerStats _playerStats = new();
+	private List<UnitNode2D> _selectedUnits = [];
+	private UiController _uiController;
+	private List<UnitNode2D> _units = [];
+	private bool _wormholeClick;
 
-	private byte _currentSector;
+	public LeftControls LeftControls;
 
 	public byte CurrentSector {
 		get => _currentSector;
@@ -34,24 +38,6 @@ public partial class PlayerController : Node {
 	}
 
 	public Sector CurrentSectorObj { get; private set; }
-
-	public LeftControls LeftControls;
-	private UiController _uiController;
-
-	#region Dragging variables
-
-	private Vector2 _dragEnd;
-	private Vector2 _dragEndV;
-	private Vector2 _mousePosGlobal;
-	private Vector2 _dragStart;
-	private Vector2 _dragStartV;
-	private Vector2 _mousePosition;
-	private bool _dragging;
-
-	#endregion
-
-	private bool _buildingMode;
-	private bool _wormholeClick;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
@@ -83,9 +69,13 @@ public partial class PlayerController : Node {
 		if (Input.IsActionJustPressed("LMB")) {
 			_dragStart = _camera.GetGlobalMousePosition();
 			_dragStartV = _mousePosition;
-			if (_buildingMode) {
-				if (_buildingShade?.Planet is not null) {
-					BuildBuilding(_buildingShade);
+			if (_buildingMode && _buildingShade is not null) {
+				if (_buildingShade.Planet is not null && _buildingShade.SnapOption == SnapOption.Planet) {
+					BuildBuildingOnPlanet(_buildingShade);
+				} else if (_buildingShade.SnapOption == SnapOption.Grid) {
+					BuildBuildingOnGrid(_buildingShade);
+				} else if (_buildingShade.SnapOption == SnapOption.Wormhole) {
+					BuildBuildingOnWormholes(_buildingShade);
 				}
 			} else if (_uiController.MouseOverSectorMap(_mousePosition)) {
 				CheckSectorMapClick();
@@ -136,8 +126,10 @@ public partial class PlayerController : Node {
 			if (_buildingShade.SnapOption == SnapOption.Planet) {
 				var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
 				_buildingShade.CalculateBuildingPlace(pos, planet);
+			} else if (_buildingShade.SnapOption == SnapOption.Grid) {
+				_buildingShade.CalculateBuildingGridPlace(_mapGrid, pos);
 			} else {
-				_buildingShade.CalculateBuildingGridPlace(pos);
+				_buildingShade.CalculateBuildingWormholePlace(_mapGrid, pos);
 			}
 		}
 
@@ -183,7 +175,6 @@ public partial class PlayerController : Node {
 		panel.Size *= s ? 1 : 0;
 	}
 
-
 	public override void _Input(InputEvent @event) {
 		if (@event is InputEventMouse mouse) {
 			_mousePosition = mouse.Position;
@@ -210,34 +201,11 @@ public partial class PlayerController : Node {
 		}
 
 		FreeBuildingShade();
-		
+
 		_buildingShade = func(this);
 		_buildingShade.Visible = false;
 		AddChild(_buildingShade);
 	}
-
-	public void BuildBuilding(BuildingNode2D buildingNode2D) {
-		BuildingNode2D building = null;
-		if (buildingNode2D.SnapOption == SnapOption.Planet) {
-			building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
-		} else {
-			// if (buildingNode2D.SnapOption == SnapOption.Grid) {
-			// 	if (buildingNode2D.Wide == 1) {
-			// 	} else if (buildingNode2D.Wide == 2) {
-			// 	}
-			//
-			// 	building = buildingNode2D.Duplicate() as BuildingNode2D;
-			// 	building.BuildingShade = false;
-			// 	_buildingContainer.AddChild(building);
-			// } else if (buildingNode2D.SnapOption == SnapOption.Wormhole) {
-			// }
-		}
-
-		if (building is not null) {
-			_buildings.Add(building);
-		}
-	}
-
 
 	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
@@ -354,7 +322,7 @@ public partial class PlayerController : Node {
 				end = arr[random.Next(arr.Length)];
 			}
 
-			List<GameNode> path = new List<GameNode>();
+			var path = new List<GameNode>();
 			if (start is not null) {
 				path = _mapGrid.Navigation
 					.FindPath(start, end)
@@ -365,13 +333,105 @@ public partial class PlayerController : Node {
 		});
 	}
 
-	public int AvailableOreStorage() => _playerStats.MaxOre - _playerStats.CurrentOre;
+	public int AvailableOreStorage() {
+		return _playerStats.MaxOre - _playerStats.CurrentOre;
+	}
 
-	public int AvailableGasStorage() => _playerStats.MaxGas - _playerStats.CurrentGas;
+	public int AvailableGasStorage() {
+		return _playerStats.MaxGas - _playerStats.CurrentGas;
+	}
 
-	public int AvailableCrewStorage() => _playerStats.MaxCrew - _playerStats.CurrentCrew;
+	public int AvailableCrewStorage() {
+		return _playerStats.MaxCrew - _playerStats.CurrentCrew;
+	}
 
-	public void IncreaseOre(int amount) => _playerStats.CurrentOre += amount;
-	public void IncreaseGas(int amount) => _playerStats.CurrentGas += amount;
-	public void IncreaseCrew(int amount) => _playerStats.CurrentCrew += amount;
+	public void IncreaseOre(int amount) {
+		_playerStats.CurrentOre += amount;
+	}
+
+	public void IncreaseGas(int amount) {
+		_playerStats.CurrentGas += amount;
+	}
+
+	public void IncreaseCrew(int amount) {
+		_playerStats.CurrentCrew += amount;
+	}
+
+	#region Building Code
+
+	private void BuildBuildingOnPlanet(BuildingNode2D buildingNode2D) {
+		BuildingNode2D building = null;
+		if (buildingNode2D.SnapOption == SnapOption.Planet) {
+			building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
+		}
+
+		if (building is not null) {
+			_buildings.Add(building);
+		}
+	}
+
+	private void BuildBuildingOnWormholes(BuildingNode2D buildingNode2D) {
+		var mousePos = _camera.GetGlobalMousePosition();
+		var freeSpace = _mapGrid.FreeSpace(mousePos, 2, true);
+		if (freeSpace is null) {
+			return;
+		}
+
+		var gridPos = freeSpace.Value;
+		var wormholes = _mapGrid.GetWormholes(gridPos);
+		var wormholeOccupiedNodes = _mapGrid.GetWormholeOccupiedNodes(wormholes).ToList();
+		wormholeOccupiedNodes.ForEach(node => node.Occupied = true);
+
+		var buildings = wormholes.Select(wormhole => wormhole.Build(buildingNode2D)).ToList();
+
+		_buildings.AddRange(buildings);
+	}
+
+	private void BuildBuildingOnGrid(BuildingNode2D buildingNode2D) {
+		var mousePos = _camera.GetGlobalMousePosition();
+		var freeSpace = buildingNode2D.Wide switch {
+			1 => _mapGrid.FreeSpace(mousePos, 1),
+			2 => _mapGrid.FreeSpace(mousePos, 2),
+			_ => null
+		};
+
+		if (freeSpace is null) {
+			return;
+		}
+
+		if (buildingNode2D.Duplicate() is not BuildingNode2D building) {
+			return;
+		}
+
+		building.BuildingShade = false;
+
+		var gridPos = freeSpace.Value;
+		if (building.Wide == 1) {
+			building.GlobalPosition = MapHelpers.GridCoordToGridCenterPos(gridPos);
+			_mapGrid[(int)gridPos.X, (int)gridPos.Y].Occupied = true;
+		} else if (buildingNode2D.Wide == 2) {
+			building.GlobalPosition = MapHelpers.GridCoordToGridPointPos(freeSpace.Value);
+			_mapGrid[(int)gridPos.X - 1, (int)gridPos.Y - 1].Occupied = true;
+			_mapGrid[(int)gridPos.X - 1, (int)gridPos.Y].Occupied = true;
+			_mapGrid[(int)gridPos.X, (int)gridPos.Y - 1].Occupied = true;
+			_mapGrid[(int)gridPos.X, (int)gridPos.Y].Occupied = true;
+		}
+
+		_buildings.Add(building);
+		_buildingContainer.AddChild(building);
+	}
+
+	#endregion
+
+	#region Dragging variables
+
+	private Vector2 _dragEnd;
+	private Vector2 _dragEndV;
+	private Vector2 _mousePosGlobal;
+	private Vector2 _dragStart;
+	private Vector2 _dragStartV;
+	private Vector2 _mousePosition;
+	private bool _dragging;
+
+	#endregion
 }

@@ -11,32 +11,32 @@ using NewFrontier.scripts.UI;
 namespace NewFrontier.scripts.Entities;
 
 public partial class UnitNode2D : CharacterBody2D, IBase {
-	private bool _moving;
-	private bool _selected;
-	private int _speed = 300;
-	private TravelState _travelState = TravelState.NotTraveling;
 	private Node2D _canvas;
-
-	private double _travelTime = 1d;
 	private double _currentTravelTime;
 	private float _jumpDistance;
+	private bool _moving;
 
 	private Queue<GameNode> _navPoints = new();
 	private PlayerController _playerController;
+	private bool _rotatedCorrectly;
+	private float _rotationSpeed = 2.0f;
+	private bool _selected;
 
 	private SelectionRect _selectionRect;
+	private int _speed = 300;
 
 	private Vector2 _targetDestination;
+	private TravelState _travelState = TravelState.NotTraveling;
+
+	private double _travelTime = 1d;
 	private UiController _uiController;
-	private float _rotationSpeed = 2.0f;
-	private bool _rotatedCorrectly;
 
 	/// <summary>
-	/// Big ship (2x2 tiles) or little ship (1x1 tile)
-	/// https://youtu.be/1AaNj7W4AKo
+	///     Big ship (2x2 tiles) or little ship (1x1 tile)
+	///     https://youtu.be/1AaNj7W4AKo
 	/// </summary>
 	[Export] public bool BigShip;
-	
+
 	[Export]
 	public bool Selected {
 		get => _selected;
@@ -46,6 +46,14 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 				_selectionRect.Selected = value;
 			}
 		}
+	}
+
+	[ExportGroup("Stats")] [Export] public int MaxHealth { get; set; }
+
+	[ExportGroup("Stats")] [Export] public int CurrentHealth { get; set; }
+
+	public void Destroy() {
+		throw new NotImplementedException();
 	}
 
 	public override void _Ready() {
@@ -152,7 +160,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 					return;
 				}
 
-				this._travelState = TravelState.PrepareForTraveling;
+				_travelState = TravelState.PrepareForTraveling;
 				GD.Print("prepare for travelling");
 				_rotatedCorrectly = false;
 			} else {
@@ -260,7 +268,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 		_currentTravelTime = 0;
 		var target = _navPoints.Dequeue();
 		_targetDestination = GetTargetPosition(target.Position);
-		Rotation = GlobalPosition.AngleToPoint(_targetDestination) + Mathf.Pi / 2;
+		Rotation = GlobalPosition.AngleToPoint(_targetDestination) + (Mathf.Pi / 2);
 		_travelState = TravelState.EndTraveling;
 		GD.Print("End traveling");
 	}
@@ -274,7 +282,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 				_targetDestination = GetTargetPosition(target.Position);
 			}
 		} else {
-			var scale = Mathf.Clamp(1 - GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance, 0.1f, 1);
+			var scale = Mathf.Clamp(1 - (GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance), 0.1f, 1);
 			Scale = new Vector2(scale, scale);
 			MoveToTarget(delta, 4);
 			return;
@@ -286,13 +294,5 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 
 		Scale = Vector2.One;
 		_travelState = TravelState.NotTraveling;
-	}
-
-	[ExportGroup("Stats")] [Export] 
-	public int MaxHealth { get; set; }
-	[ExportGroup("Stats")] [Export] 
-	public int CurrentHealth { get; set; }
-	public void Destroy() {
-		throw new NotImplementedException();
 	}
 }

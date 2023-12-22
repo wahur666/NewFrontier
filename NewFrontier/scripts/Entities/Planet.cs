@@ -10,9 +10,9 @@ public partial class Planet : Node2D {
 	public static readonly int Radius = 150;
 
 	private readonly List<BuildingNode2D> _buildings = new();
+	private readonly bool[] _slotOccupiedStatus = new Boolean[12];
 	private Node _buildingsContainer;
 	private PlanetBuildingScheme _planetBuildingScheme;
-	private readonly bool[] _slotOccupiedStatus = new Boolean[12];
 
 	[Export] public PlanetType PlanetType = PlanetType.Earth;
 
@@ -24,7 +24,7 @@ public partial class Planet : Node2D {
 
 	public override void _Process(double delta) {
 	}
-	
+
 	public bool PointNearToRing(Vector2 mousePos) {
 		return Math.Abs(mousePos.DistanceTo(GlobalPosition) - Radius) < 20;
 	}

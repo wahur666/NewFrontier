@@ -8,24 +8,15 @@ using NewFrontier.scripts.UI;
 namespace NewFrontier.scripts.Controllers;
 
 public partial class UiController : CanvasLayer {
+	private Vector2 _leftPanelGlobalPosition;
+	private Vector2 _leftPanelGlobalPositionBottomLeft;
+	private Vector2 _leftPanelSize;
+	private MapGrid _mapGrid;
 	private PlayerController _playerController;
 	public Node2D Canvas;
 	private LeftControls leftControls;
 	public Panel SectorPanel;
 	public Panel SelectionPanel;
-	private MapGrid _mapGrid;
-
-	#region SectorPanel constants
-
-	private Vector2 _sectorPanelGlobalPosition;
-	private Vector2 _sectorPanelSize;
-	private Vector2 _sectorPanelGlobalPositionBottomLeft;
-
-	#endregion
-
-	private Vector2 _leftPanelGlobalPosition;
-	private Vector2 _leftPanelSize;
-	private Vector2 _leftPanelGlobalPositionBottomLeft;
 
 	public override void _Ready() {
 		leftControls = GetNode<LeftControls>("LeftControls");
@@ -36,7 +27,7 @@ public partial class UiController : CanvasLayer {
 		SetupSectorPanelConstants();
 		SetupLeftPanelConstants();
 	}
-	
+
 	private void SectorPanelOnDraw() {
 		var shorterSide = Math.Min(SectorPanel.Size.X, SectorPanel.Size.Y);
 		var center = new Vector2(shorterSide, shorterSide) / 2;
@@ -58,8 +49,8 @@ public partial class UiController : CanvasLayer {
 
 	private static Vector2 CalculatePointOnCircle(Vector2 pos1, Vector2 pos2, float radius) {
 		var angle = pos1.AngleToPoint(pos2);
-		float x = radius * Mathf.Cos(angle);
-		float y = radius * Mathf.Sin(angle);
+		var x = radius * Mathf.Cos(angle);
+		var y = radius * Mathf.Sin(angle);
 		return new Vector2(x, y) + pos1;
 	}
 
@@ -69,8 +60,9 @@ public partial class UiController : CanvasLayer {
 		_leftPanelGlobalPositionBottomLeft = _leftPanelGlobalPosition + _leftPanelSize;
 	}
 
-	public bool MouseOverLeftPanel(Vector2 mousePosition) =>
-		AreaHelper.InRect(mousePosition, _leftPanelGlobalPosition, _leftPanelGlobalPositionBottomLeft);
+	public bool MouseOverLeftPanel(Vector2 mousePosition) {
+		return AreaHelper.InRect(mousePosition, _leftPanelGlobalPosition, _leftPanelGlobalPositionBottomLeft);
+	}
 
 	private void SetupSectorPanelConstants() {
 		_sectorPanelGlobalPosition = SectorPanel.GlobalPosition;
@@ -78,11 +70,13 @@ public partial class UiController : CanvasLayer {
 		_sectorPanelGlobalPositionBottomLeft = _sectorPanelGlobalPosition + _sectorPanelSize;
 	}
 
-	public bool MouseOverSectorMap(Vector2 mousePosition) =>
-		AreaHelper.InRect(mousePosition, _sectorPanelGlobalPosition, _sectorPanelGlobalPositionBottomLeft);
+	public bool MouseOverSectorMap(Vector2 mousePosition) {
+		return AreaHelper.InRect(mousePosition, _sectorPanelGlobalPosition, _sectorPanelGlobalPositionBottomLeft);
+	}
 
-	public bool MouseOverGui(Vector2 mousePosition) =>
-		MouseOverSectorMap(mousePosition) || MouseOverLeftPanel(mousePosition);
+	public bool MouseOverGui(Vector2 mousePosition) {
+		return MouseOverSectorMap(mousePosition) || MouseOverLeftPanel(mousePosition);
+	}
 
 	private void DrawSectors(CanvasItem sectorPanel) {
 		const int innerPointRadius = 4;
@@ -103,7 +97,6 @@ public partial class UiController : CanvasLayer {
 				case SectorBuildingStatus.HqBuilding:
 					sectorPanel.DrawCircle(sector.SectorPosition, pointRadius, Colors.DodgerBlue);
 					break;
-				default: break;
 			}
 
 			if (sector.EnemyInSector) {
@@ -138,6 +131,15 @@ public partial class UiController : CanvasLayer {
 			}
 		}
 
-		sectorPanel.DrawArc(_playerController.CurrentSectorObj.SectorPosition, selectorPointRadius, 0, Mathf.Tau, 32, Colors.White, 2);
+		sectorPanel.DrawArc(_playerController.CurrentSectorObj.SectorPosition, selectorPointRadius, 0, Mathf.Tau, 32,
+			Colors.White, 2);
 	}
+
+	#region SectorPanel constants
+
+	private Vector2 _sectorPanelGlobalPosition;
+	private Vector2 _sectorPanelSize;
+	private Vector2 _sectorPanelGlobalPositionBottomLeft;
+
+	#endregion
 }

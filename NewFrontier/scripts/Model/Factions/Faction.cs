@@ -6,10 +6,12 @@ using NewFrontier.scripts.Entities;
 namespace NewFrontier.scripts.Model.Factions;
 
 public class Faction {
+	private readonly Dictionary<string, PackedScene> _scenes = new();
 	public string Name;
-	private Dictionary<string, PackedScene> _scenes = new();
 
-	private Faction(string name) => Name = name;
+	private Faction(string name) {
+		Name = name;
+	}
 
 	private void LoadScene(string name, string path) {
 		var scene = GD.Load<PackedScene>(path);
@@ -56,7 +58,7 @@ public class Faction {
 	public BuildingNode2D CreateJumpgate(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.Jumpgate);
 	}
-	
+
 	public BuildingNode2D CreateIonCanon(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.IonCanon);
 	}
@@ -86,6 +88,4 @@ public class Faction {
 		UiController uiController) {
 		return CreateUnit<Dreadnought>(playerController, Terran.Dreadnought, position, uiController);
 	}
-
-	
 }

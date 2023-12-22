@@ -5,31 +5,23 @@ using NewFrontier.scripts.helpers;
 
 namespace NewFrontier.scripts.Model;
 
-public class GameNode {
-	public bool HasWormhole;
-	public Dictionary<GameNode, float> Neighbours;
-	public Vector2 Position;
-	public BuildingNode2D Building;
-
-	public byte SectorIndex {
-		get => MapHelpers.GetSectorIndexFromOffset(Position);
-	}
-	
+public class GameNode(Vector2 pos) {
 	// TODO: remove this in favour of the attributes
 	public int ActiveAttribute;
-	public int PassiveAttribute;
-	public int StaticAttribute;
 
 	// TODO: replace this with a proper enums
 	public bool Blocking;
+	public BuildingNode2D Building;
+	public bool HasWormhole;
+	public Dictionary<GameNode, float> Neighbours = new();
 	public bool Occupied;
+	public int PassiveAttribute;
+	public Vector2 Position = pos;
+	public int StaticAttribute;
 
 	public GameNode WormholeNode;
 
-	public GameNode(Vector2 pos) {
-		Position = pos;
-		Neighbours = new Dictionary<GameNode, float>();
-	}
+	public byte SectorIndex => MapHelpers.GetSectorIndexFromOffset(Position);
 
 	public bool Equals(GameNode node) {
 		return Position.Equals(node.Position);

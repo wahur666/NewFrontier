@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.Entities;
@@ -7,14 +8,14 @@ using NewFrontier.scripts.helpers;
 namespace NewFrontier.scripts.Model;
 
 public partial class MapGrid : Node2D {
+	public readonly List<Planet> Planets = [];
+	public readonly List<WormholeObject> WormholeObjects = [];
+	public readonly List<Wormhole> Wormholes = [];
 	private CameraController _cameraController;
 	private int _diameter;
 
 	private int _radius;
-	public readonly List<WormholeObject> WormholeObjects = new();
 	private PackedScene _wormholeScene;
-	public readonly List<Planet> Planets = new();
-	public readonly List<Wormhole> Wormholes = new();
 
 
 	/// <summary>
@@ -33,6 +34,8 @@ public partial class MapGrid : Node2D {
 	public List<GameNode> WormholeNodes = new();
 
 	public int RealMapSize => MapSize * 2;
+
+	public GameNode this[int vector2X, int vector2Y] => GridLayer[vector2X, vector2Y];
 
 	public override void _Ready() {
 		_radius = MapSize - 1;
@@ -149,7 +152,7 @@ public partial class MapGrid : Node2D {
 	public Sector GetSector(byte index) {
 		return Sectors.Find(x => x.Index == index);
 	}
-	
+
 	public GameNode GetGameNode(Vector2 positon, int sector) {
 		var offset = MapHelpers.CalculateOffset(positon, sector);
 		return GridLayer[offset.X, offset.Y];
@@ -159,7 +162,53 @@ public partial class MapGrid : Node2D {
 		return GridLayer[(int)positon.X, (int)positon.Y];
 	}
 
-	public GameNode this[int vector2X, int vector2Y] {
-		get => GridLayer[vector2X, vector2Y];
+	public Vector2? FreeSpace(Vector2 mousePos, int wide, bool wormhole = false) {
+		var gridPos = MapHelpers.PosToGrid(mousePos);
+		if (wide == 1) {
+			var node = GetGameNode(gridPos);
+			return !node.Occupied && !node.Blocking && !node.HasWormhole ? gridPos : null;
+		}
+
+		if (wide == 2) {
+			if (gridPos.X % 2 != 1) {
+				gridPos += new Vector2I(1, 0);
+			}
+
+			if (gridPos.Y % 2 != 1) {
+				gridPos += new Vector2I(0, 1);
+			}
+
+			Vector2[] directions = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
+			var allGirdSpacesFree = directions
+				.Select(direction => gridPos + direction)
+				.Select(vector2 => GetGameNode(vector2))
+				.All(node => !node.Occupied && !node.Blocking && node.HasWormhole == wormhole);
+			return allGirdSpacesFree ? gridPos : null;
+		}
+
+		return null;
+	}
+
+	public List<Wormhole> GetWormholes(Vector2 gridPos) {
+		var node = GetGameNode(gridPos).WormholeNode;
+		var node2 = GetConnectedWormholeNode(node);
+
+		var w1 = Wormholes.Find(wormhole => wormhole.GameNode == node);
+		var w2 = Wormholes.Find(wormhole => wormhole.GameNode == node2);
+		return [w1, w2];
+	}
+
+	public IEnumerable<GameNode> GetWormholeOccupiedNodes(List<Wormhole> wormholes) {
+		List<GameNode> nodes = [];
+
+		foreach (var wormhole in wormholes) {
+			var pos = wormhole.GameNode.Position;
+			pos = new Vector2(Mathf.Ceil(pos.X), Mathf.Ceil(pos.Y));
+			List<Vector2> directions = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
+
+			nodes.AddRange(directions.Select(direction => direction + pos).Select(vector2 => GetGameNode(vector2)));
+		}
+
+		return nodes;
 	}
 }
