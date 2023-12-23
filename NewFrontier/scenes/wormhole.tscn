@@ -62,3 +62,5 @@ autoplay = "default"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 visible = false
 shape = SubResource("CircleShape2D_y78de")
+
+[node name="Container" type="Node" parent="."]

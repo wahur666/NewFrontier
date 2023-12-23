@@ -8,11 +8,13 @@ public partial class Wormhole : Node2D {
 	public BuildingNode2D Building;
 	public GameNode GameNode;
 	public bool MousePointerIsOver;
+	private Node _container;
 
 	public override void _Ready() {
 		_area2D = GetNode<Area2D>("Area2D");
 		_area2D.MouseEntered += Area2DOnMouseEntered;
 		_area2D.MouseExited += Area2DOnMouseExited;
+		_container = GetNode<Node>("Container");
 	}
 
 	public void Init(GameNode gameNode) {
@@ -30,10 +32,8 @@ public partial class Wormhole : Node2D {
 	public BuildingNode2D Build(BuildingNode2D buildingNode2D) {
 		Building = buildingNode2D.Duplicate() as BuildingNode2D;
 		Building.BuildingShade = false;
-		// Adding to a different parent other than root will cause issue, that we need to reset the position and scale
-		Building.GlobalPosition = Vector2.Zero;
-		Building.Scale *= new Vector2(1 / Scale.X, 1 / Scale.Y);
-		AddChild(Building);
+		Building.GlobalPosition = GlobalPosition;
+		_container.AddChild(Building);
 		return Building;
 	}
 
