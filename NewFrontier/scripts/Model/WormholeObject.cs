@@ -18,6 +18,7 @@ public class WormholeObject {
 	public bool IsConnected(GameNode gameNode) {
 		return gameNode == _node1 || gameNode == _node2;
 	}
+
 	public GameNode GetOtherNode(GameNode gameNode) {
 		return gameNode == _node1 ? _node2 : _node1;
 	}

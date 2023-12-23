@@ -12,15 +12,19 @@ public partial class LeftControls : Control {
 	private Button _button1;
 	private Button _button2;
 	private Button _button3;
-	private Button _button4;
 	private Control _buttonContainer;
+
+	private List<Button> _buttons;
 	private PackedScene _fabricatorIcon;
 	private PackedScene _harvesterIcon;
 	private Control _iconContainer;
-	public Panel Bg;
 
 	private int _iconSize = 32;
+	private Button _ionCanonButton;
+	private Button _jumpgateButton;
+	private Button _satelliteCanonButton;
 	private int _spacing = 5;
+	public Panel Bg;
 	public PlayerController PlayerController;
 
 	public bool OverUiElement {
@@ -38,22 +42,32 @@ public partial class LeftControls : Control {
 		_button1 = GetNode<Button>("Panel/Container/Button");
 		_button2 = GetNode<Button>("Panel/Container/Button2");
 		_button3 = GetNode<Button>("Panel/Container/Button3");
-		_button4 = GetNode<Button>("Panel/Container/Button4");
+		_jumpgateButton = GetNode<Button>("Panel/Container/HBoxContainer/Jumpgate");
+		_ionCanonButton = GetNode<Button>("Panel/Container/HBoxContainer/IonCanon");
+		_satelliteCanonButton = GetNode<Button>("Panel/Container/HBoxContainer/Satelite");
+
+		_buttons = [_button1, _button2, _button3, _jumpgateButton, _ionCanonButton, _satelliteCanonButton];
 	}
 
 	public void Init(PlayerController playerController) {
 		PlayerController = playerController;
-		_button1.Pressed += () => PlayerController.CreateBuilding(Terran.Building1, FactionController.Terran.CreateBuilding1);
-		_button2.Pressed += () => PlayerController.CreateBuilding(Terran.Building2, FactionController.Terran.CreateBuilding2);
-		_button3.Pressed += () => PlayerController.CreateBuilding(Terran.Building3, FactionController.Terran.CreateBuilding3);
-		_button4.Pressed += () => PlayerController.CreateBuilding(Terran.Jumpgate, FactionController.Terran.CreateJumpgate);
-		_button1.MouseEntered += MouseEnteredPanelElement;
-		_button2.MouseEntered += MouseEnteredPanelElement;
-		_button3.MouseEntered += MouseEnteredPanelElement;
-		_button4.MouseEntered += MouseEnteredPanelElement;
+		_button1.Pressed += () =>
+			PlayerController.CreateBuilding(Terran.Building1, FactionController.Terran.CreateBuilding1);
+		_button2.Pressed += () =>
+			PlayerController.CreateBuilding(Terran.Building2, FactionController.Terran.CreateBuilding2);
+		_button3.Pressed += () =>
+			PlayerController.CreateBuilding(Terran.Building3, FactionController.Terran.CreateBuilding3);
+		_jumpgateButton.Pressed += () =>
+			PlayerController.CreateBuilding(Terran.Jumpgate, FactionController.Terran.CreateJumpgate);
+		_ionCanonButton.Pressed += () =>
+			PlayerController.CreateBuilding(Terran.IonCanon, FactionController.Terran.CreateIonCanon);
+		_satelliteCanonButton.Pressed += () =>
+			PlayerController.CreateBuilding(Terran.Satellite, FactionController.Terran.CreateSatellite);
 
-		_iconContainer.MouseEntered += MouseEnteredPanelElement;
-		_iconContainer.MouseExited += MouseExitedPanelElement;
+		_buttons.ForEach(button => {
+			button.MouseEntered += MouseEnteredPanelElement;
+			button.MouseExited += MouseExitedPanelElement;
+		});
 
 		_buttonContainer.MouseEntered += MouseEnteredPanelElement;
 		_buttonContainer.MouseExited += MouseExitedPanelElement;

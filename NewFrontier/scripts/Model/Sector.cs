@@ -16,28 +16,31 @@ public class Sector {
 	private readonly byte _size;
 
 	public Vector2 CameraPosition;
+	public bool Discovered = true;
 
 	public bool EnemyInSector;
-	public SectorBuildingStatus SectorBuildingStatus;
-	public bool SupplyLineForSector;
-	public bool Discovered = true;
 
 	/// <summary>
 	///     Index if the sector, to allocate the memory, 0-15
 	/// </summary>
 	public byte Index;
 
+	public SectorBuildingStatus SectorBuildingStatus;
+
 	/// <summary>
 	///     Position on the minimap
 	/// </summary>
 	public Vector2 SectorPosition;
+
+	public bool SupplyLineForSector;
 
 	public Sector(GameNode[,] map, Vector2I sectorPosition, byte size, byte index) {
 		_map = map;
 		_size = size;
 		SectorPosition = sectorPosition;
 		Index = index;
-		CameraPosition = MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(size - 1, size - 1), index));
+		CameraPosition =
+			MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(size - 1, size - 1), index));
 		CreateSector();
 	}
 

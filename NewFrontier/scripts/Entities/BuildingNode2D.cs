@@ -4,32 +4,42 @@ using Godot;
 using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
+using NewFrontier.scripts.Model.Interfaces;
 
 namespace NewFrontier.scripts.Entities;
 
-public partial class BuildingNode2D : Node2D {
-	public int[] Place = Array.Empty<int>();
-	public Planet Planet;
+public partial class BuildingNode2D : Node2D, IBase {
+	private const int PlanetImgSize = 34;
+	private MapGrid _mapGrid;
 
 	private PlayerController _playerController;
 	private Sprite2D _sprite;
-	public bool BuildingShade = true;
-	private const int PlanetImgSize = 34;
 
-	[Export] public int Wide = 1;
-	
-	public int Health;
 	public string BuildingName;
-	
-	public SnapOption SnapOption = SnapOption.Planet;
-	public List<string> PreRequisites;
+	public bool BuildingShade = true;
 	public List<object> BuildQueue;
 	public List<object> Items;
+	public int[] Place = Array.Empty<int>();
+	public Planet Planet;
+	public List<string> PreRequisites;
+
+	[Export] public SnapOption SnapOption = SnapOption.Planet;
+
+	[Export] public int Wide = 1;
+
+	[ExportGroup("Stats")] [Export] public int MaxHealth { get; set; }
+	[ExportGroup("Stats")] [Export] public int CurrentHealth { get; set; }
+
+	public void Destroy() {
+		// Play Anim
+		QueueFree();
+	}
 
 	public override void _Ready() {
 		if (SnapOption == SnapOption.Planet) {
 			Scale = new Vector2(Planet.Radius / (float)PlanetImgSize, Planet.Radius / (float)PlanetImgSize);
 		}
+
 		_sprite = GetNode<Sprite2D>("Sprite2D");
 	}
 
@@ -48,9 +58,9 @@ public partial class BuildingNode2D : Node2D {
 		RotationDegrees = (place * planetAngleSize) - 90 + (Wide % 2 == 0 ? planetHalfAngleSize : 0);
 		GlobalPosition = planet.GlobalPosition;
 		return Wide switch {
-			1 => new[] { place },
-			2 => new[] { place > 11 ? 0 : place, place + 1 > 11 ? 0 : place + 1 },
-			3 => new[] { place - 1 < 0 ? 11 : place - 1, place, place + 1 > 11 ? 0 : place + 1 },
+			1 => [place],
+			2 => [place > 11 ? 0 : place, place + 1 > 11 ? 0 : place + 1],
+			3 => [place - 1 < 0 ? 11 : place - 1, place, place + 1 > 11 ? 0 : place + 1],
 			_ => Array.Empty<int>()
 		};
 	}
@@ -66,7 +76,7 @@ public partial class BuildingNode2D : Node2D {
 		}
 	}
 
-	public void CalculateBuildingGridPlace(Vector2 pos) {
+	public void CalculateBuildingGridPlace(MapGrid mapGrid, Vector2 pos) {
 		if (Wide == 1) {
 			var gridPos = MapHelpers.PosToGrid(pos);
 			GlobalPosition = MapHelpers.GridCoordToGridCenterPos(gridPos);
@@ -75,9 +85,30 @@ public partial class BuildingNode2D : Node2D {
 			if (gridPos.X % 2 != 1) {
 				gridPos += new Vector2I(1, 0);
 			}
+
 			if (gridPos.Y % 2 != 1) {
 				gridPos += new Vector2I(0, 1);
 			}
+
+			GlobalPosition = MapHelpers.GridCoordToGridPointPos(gridPos);
+		} else {
+			GlobalPosition = pos;
+		}
+	}
+
+	public void CalculateBuildingWormholePlace(MapGrid mapGrid, Vector2 pos) {
+		GlobalPosition = pos;
+		var gridPos = MapHelpers.PosToGrid(pos);
+		var node = mapGrid.GetGameNode(gridPos);
+		if (node is not null && node.HasWormhole) {
+			if (gridPos.X % 2 != 1) {
+				gridPos += new Vector2I(1, 0);
+			}
+
+			if (gridPos.Y % 2 != 1) {
+				gridPos += new Vector2I(0, 1);
+			}
+
 			GlobalPosition = MapHelpers.GridCoordToGridPointPos(gridPos);
 		} else {
 			GlobalPosition = pos;

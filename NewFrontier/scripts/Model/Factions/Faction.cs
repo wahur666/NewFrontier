@@ -6,10 +6,12 @@ using NewFrontier.scripts.Entities;
 namespace NewFrontier.scripts.Model.Factions;
 
 public class Faction {
+	private readonly Dictionary<string, PackedScene> _scenes = new();
 	public string Name;
-	private Dictionary<string, PackedScene> _scenes = new();
 
-	private Faction(string name) => Name = name;
+	private Faction(string name) {
+		Name = name;
+	}
 
 	private void LoadScene(string name, string path) {
 		var scene = GD.Load<PackedScene>(path);
@@ -31,6 +33,8 @@ public class Faction {
 		LoadScene(Terran.Harvester, "res://scenes/harvester.tscn");
 		LoadScene(Terran.Fabricator, "res://scenes/fabricator.tscn");
 		LoadScene(Terran.Dreadnought, "res://scenes/dreadnought.tscn");
+		LoadScene(Terran.Satellite, "res://scenes/satelite.tscn");
+		LoadScene(Terran.IonCanon, "res://scenes/ion_canon.tscn");
 	}
 
 	private BuildingNode2D CreateBuilding(PlayerController playerController, string name) {
@@ -52,10 +56,15 @@ public class Faction {
 	}
 
 	public BuildingNode2D CreateJumpgate(PlayerController playerController) {
-		var instance = CreateBuilding(playerController, Terran.Jumpgate);
-		instance.Wide = 2;
-		instance.SnapOption = SnapOption.Wormhole;
-		return instance;
+		return CreateBuilding(playerController, Terran.Jumpgate);
+	}
+
+	public BuildingNode2D CreateIonCanon(PlayerController playerController) {
+		return CreateBuilding(playerController, Terran.IonCanon);
+	}
+
+	public BuildingNode2D CreateSatellite(PlayerController playerController) {
+		return CreateBuilding(playerController, Terran.Satellite);
 	}
 
 	private T CreateUnit<T>(PlayerController playerController, string name, Vector2 position,

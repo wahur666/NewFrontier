@@ -8,9 +8,9 @@ public partial class CameraController : Camera2D {
 	private const int EdgeSize = 25;
 	private MapGrid _mapGrid;
 	private UiController _uiController;
-	public PlayerController PlayerControllerInstance;
 
 	[Export] public bool EnableEdgePanning = true;
+	public PlayerController PlayerControllerInstance;
 	[Export] public float Speed = 10.0f;
 
 	public override void _Ready() {
@@ -25,11 +25,17 @@ public partial class CameraController : Camera2D {
 		}
 	}
 
-	public void Init(MapGrid mapGrid) => _mapGrid = mapGrid;
+	public void Init(MapGrid mapGrid) {
+		_mapGrid = mapGrid;
+	}
 
-	public void CenterOnGridPosition(Vector2 pos) => CenterOnPosition(MapHelpers.GridCoordToGridCenterPos(pos));
+	public void CenterOnGridPosition(Vector2 pos) {
+		CenterOnPosition(MapHelpers.GridCoordToGridCenterPos(pos));
+	}
 
-	public void CenterOnPosition(Vector2 pos) => Position = pos;
+	public void CenterOnPosition(Vector2 pos) {
+		Position = pos;
+	}
 
 	public override void _Process(double delta) {
 		var inpx = 0;

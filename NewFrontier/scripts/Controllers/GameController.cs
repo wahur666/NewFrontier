@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Godot;
 using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.helpers;

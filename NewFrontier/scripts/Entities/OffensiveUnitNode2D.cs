@@ -5,7 +5,7 @@ using NewFrontier.scripts.Model.Interfaces;
 
 namespace NewFrontier.scripts.Entities;
 
-public partial class OffensiveBuildingNode2D : BuildingNode2D, IAttack {
+public partial class OffensiveUnitNode2D : UnitNode2D, IAttack {
 	[ExportGroup("OffensiveStats")] [Export]
 	public int CurrentSupply;
 

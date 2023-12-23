@@ -5,6 +5,8 @@
 
 [node name="Jumpgate" type="Node2D"]
 script = ExtResource("1_b2yga")
+SnapOption = 2
+Wide = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_3ghm4")

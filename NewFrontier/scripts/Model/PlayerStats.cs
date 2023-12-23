@@ -1,4 +1,4 @@
-﻿namespace NewFrontier.scripts.Model; 
+﻿namespace NewFrontier.scripts.Model;
 
 public struct PlayerStats {
 	public int MaxCrew = 2500;
