@@ -1,7 +1,8 @@
-[gd_scene load_steps=70 format=3 uid="uid://l2ursg8x1iqc"]
+[gd_scene load_steps=71 format=3 uid="uid://l2ursg8x1iqc"]
 
 [ext_resource type="Script" path="res://scripts/Entities/Planet.cs" id="1_fs2uw"]
 [ext_resource type="Script" path="res://scripts/Entities/PlanetBuildingScheme.cs" id="2_irlwg"]
+[ext_resource type="Script" path="res://scripts/Entities/PlanetStats.cs" id="2_syqkc"]
 [ext_resource type="Texture2D" uid="uid://luj6grccpmjt" path="res://gfx/gas-giant.png" id="3_v1rqu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_w17gl"]
@@ -467,6 +468,10 @@ radius = 64.2806
 [node name="GasPlanet" type="Node2D" groups=["planet"]]
 script = ExtResource("1_fs2uw")
 PlanetType = 2
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("2_syqkc")
+MaxGas = 10000
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
 script = ExtResource("2_irlwg")

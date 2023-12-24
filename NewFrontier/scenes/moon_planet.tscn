@@ -1,6 +1,7 @@
-[gd_scene load_steps=70 format=3 uid="uid://b6vgks5gjc3bk"]
+[gd_scene load_steps=71 format=3 uid="uid://b6vgks5gjc3bk"]
 
 [ext_resource type="Script" path="res://scripts/Entities/Planet.cs" id="1_m56hy"]
+[ext_resource type="Script" path="res://scripts/Entities/PlanetStats.cs" id="2_hym0v"]
 [ext_resource type="Script" path="res://scripts/Entities/PlanetBuildingScheme.cs" id="2_o7flg"]
 [ext_resource type="Texture2D" uid="uid://dqef0of0x6g32" path="res://gfx/moon-planet.png" id="3_fx735"]
 
@@ -466,6 +467,9 @@ radius = 64.2806
 [node name="MoonPlanet" type="Node2D" groups=["planet"]]
 script = ExtResource("1_m56hy")
 PlanetType = 1
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("2_hym0v")
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
 script = ExtResource("2_o7flg")

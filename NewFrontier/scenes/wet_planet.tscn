@@ -1,8 +1,9 @@
-[gd_scene load_steps=70 format=3 uid="uid://1t4s5btcems5"]
+[gd_scene load_steps=71 format=3 uid="uid://1t4s5btcems5"]
 
 [ext_resource type="Script" path="res://scripts/Entities/Planet.cs" id="1_1nk8g"]
 [ext_resource type="Texture2D" uid="uid://cn4yrl4amdien" path="res://gfx/wet-planet.png" id="1_rg5fr"]
 [ext_resource type="Script" path="res://scripts/Entities/PlanetBuildingScheme.cs" id="2_5foyr"]
+[ext_resource type="Script" path="res://scripts/Entities/PlanetStats.cs" id="2_ajj6s"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_udpkb"]
 atlas = ExtResource("1_rg5fr")
@@ -465,6 +466,12 @@ radius = 64.2806
 
 [node name="WetPlanet" type="Node2D" groups=["planet"]]
 script = ExtResource("1_1nk8g")
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("2_ajj6s")
+MaxOre = 2500
+MaxGas = 2500
+MaxCrew = 3500
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
 script = ExtResource("2_5foyr")
