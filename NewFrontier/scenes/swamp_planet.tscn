@@ -1,6 +1,7 @@
-[gd_scene load_steps=70 format=3 uid="uid://bm7rhlmjs1qir"]
+[gd_scene load_steps=71 format=3 uid="uid://bm7rhlmjs1qir"]
 
 [ext_resource type="Script" path="res://scripts/Entities/Planet.cs" id="1_aiyyj"]
+[ext_resource type="Script" path="res://scripts/Entities/PlanetStats.cs" id="2_ekojl"]
 [ext_resource type="Script" path="res://scripts/Entities/PlanetBuildingScheme.cs" id="2_tlsra"]
 [ext_resource type="Texture2D" uid="uid://borppao1xbe71" path="res://gfx/swamp-planet.png" id="3_0hebh"]
 
@@ -466,6 +467,9 @@ radius = 64.2806
 [node name="SwampPlanet" type="Node2D" groups=["planet"]]
 script = ExtResource("1_aiyyj")
 PlanetType = 3
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("2_ekojl")
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
 script = ExtResource("2_tlsra")
