@@ -9,3 +9,4 @@ SnapOption = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_7oevl")
+hframes = 9

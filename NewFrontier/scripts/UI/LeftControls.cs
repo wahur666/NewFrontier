@@ -23,6 +23,7 @@ public partial class LeftControls : Control {
 	private Button _ionCanonButton;
 	private Button _jumpgateButton;
 	private Button _satelliteCanonButton;
+	private Button _factoryButton;
 	private int _spacing = 5;
 	public Panel Bg;
 	public PlayerController PlayerController;
@@ -45,8 +46,9 @@ public partial class LeftControls : Control {
 		_jumpgateButton = GetNode<Button>("Panel/Container/HBoxContainer/Jumpgate");
 		_ionCanonButton = GetNode<Button>("Panel/Container/HBoxContainer/IonCanon");
 		_satelliteCanonButton = GetNode<Button>("Panel/Container/HBoxContainer/Satelite");
+		_factoryButton = GetNode<Button>("Panel/Container/HBoxContainer/Factory");
 
-		_buttons = [_button1, _button2, _button3, _jumpgateButton, _ionCanonButton, _satelliteCanonButton];
+		_buttons = [_button1, _button2, _button3, _jumpgateButton, _ionCanonButton, _satelliteCanonButton, _factoryButton];
 	}
 
 	public void Init(PlayerController playerController) {
@@ -63,6 +65,8 @@ public partial class LeftControls : Control {
 			PlayerController.CreateBuilding(Terran.IonCanon, FactionController.Terran.CreateIonCanon);
 		_satelliteCanonButton.Pressed += () =>
 			PlayerController.CreateBuilding(Terran.Satellite, FactionController.Terran.CreateSatellite);
+		_factoryButton.Pressed += () =>
+			PlayerController.CreateBuilding(Terran.Factory, FactionController.Terran.CreateFactory);
 
 		_buttons.ForEach(button => {
 			button.MouseEntered += MouseEnteredPanelElement;
@@ -99,7 +103,6 @@ public partial class LeftControls : Control {
 				Harvester => _harvesterIcon,
 				_ => _harvesterIcon
 			};
-			;
 			DrawIcon(startX + (i * (_iconSize + _spacing)), startY, scene, a);
 			startNumber++;
 		}

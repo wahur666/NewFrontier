@@ -35,6 +35,7 @@ public class Faction {
 		LoadScene(Terran.Dreadnought, "res://scenes/dreadnought.tscn");
 		LoadScene(Terran.Satellite, "res://scenes/satelite.tscn");
 		LoadScene(Terran.IonCanon, "res://scenes/ion_canon.tscn");
+		LoadScene(Terran.Factory, "res://scenes/factory.tscn");
 	}
 
 	private BuildingNode2D CreateBuilding(PlayerController playerController, string name) {
@@ -53,6 +54,10 @@ public class Faction {
 
 	public BuildingNode2D CreateBuilding3(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.Building3);
+	}
+	
+	public BuildingNode2D CreateFactory(PlayerController playerController) {
+		return CreateBuilding(playerController, Terran.Factory);
 	}
 
 	public BuildingNode2D CreateJumpgate(PlayerController playerController) {
