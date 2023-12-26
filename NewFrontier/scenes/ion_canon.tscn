@@ -1,16 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://b005upsg2hjvr"]
+[gd_scene load_steps=5 format=3 uid="uid://b005upsg2hjvr"]
 
 [ext_resource type="Script" path="res://scripts/Entities/OffensiveBuildingNode2D.cs" id="1_68s5m"]
 [ext_resource type="Texture2D" uid="uid://trm0bwduq43r" path="res://gfx/aseprite/ion-canon/Layer 1.png" id="1_651h7"]
 [ext_resource type="Texture2D" uid="uid://cjwxiuho1c3ub" path="res://gfx/aseprite/ion-canon/Layer 2.png" id="2_u3j0l"]
+[ext_resource type="Script" path="res://scripts/UI/SelectionRect.cs" id="4_d26wf"]
 
 [node name="IonCanon" type="Node2D"]
 script = ExtResource("1_68s5m")
-Wide = 2
 SnapOption = 0
+Wide = 2
 
 [node name="Layer2" type="Sprite2D" parent="."]
 texture = ExtResource("1_651h7")
 
 [node name="Layer1" type="Sprite2D" parent="."]
 texture = ExtResource("2_u3j0l")
+
+[node name="SelectionRect" type="TextureRect" parent="."]
+offset_left = -75.0
+offset_top = -76.0
+offset_right = 75.0
+offset_bottom = 76.0
+script = ExtResource("4_d26wf")
+Selected = true

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://di3lq3dpt5hlp"]
+[gd_scene load_steps=4 format=3 uid="uid://di3lq3dpt5hlp"]
 
 [ext_resource type="Script" path="res://scripts/Entities/BuildingNode2D.cs" id="1_d5es8"]
 [ext_resource type="Texture2D" uid="uid://ctq84pytljkb2" path="res://gfx/aseprite/3slot.png" id="1_dipq8"]
+[ext_resource type="Script" path="res://scripts/UI/SelectionRect.cs" id="3_1tyin"]
 
 [node name="Base3" type="Node2D"]
 z_index = 100
@@ -11,3 +12,11 @@ Wide = 3
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_dipq8")
 offset = Vector2(0, 32)
+
+[node name="SelectionRect" type="TextureRect" parent="."]
+offset_left = -27.0
+offset_top = 17.0
+offset_right = 27.0
+offset_bottom = 41.0
+script = ExtResource("3_1tyin")
+Selected = true

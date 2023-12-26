@@ -5,10 +5,11 @@ using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
 using NewFrontier.scripts.Model.Interfaces;
+using NewFrontier.scripts.UI;
 
 namespace NewFrontier.scripts.Entities;
 
-public partial class BuildingNode2D : Node2D, IBase {
+public partial class BuildingNode2D : Node2D, IBase, ISelectable {
 	private const int PlanetImgSize = 34;
 	private MapGrid _mapGrid;
 
@@ -26,9 +27,25 @@ public partial class BuildingNode2D : Node2D, IBase {
 	[Export] public SnapOption SnapOption = SnapOption.Planet;
 
 	[Export] public int Wide = 1;
+	private bool _selected;
+
+	[Export]
+	public bool Selected {
+		get => _selected;
+		set {
+			_selected = value;
+			if (SelectionRect is not null) {
+				AsISelectable.SetSelection(value);
+			}
+		}
+	}
 
 	[ExportGroup("Stats")] [Export] public int MaxHealth { get; set; }
 	[ExportGroup("Stats")] [Export] public int CurrentHealth { get; set; }
+
+	private ISelectable AsISelectable => this;
+	public SelectionRect SelectionRect { get; private set; }
+
 
 	public void Destroy() {
 		// Play Anim
@@ -41,6 +58,7 @@ public partial class BuildingNode2D : Node2D, IBase {
 		}
 
 		_sprite = GetNode<Sprite2D>("Sprite2D");
+		SelectionRect = GetNode<SelectionRect>("SelectionRect");
 	}
 
 	public void Init(PlayerController playerController, string name, int zIndex = 10) {
