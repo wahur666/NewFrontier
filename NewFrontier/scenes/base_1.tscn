@@ -18,4 +18,3 @@ offset_top = 28.0
 offset_right = 12.0
 offset_bottom = 38.0
 script = ExtResource("3_1x2b8")
-Selected = true

@@ -24,9 +24,11 @@ public partial class LeftControls : Control {
 	private Button _jumpgateButton;
 	private Button _satelliteCanonButton;
 	private Button _factoryButton;
+	private Button _harvesterButton;
 	private int _spacing = 5;
 	public Panel Bg;
 	public PlayerController PlayerController;
+	private Control _buildContainer;
 
 	public bool OverUiElement {
 		get;
@@ -37,18 +39,19 @@ public partial class LeftControls : Control {
 	public override void _Ready() {
 		_fabricatorIcon = GD.Load<PackedScene>("res://scenes/fabricator_icon.tscn");
 		_harvesterIcon = GD.Load<PackedScene>("res://scenes/harvester_icon.tscn");
-		_buttonContainer = GetNode<Control>("Panel/Container");
-		_iconContainer = GetNode<Control>("Panel/Cont2");
+		_buttonContainer = GetNode<Control>("Panel/ButtonContainer");
+		_iconContainer = GetNode<Control>("Panel/IconContainer");
 		Bg = GetNode<Panel>("Panel");
-		_button1 = GetNode<Button>("Panel/Container/Button");
-		_button2 = GetNode<Button>("Panel/Container/Button2");
-		_button3 = GetNode<Button>("Panel/Container/Button3");
-		_jumpgateButton = GetNode<Button>("Panel/Container/HBoxContainer/Jumpgate");
-		_ionCanonButton = GetNode<Button>("Panel/Container/HBoxContainer/IonCanon");
-		_satelliteCanonButton = GetNode<Button>("Panel/Container/HBoxContainer/Satelite");
-		_factoryButton = GetNode<Button>("Panel/Container/HBoxContainer/Factory");
-
-		_buttons = [_button1, _button2, _button3, _jumpgateButton, _ionCanonButton, _satelliteCanonButton, _factoryButton];
+		_button1 = GetNode<Button>("Panel/ButtonContainer/Button");
+		_button2 = GetNode<Button>("Panel/ButtonContainer/Button2");
+		_button3 = GetNode<Button>("Panel/ButtonContainer/Button3");
+		_jumpgateButton = GetNode<Button>("Panel/ButtonContainer/HBoxContainer/Jumpgate");
+		_ionCanonButton = GetNode<Button>("Panel/ButtonContainer/HBoxContainer/IonCanon");
+		_satelliteCanonButton = GetNode<Button>("Panel/ButtonContainer/HBoxContainer/Satelite");
+		_factoryButton = GetNode<Button>("Panel/ButtonContainer/HBoxContainer/Factory");
+		_buildContainer = GetNode<Control>("Panel/BuildContainer");
+		_harvesterButton = GetNode<Button>("Panel/BuildContainer/Harvester");
+		_buttons = [_button1, _button2, _button3, _jumpgateButton, _ionCanonButton, _satelliteCanonButton, _factoryButton, _harvesterButton];
 	}
 
 	public void Init(PlayerController playerController) {
@@ -132,8 +135,15 @@ public partial class LeftControls : Control {
 		PlayerController.SetBuildingShadeVisibility(true);
 	}
 
-	public void SetBuildingContainerVisibility(bool visible) {
-		_buttonContainer.Visible = visible;
-		_iconContainer.Visible = !visible;
+	public void SetContainerVisibility(bool icon, bool button, bool build) {
+		_buttonContainer.Visible = button;
+		_iconContainer.Visible = icon;
+		_buildContainer.Visible = build;
 	}
+	
+	// public void SetBuildingContainerVisibility(bool visible) {
+		// _buttonContainer.Visible = visible;
+		// _iconContainer.Visible = !visible;
+	// }
 }
+ 

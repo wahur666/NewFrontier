@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://covagukijnsba"]
+[gd_scene load_steps=4 format=3 uid="uid://covagukijnsba"]
 
 [ext_resource type="Texture2D" uid="uid://ct0gshyqjllb0" path="res://gfx/Jumpgate1.png" id="1_3ghm4"]
 [ext_resource type="Script" path="res://scripts/Entities/BuildingNode2D.cs" id="1_b2yga"]
+[ext_resource type="Script" path="res://scripts/UI/SelectionRect.cs" id="3_beh1b"]
 
 [node name="Jumpgate" type="Node2D"]
 script = ExtResource("1_b2yga")
@@ -10,3 +11,10 @@ Wide = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_3ghm4")
+
+[node name="SelectionRect" type="TextureRect" parent="."]
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+script = ExtResource("3_beh1b")

@@ -15,6 +15,7 @@ public partial class BuildingNode2D : Node2D, IBase, ISelectable {
 
 	private PlayerController _playerController;
 	private Sprite2D _sprite;
+	private bool _mouseOver;
 
 	public string BuildingName;
 	public bool BuildingShade = true;
@@ -59,6 +60,8 @@ public partial class BuildingNode2D : Node2D, IBase, ISelectable {
 
 		_sprite = GetNode<Sprite2D>("Sprite2D");
 		SelectionRect = GetNode<SelectionRect>("SelectionRect");
+		SelectionRect.MouseEntered += () => _mouseOver = true;
+		SelectionRect.MouseExited += () => _mouseOver = false;
 	}
 
 	public void Init(PlayerController playerController, string name, int zIndex = 10) {
@@ -131,5 +134,9 @@ public partial class BuildingNode2D : Node2D, IBase, ISelectable {
 		} else {
 			GlobalPosition = pos;
 		}
+	}
+	
+	public bool InsideSelectionRect(Vector2 position) {
+		return _mouseOver;
 	}
 }

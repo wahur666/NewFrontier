@@ -5,6 +5,7 @@ using Godot;
 using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
+using NewFrontier.scripts.Model.Interfaces;
 using NewFrontier.scripts.UI;
 
 namespace NewFrontier.scripts.Controllers;
@@ -22,7 +23,10 @@ public partial class PlayerController : Node {
 	private MapGrid _mapGrid;
 	private bool _overGui;
 	private PlayerStats _playerStats = new();
-	private List<UnitNode2D> _selectedUnits = [];
+	private List<ISelectable> _selectedObjects = [];
+
+	// private List<UnitNode2D> _selectedUnits = [];
+	// private BuildingNode2D _selectedBuildingNode2D;
 	private UiController _uiController;
 	private List<UnitNode2D> _units = [];
 	private bool _wormholeClick;
@@ -214,21 +218,25 @@ public partial class PlayerController : Node {
 		if (shiftDown) {
 			var units = _units.Where(unit => AreaHelper.InRect(unit.Position, start, end)).ToList();
 			if (units.Count == 0) {
-				_selectedUnits.ForEach(x => x.Selected = false);
-				_selectedUnits = new List<UnitNode2D>();
+				_selectedObjects.ForEach(x => x.Selected = false);
+				_selectedObjects = [];
+				// _selectedUnits.ForEach(x => x.Selected = false);
+				// _selectedUnits = new List<UnitNode2D>();
 			} else {
 				foreach (var unit in units) {
 					unit.Selected = !unit.Selected;
 				}
 
-				_selectedUnits = _units.Where(x => x.Selected).ToList();
+				_selectedObjects = _units.Select(x => (ISelectable)x).Where(x => x.Selected).ToList();
+				// _selectedUnits = _units.Where(x => x.Selected).ToList();
 			}
 		} else {
 			foreach (var unit in _units) {
 				unit.Selected = AreaHelper.InRect(unit.Position, start, end);
 			}
 
-			_selectedUnits = _units.Where(x => x.Selected).ToList();
+			_selectedObjects = _units.Select(x => (ISelectable)x).Where(x => x.Selected).ToList();
+			// _selectedUnits = _units.Where(x => x.Selected).ToList();
 		}
 
 		UpdateUi();
@@ -238,47 +246,82 @@ public partial class PlayerController : Node {
 		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
 			return;
 		}
-
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
-		if (!shiftDown) {
-			_units.ForEach(x => x.Selected = false);
-		}
 
-		var unitNode2D = _units.Find(x => x.InsideSelectionRect(point));
-		if (unitNode2D is null) {
-			_selectedUnits.ForEach(x => x.Selected = false);
-			_selectedUnits.Clear();
+		List<ISelectable> allSelectable = [.._units, .._buildings];
+		
+		if (!shiftDown) {
+			allSelectable.ForEach(x => x.Selected = false);
+			// _units.ForEach(x => x.Selected = false);
+			// _buildings.ForEach(building => building.Selected = false);
+			// _selectedBuildingNode2D = null
+		}
+		
+		
+		var selectedObject = allSelectable.Find(x => x.InsideSelectionRect(point));
+		if (selectedObject is null) {
+			_selectedObjects.ForEach(x => x.Selected = false);
+			_selectedObjects.Clear();
 		} else {
 			if (shiftDown) {
-				unitNode2D.Selected = !unitNode2D.Selected;
-				if (unitNode2D.Selected) {
-					_selectedUnits.Add(unitNode2D);
+				selectedObject.Selected = !selectedObject.Selected;
+				if (selectedObject.Selected) {
+					_selectedObjects.Add(selectedObject);
 				} else {
-					_selectedUnits.Remove(unitNode2D);
+					_selectedObjects.Remove(selectedObject);
 				}
 			} else {
-				unitNode2D.Selected = true;
-				_selectedUnits = new List<UnitNode2D> { unitNode2D };
+				selectedObject.Selected = true;
+				_selectedObjects = [selectedObject];
 			}
 		}
+
+		
+		// var unitNode2D = _units.Find(x => x.InsideSelectionRect(point));
+		// if (unitNode2D is null) {
+		// 	_selectedUnits.ForEach(x => x.Selected = false);
+		// 	_selectedUnits.Clear();
+		// } else {
+		// 	if (shiftDown) {
+		// 		unitNode2D.Selected = !unitNode2D.Selected;
+		// 		if (unitNode2D.Selected) {
+		// 			_selectedUnits.Add(unitNode2D);
+		// 		} else {
+		// 			_selectedUnits.Remove(unitNode2D);
+		// 		}
+		// 	} else {
+		// 		unitNode2D.Selected = true;
+		// 		_selectedUnits = [unitNode2D];
+		// 	}
+		// }
 
 		UpdateUi();
 	}
 
 	private void UpdateUi() {
-		var units = _selectedUnits;
-		LeftControls.SetBuildingContainerVisibility(units.Count == 1 && units[0] is Fabricator);
-		LeftControls.CalculateSelectedUnits(units);
+		var selectedObjects = _selectedObjects;
+		var isFabricatorSelected = selectedObjects.Count == 1 && selectedObjects[0] is Fabricator;
+		if (isFabricatorSelected) {
+			LeftControls.SetContainerVisibility(false, true, false);
+			return;
+		}
+		var isBuildingSelected = selectedObjects.Count == 1 && selectedObjects[0] is BuildingNode2D;
+		if (isBuildingSelected) {
+			LeftControls.SetContainerVisibility(false, false, true);
+			return;
+		}		
+		LeftControls.SetContainerVisibility(true, false, false);
+		LeftControls.CalculateSelectedUnits(selectedObjects.Select(x => (UnitNode2D)x).ToList());
 	}
 
 	public void SelectUnitFromUi(UnitNode2D unit) {
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
 		if (shiftDown) {
 			unit.Selected = false;
-			_selectedUnits.Remove(unit);
+			_selectedObjects.Remove(unit);
 		} else {
 			_units.ForEach(x => x.Selected = x == unit);
-			_selectedUnits = new List<UnitNode2D> { unit };
+			_selectedObjects = [unit];
 		}
 
 		UpdateUi();

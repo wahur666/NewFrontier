@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://dsq1lag3r7s8o"]
+[gd_scene load_steps=10 format=3 uid="uid://dsq1lag3r7s8o"]
 
 [ext_resource type="Script" path="res://scripts/UI/LeftControls.cs" id="1_gw5hu"]
 [ext_resource type="Texture2D" uid="uid://ct0gshyqjllb0" path="res://gfx/Jumpgate1.png" id="2_18l88"]
 [ext_resource type="Texture2D" uid="uid://d0pvu2eii8s32" path="res://gfx/aseprite/ion-canon.png" id="3_jceti"]
 [ext_resource type="Texture2D" uid="uid://btk10rm5wfhl4" path="res://gfx/aseprite/satelite.png" id="4_3ff3u"]
 [ext_resource type="Texture2D" uid="uid://dcjbpcekly5dh" path="res://gfx/aseprite/factory_icon.png" id="5_vmnqa"]
+[ext_resource type="Texture2D" uid="uid://dy1ps31o4d1ck" path="res://gfx/Fabgal.tga" id="6_0saeo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6gscy"]
 bg_color = Color(0.686275, 0.686275, 0.686275, 1)
@@ -13,6 +14,10 @@ corner_radius_top_right = 20
 [sub_resource type="AtlasTexture" id="AtlasTexture_6366j"]
 atlas = ExtResource("4_3ff3u")
 region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yx7vy"]
+atlas = ExtResource("6_0saeo")
+region = Rect2(0, 64, 64, 64)
 
 [node name="LeftControls" type="Control"]
 layout_mode = 3
@@ -33,7 +38,7 @@ offset_right = 304.0
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_6gscy")
 
-[node name="Cont2" type="Control" parent="Panel"]
+[node name="IconContainer" type="Control" parent="Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,7 +46,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Container" type="Control" parent="Panel"]
+[node name="ButtonContainer" type="Control" parent="Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -49,7 +54,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Button" type="Button" parent="Panel/Container"]
+[node name="Button" type="Button" parent="Panel/ButtonContainer"]
 layout_mode = 0
 offset_left = 20.0
 offset_top = 9.0
@@ -57,7 +62,7 @@ offset_right = 106.0
 offset_bottom = 43.0
 text = "Building 1"
 
-[node name="Button2" type="Button" parent="Panel/Container"]
+[node name="Button2" type="Button" parent="Panel/ButtonContainer"]
 layout_mode = 0
 offset_left = 20.0
 offset_top = 51.0
@@ -65,7 +70,7 @@ offset_right = 105.0
 offset_bottom = 82.0
 text = "Building 2"
 
-[node name="Button3" type="Button" parent="Panel/Container"]
+[node name="Button3" type="Button" parent="Panel/ButtonContainer"]
 layout_mode = 0
 offset_left = 20.0
 offset_top = 91.0
@@ -73,7 +78,7 @@ offset_right = 105.0
 offset_bottom = 122.0
 text = "Building 3"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Container"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/ButtonContainer"]
 layout_mode = 0
 offset_left = 110.0
 offset_top = 9.0
@@ -82,27 +87,46 @@ offset_bottom = 145.0
 scale = Vector2(0.25, 0.25)
 theme_override_constants/separation = 5
 
-[node name="Jumpgate" type="Button" parent="Panel/Container/HBoxContainer"]
+[node name="Jumpgate" type="Button" parent="Panel/ButtonContainer/HBoxContainer"]
 layout_mode = 2
 icon = ExtResource("2_18l88")
 
-[node name="IonCanon" type="Button" parent="Panel/Container/HBoxContainer"]
+[node name="IonCanon" type="Button" parent="Panel/ButtonContainer/HBoxContainer"]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 icon = ExtResource("3_jceti")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Satelite" type="Button" parent="Panel/Container/HBoxContainer"]
+[node name="Satelite" type="Button" parent="Panel/ButtonContainer/HBoxContainer"]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 icon = SubResource("AtlasTexture_6366j")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Factory" type="Button" parent="Panel/Container/HBoxContainer"]
+[node name="Factory" type="Button" parent="Panel/ButtonContainer/HBoxContainer"]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 icon = ExtResource("5_vmnqa")
+icon_alignment = 1
+expand_icon = true
+
+[node name="BuildContainer" type="Control" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Harvester" type="Button" parent="Panel/BuildContainer"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 131.0
+offset_right = 295.0
+offset_bottom = 166.0
+icon = SubResource("AtlasTexture_yx7vy")
 icon_alignment = 1
 expand_icon = true
