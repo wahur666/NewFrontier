@@ -5,6 +5,7 @@ using Godot;
 using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
+using NewFrontier.scripts.Model.Factions;
 using NewFrontier.scripts.Model.Interfaces;
 using NewFrontier.scripts.UI;
 
@@ -25,8 +26,6 @@ public partial class PlayerController : Node {
 	private PlayerStats _playerStats = new();
 	private List<ISelectable> _selectedObjects = [];
 
-	// private List<UnitNode2D> _selectedUnits = [];
-	// private BuildingNode2D _selectedBuildingNode2D;
 	private UiController _uiController;
 	private List<UnitNode2D> _units = [];
 	private bool _wormholeClick;
@@ -220,8 +219,6 @@ public partial class PlayerController : Node {
 			if (units.Count == 0) {
 				_selectedObjects.ForEach(x => x.Selected = false);
 				_selectedObjects = [];
-				// _selectedUnits.ForEach(x => x.Selected = false);
-				// _selectedUnits = new List<UnitNode2D>();
 			} else {
 				foreach (var unit in units) {
 					unit.Selected = !unit.Selected;
@@ -246,18 +243,16 @@ public partial class PlayerController : Node {
 		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
 			return;
 		}
+
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
 
 		List<ISelectable> allSelectable = [.._units, .._buildings];
-		
+
 		if (!shiftDown) {
 			allSelectable.ForEach(x => x.Selected = false);
-			// _units.ForEach(x => x.Selected = false);
-			// _buildings.ForEach(building => building.Selected = false);
-			// _selectedBuildingNode2D = null
 		}
-		
-		
+
+
 		var selectedObject = allSelectable.Find(x => x.InsideSelectionRect(point));
 		if (selectedObject is null) {
 			_selectedObjects.ForEach(x => x.Selected = false);
@@ -276,25 +271,6 @@ public partial class PlayerController : Node {
 			}
 		}
 
-		
-		// var unitNode2D = _units.Find(x => x.InsideSelectionRect(point));
-		// if (unitNode2D is null) {
-		// 	_selectedUnits.ForEach(x => x.Selected = false);
-		// 	_selectedUnits.Clear();
-		// } else {
-		// 	if (shiftDown) {
-		// 		unitNode2D.Selected = !unitNode2D.Selected;
-		// 		if (unitNode2D.Selected) {
-		// 			_selectedUnits.Add(unitNode2D);
-		// 		} else {
-		// 			_selectedUnits.Remove(unitNode2D);
-		// 		}
-		// 	} else {
-		// 		unitNode2D.Selected = true;
-		// 		_selectedUnits = [unitNode2D];
-		// 	}
-		// }
-
 		UpdateUi();
 	}
 
@@ -305,11 +281,13 @@ public partial class PlayerController : Node {
 			LeftControls.SetContainerVisibility(false, true, false);
 			return;
 		}
+
 		var isBuildingSelected = selectedObjects.Count == 1 && selectedObjects[0] is BuildingNode2D;
 		if (isBuildingSelected) {
 			LeftControls.SetContainerVisibility(false, false, true);
 			return;
-		}		
+		}
+
 		LeftControls.SetContainerVisibility(true, false, false);
 		LeftControls.CalculateSelectedUnits(selectedObjects.Select(x => (UnitNode2D)x).ToList());
 	}
@@ -477,4 +455,14 @@ public partial class PlayerController : Node {
 	private bool _dragging;
 
 	#endregion
+
+	public void CreateUnit(string unit) {
+		if (unit == Terran.Harvester) {
+			if (_selectedObjects[0] is Factory factory) {
+				var harvester = FactionController.Terran.CreateHarvester(MapHelpers.PosToGrid(factory.BuildLocation.GlobalPosition), this, _uiController);
+				this._units.Add(harvester);
+				AddChild(harvester);
+			}
+		}
+	}
 }

@@ -71,6 +71,9 @@ public partial class LeftControls : Control {
 		_factoryButton.Pressed += () =>
 			PlayerController.CreateBuilding(Terran.Factory, FactionController.Terran.CreateFactory);
 
+		_harvesterButton.Pressed += () =>
+			PlayerController.CreateUnit(Terran.Harvester);
+		
 		_buttons.ForEach(button => {
 			button.MouseEntered += MouseEnteredPanelElement;
 			button.MouseExited += MouseExitedPanelElement;
