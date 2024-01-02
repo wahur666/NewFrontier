@@ -10,5 +10,4 @@ public partial class Factory : BuildingNode2D {
 		base._Ready();
 		BuildLocation = GetNode<Marker2D>("BuildLocation");
 	}
-	
 }

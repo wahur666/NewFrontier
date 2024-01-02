@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using NewFrontier.scripts.Model;
+using NewFrontier.scripts.Model.Interfaces;
 
 namespace NewFrontier.scripts.Entities;
 
@@ -29,7 +30,7 @@ public partial class Planet : Node2D {
 		return Math.Abs(mousePos.DistanceTo(GlobalPosition) - Radius) < 20;
 	}
 
-	public BuildingNode2D BuildBuilding(BuildingNode2D building) {
+	public BuildingNode2D BuildBuilding(IBuildable building) {
 		var slots = building.Place;
 		if (slots.Any(slot => _slotOccupiedStatus[slot])) {
 			return null;
@@ -39,7 +40,7 @@ public partial class Planet : Node2D {
 			_slotOccupiedStatus[slot] = true;
 		}
 
-		var newBuilding = building.Duplicate() as BuildingNode2D;
+		var newBuilding = building.Instance.Duplicate() as BuildingNode2D;
 		newBuilding.BuildingShade = false;
 		_buildings.Add(newBuilding);
 		_buildingsContainer.AddChild(newBuilding);

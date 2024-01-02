@@ -16,7 +16,7 @@ public partial class PlayerController : Node {
 	private Node _buildingContainer;
 
 	private bool _buildingMode;
-	private BuildingNode2D _buildingShade;
+	private IBuildable _buildingShade;
 	private CameraController _camera;
 
 	private byte _currentSector;
@@ -126,14 +126,7 @@ public partial class PlayerController : Node {
 		// Updates the building shade position every frame
 		if (_buildingMode && _buildingShade is not null) {
 			var pos = _camera.GetGlobalMousePosition();
-			if (_buildingShade.SnapOption == SnapOption.Planet) {
-				var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
-				_buildingShade.CalculateBuildingPlace(pos, planet);
-			} else if (_buildingShade.SnapOption == SnapOption.Grid) {
-				_buildingShade.CalculateBuildingGridPlace(_mapGrid, pos);
-			} else {
-				_buildingShade.CalculateBuildingWormholePlace(_mapGrid, pos);
-			}
+			BuildHelper.CalculateBuildingPlace(_buildingShade, _mapGrid, pos);
 		}
 
 		CurrentSectorObj.CameraPosition = _camera.Position;
@@ -187,27 +180,27 @@ public partial class PlayerController : Node {
 
 
 	private void FreeBuildingShade() {
-		_buildingShade?.QueueFree();
+		_buildingShade?.Instance.QueueFree();
 		_buildingShade = null;
 	}
 
 	public void SetBuildingShadeVisibility(bool visible) {
 		if (_buildingShade is not null) {
-			_buildingShade.Visible = visible;
+			_buildingShade.Instance.Visible = visible;
 		}
 	}
 
-	public void CreateBuilding(string name, Func<PlayerController, BuildingNode2D> func) {
+	public void CreateBuilding(string name, Func<PlayerController, IBuildable> func) {
 		_buildingMode = true;
-		if (_buildingShade?.Name == name) {
+		if (_buildingShade?.BuildingName == name) {
 			return;
 		}
 
 		FreeBuildingShade();
 
 		_buildingShade = func(this);
-		_buildingShade.Visible = false;
-		AddChild(_buildingShade);
+		_buildingShade.Instance.Visible = false;
+		AddChild(_buildingShade.Instance);
 	}
 
 	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
@@ -225,7 +218,6 @@ public partial class PlayerController : Node {
 				}
 
 				_selectedObjects = _units.Select(x => (ISelectable)x).Where(x => x.Selected).ToList();
-				// _selectedUnits = _units.Where(x => x.Selected).ToList();
 			}
 		} else {
 			foreach (var unit in _units) {
@@ -233,7 +225,6 @@ public partial class PlayerController : Node {
 			}
 
 			_selectedObjects = _units.Select(x => (ISelectable)x).Where(x => x.Selected).ToList();
-			// _selectedUnits = _units.Where(x => x.Selected).ToList();
 		}
 
 		UpdateUi();
@@ -380,7 +371,7 @@ public partial class PlayerController : Node {
 
 	#region Building Code
 
-	private void BuildBuildingOnPlanet(BuildingNode2D buildingNode2D) {
+	private void BuildBuildingOnPlanet(IBuildable buildingNode2D) {
 		BuildingNode2D building = null;
 		if (buildingNode2D.SnapOption == SnapOption.Planet) {
 			building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
@@ -391,7 +382,7 @@ public partial class PlayerController : Node {
 		}
 	}
 
-	private void BuildBuildingOnWormholes(BuildingNode2D buildingNode2D) {
+	private void BuildBuildingOnWormholes(IBuildable buildingNode2D) {
 		var mousePos = _camera.GetGlobalMousePosition();
 		var freeSpace = _mapGrid.FreeSpace(mousePos, 2, true);
 		if (freeSpace is null) {
@@ -408,7 +399,7 @@ public partial class PlayerController : Node {
 		_buildings.AddRange(buildings);
 	}
 
-	private void BuildBuildingOnGrid(BuildingNode2D buildingNode2D) {
+	private void BuildBuildingOnGrid(IBuildable buildingNode2D) {
 		var mousePos = _camera.GetGlobalMousePosition();
 		var freeSpace = buildingNode2D.Wide switch {
 			1 => _mapGrid.FreeSpace(mousePos, 1),
@@ -420,7 +411,7 @@ public partial class PlayerController : Node {
 			return;
 		}
 
-		if (buildingNode2D.Duplicate() is not BuildingNode2D building) {
+		if (buildingNode2D.Instance.Duplicate() is not BuildingNode2D building) {
 			return;
 		}
 
@@ -459,7 +450,9 @@ public partial class PlayerController : Node {
 	public void CreateUnit(string unit) {
 		if (unit == Terran.Harvester) {
 			if (_selectedObjects[0] is Factory factory) {
-				var harvester = FactionController.Terran.CreateHarvester(MapHelpers.PosToGrid(factory.BuildLocation.GlobalPosition), this, _uiController);
+				var harvester =
+					FactionController.Terran.CreateHarvester(MapHelpers.PosToGrid(factory.BuildLocation.GlobalPosition),
+						this, _uiController);
 				this._units.Add(harvester);
 				AddChild(harvester);
 			}
