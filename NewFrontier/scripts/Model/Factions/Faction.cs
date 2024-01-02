@@ -2,6 +2,7 @@
 using Godot.Collections;
 using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.Entities;
+using NewFrontier.scripts.Model.Interfaces;
 
 namespace NewFrontier.scripts.Model.Factions;
 
@@ -35,35 +36,40 @@ public class Faction {
 		LoadScene(Terran.Dreadnought, "res://scenes/dreadnought.tscn");
 		LoadScene(Terran.Satellite, "res://scenes/satelite.tscn");
 		LoadScene(Terran.IonCanon, "res://scenes/ion_canon.tscn");
+		LoadScene(Terran.Factory, "res://scenes/factory.tscn");
 	}
 
-	private BuildingNode2D CreateBuilding(PlayerController playerController, string name) {
+	private IBuildable CreateBuilding(PlayerController playerController, string name) {
 		var instance = _scenes[name].Instantiate<BuildingNode2D>();
 		instance.Init(playerController, name);
 		return instance;
 	}
 
-	public BuildingNode2D CreateBuilding1(PlayerController playerController) {
+	public IBuildable CreateBuilding1(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.Building1);
 	}
 
-	public BuildingNode2D CreateBuilding2(PlayerController playerController) {
+	public IBuildable CreateBuilding2(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.Building2);
 	}
 
-	public BuildingNode2D CreateBuilding3(PlayerController playerController) {
+	public IBuildable CreateBuilding3(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.Building3);
 	}
+	
+	public IBuildable CreateFactory(PlayerController playerController) {
+		return CreateBuilding(playerController, Terran.Factory);
+	}
 
-	public BuildingNode2D CreateJumpgate(PlayerController playerController) {
+	public IBuildable CreateJumpgate(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.Jumpgate);
 	}
 
-	public BuildingNode2D CreateIonCanon(PlayerController playerController) {
+	public IBuildable CreateIonCanon(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.IonCanon);
 	}
 
-	public BuildingNode2D CreateSatellite(PlayerController playerController) {
+	public IBuildable CreateSatellite(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.Satellite);
 	}
 

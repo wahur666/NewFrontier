@@ -10,7 +10,7 @@ using NewFrontier.scripts.UI;
 
 namespace NewFrontier.scripts.Entities;
 
-public partial class UnitNode2D : CharacterBody2D, IBase {
+public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	private Node2D _canvas;
 	private double _currentTravelTime;
 	private float _jumpDistance;
@@ -22,7 +22,6 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 	private float _rotationSpeed = 2.0f;
 	private bool _selected;
 
-	private SelectionRect _selectionRect;
 	private int _speed = 300;
 
 	private Vector2 _targetDestination;
@@ -42,11 +41,13 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 		get => _selected;
 		set {
 			_selected = value;
-			if (_selectionRect is not null) {
-				_selectionRect.Selected = value;
+			if (SelectionRect is not null) {
+				AsISelectable.SetSelection(value);
 			}
 		}
 	}
+
+	private ISelectable AsISelectable => this;
 
 	[ExportGroup("Stats")] [Export] public int MaxHealth { get; set; }
 
@@ -57,7 +58,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 	}
 
 	public override void _Ready() {
-		_selectionRect = GetNode<SelectionRect>("SelectionRect");
+		SelectionRect = GetNode<SelectionRect>("SelectionRect");
 		_targetDestination = Position;
 	}
 
@@ -77,14 +78,14 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 		if (!Selected) {
 			return;
 		}
-
+		
 		var points = new List<Vector2> { Position, _targetDestination };
 		points.AddRange(_navPoints.Select(x => GetTargetPosition(x.Position)));
 		DrawPath(points);
 	}
 
 	public bool InsideSelectionRect(Vector2 position) {
-		var size = _selectionRect.Size;
+		var size = SelectionRect.Size;
 		return AreaHelper.InRect(position, Position + (size * new Vector2(.5f, .5f)),
 			Position - (size * new Vector2(.5f, .5f)));
 	}
@@ -108,6 +109,8 @@ public partial class UnitNode2D : CharacterBody2D, IBase {
 				break;
 		}
 	}
+
+	public SelectionRect SelectionRect { get; private set; }
 
 	private void DrawPath(List<Vector2> path) {
 		if (!_moving) {

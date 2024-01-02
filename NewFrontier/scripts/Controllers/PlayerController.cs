@@ -5,6 +5,8 @@ using Godot;
 using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
+using NewFrontier.scripts.Model.Factions;
+using NewFrontier.scripts.Model.Interfaces;
 using NewFrontier.scripts.UI;
 
 namespace NewFrontier.scripts.Controllers;
@@ -14,7 +16,7 @@ public partial class PlayerController : Node {
 	private Node _buildingContainer;
 
 	private bool _buildingMode;
-	private BuildingNode2D _buildingShade;
+	private IBuildable _buildingShade;
 	private CameraController _camera;
 
 	private byte _currentSector;
@@ -22,7 +24,8 @@ public partial class PlayerController : Node {
 	private MapGrid _mapGrid;
 	private bool _overGui;
 	private PlayerStats _playerStats = new();
-	private List<UnitNode2D> _selectedUnits = [];
+	private List<ISelectable> _selectedObjects = [];
+
 	private UiController _uiController;
 	private List<UnitNode2D> _units = [];
 	private bool _wormholeClick;
@@ -123,14 +126,7 @@ public partial class PlayerController : Node {
 		// Updates the building shade position every frame
 		if (_buildingMode && _buildingShade is not null) {
 			var pos = _camera.GetGlobalMousePosition();
-			if (_buildingShade.SnapOption == SnapOption.Planet) {
-				var planet = _mapGrid.Planets.Find(planet => planet.PointNearToRing(pos));
-				_buildingShade.CalculateBuildingPlace(pos, planet);
-			} else if (_buildingShade.SnapOption == SnapOption.Grid) {
-				_buildingShade.CalculateBuildingGridPlace(_mapGrid, pos);
-			} else {
-				_buildingShade.CalculateBuildingWormholePlace(_mapGrid, pos);
-			}
+			BuildHelper.CalculateBuildingPlace(_buildingShade, _mapGrid, pos);
 		}
 
 		CurrentSectorObj.CameraPosition = _camera.Position;
@@ -184,27 +180,27 @@ public partial class PlayerController : Node {
 
 
 	private void FreeBuildingShade() {
-		_buildingShade?.QueueFree();
+		_buildingShade?.Instance.QueueFree();
 		_buildingShade = null;
 	}
 
 	public void SetBuildingShadeVisibility(bool visible) {
 		if (_buildingShade is not null) {
-			_buildingShade.Visible = visible;
+			_buildingShade.Instance.Visible = visible;
 		}
 	}
 
-	public void CreateBuilding(string name, Func<PlayerController, BuildingNode2D> func) {
+	public void CreateBuilding(string name, Func<PlayerController, IBuildable> func) {
 		_buildingMode = true;
-		if (_buildingShade?.Name == name) {
+		if (_buildingShade?.BuildingName == name) {
 			return;
 		}
 
 		FreeBuildingShade();
 
 		_buildingShade = func(this);
-		_buildingShade.Visible = false;
-		AddChild(_buildingShade);
+		_buildingShade.Instance.Visible = false;
+		AddChild(_buildingShade.Instance);
 	}
 
 	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
@@ -214,21 +210,21 @@ public partial class PlayerController : Node {
 		if (shiftDown) {
 			var units = _units.Where(unit => AreaHelper.InRect(unit.Position, start, end)).ToList();
 			if (units.Count == 0) {
-				_selectedUnits.ForEach(x => x.Selected = false);
-				_selectedUnits = new List<UnitNode2D>();
+				_selectedObjects.ForEach(x => x.Selected = false);
+				_selectedObjects = [];
 			} else {
 				foreach (var unit in units) {
 					unit.Selected = !unit.Selected;
 				}
 
-				_selectedUnits = _units.Where(x => x.Selected).ToList();
+				_selectedObjects = _units.Select(x => (ISelectable)x).Where(x => x.Selected).ToList();
 			}
 		} else {
 			foreach (var unit in _units) {
 				unit.Selected = AreaHelper.InRect(unit.Position, start, end);
 			}
 
-			_selectedUnits = _units.Where(x => x.Selected).ToList();
+			_selectedObjects = _units.Select(x => (ISelectable)x).Where(x => x.Selected).ToList();
 		}
 
 		UpdateUi();
@@ -240,25 +236,29 @@ public partial class PlayerController : Node {
 		}
 
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
+
+		List<ISelectable> allSelectable = [.._units, .._buildings];
+
 		if (!shiftDown) {
-			_units.ForEach(x => x.Selected = false);
+			allSelectable.ForEach(x => x.Selected = false);
 		}
 
-		var unitNode2D = _units.Find(x => x.InsideSelectionRect(point));
-		if (unitNode2D is null) {
-			_selectedUnits.ForEach(x => x.Selected = false);
-			_selectedUnits.Clear();
+
+		var selectedObject = allSelectable.Find(x => x.InsideSelectionRect(point));
+		if (selectedObject is null) {
+			_selectedObjects.ForEach(x => x.Selected = false);
+			_selectedObjects.Clear();
 		} else {
 			if (shiftDown) {
-				unitNode2D.Selected = !unitNode2D.Selected;
-				if (unitNode2D.Selected) {
-					_selectedUnits.Add(unitNode2D);
+				selectedObject.Selected = !selectedObject.Selected;
+				if (selectedObject.Selected) {
+					_selectedObjects.Add(selectedObject);
 				} else {
-					_selectedUnits.Remove(unitNode2D);
+					_selectedObjects.Remove(selectedObject);
 				}
 			} else {
-				unitNode2D.Selected = true;
-				_selectedUnits = new List<UnitNode2D> { unitNode2D };
+				selectedObject.Selected = true;
+				_selectedObjects = [selectedObject];
 			}
 		}
 
@@ -266,19 +266,31 @@ public partial class PlayerController : Node {
 	}
 
 	private void UpdateUi() {
-		var units = _selectedUnits;
-		LeftControls.SetBuildingContainerVisibility(units.Count == 1 && units[0] is Fabricator);
-		LeftControls.CalculateSelectedUnits(units);
+		var selectedObjects = _selectedObjects;
+		var isFabricatorSelected = selectedObjects.Count == 1 && selectedObjects[0] is Fabricator;
+		if (isFabricatorSelected) {
+			LeftControls.SetContainerVisibility(false, true, false);
+			return;
+		}
+
+		var isBuildingSelected = selectedObjects.Count == 1 && selectedObjects[0] is BuildingNode2D;
+		if (isBuildingSelected) {
+			LeftControls.SetContainerVisibility(false, false, true);
+			return;
+		}
+
+		LeftControls.SetContainerVisibility(true, false, false);
+		LeftControls.CalculateSelectedUnits(selectedObjects.Select(x => (UnitNode2D)x).ToList());
 	}
 
 	public void SelectUnitFromUi(UnitNode2D unit) {
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
 		if (shiftDown) {
 			unit.Selected = false;
-			_selectedUnits.Remove(unit);
+			_selectedObjects.Remove(unit);
 		} else {
 			_units.ForEach(x => x.Selected = x == unit);
-			_selectedUnits = new List<UnitNode2D> { unit };
+			_selectedObjects = [unit];
 		}
 
 		UpdateUi();
@@ -359,7 +371,7 @@ public partial class PlayerController : Node {
 
 	#region Building Code
 
-	private void BuildBuildingOnPlanet(BuildingNode2D buildingNode2D) {
+	private void BuildBuildingOnPlanet(IBuildable buildingNode2D) {
 		BuildingNode2D building = null;
 		if (buildingNode2D.SnapOption == SnapOption.Planet) {
 			building = buildingNode2D.Planet.BuildBuilding(buildingNode2D);
@@ -370,7 +382,7 @@ public partial class PlayerController : Node {
 		}
 	}
 
-	private void BuildBuildingOnWormholes(BuildingNode2D buildingNode2D) {
+	private void BuildBuildingOnWormholes(IBuildable buildingNode2D) {
 		var mousePos = _camera.GetGlobalMousePosition();
 		var freeSpace = _mapGrid.FreeSpace(mousePos, 2, true);
 		if (freeSpace is null) {
@@ -387,7 +399,7 @@ public partial class PlayerController : Node {
 		_buildings.AddRange(buildings);
 	}
 
-	private void BuildBuildingOnGrid(BuildingNode2D buildingNode2D) {
+	private void BuildBuildingOnGrid(IBuildable buildingNode2D) {
 		var mousePos = _camera.GetGlobalMousePosition();
 		var freeSpace = buildingNode2D.Wide switch {
 			1 => _mapGrid.FreeSpace(mousePos, 1),
@@ -399,7 +411,7 @@ public partial class PlayerController : Node {
 			return;
 		}
 
-		if (buildingNode2D.Duplicate() is not BuildingNode2D building) {
+		if (buildingNode2D.Instance.Duplicate() is not BuildingNode2D building) {
 			return;
 		}
 
@@ -434,4 +446,16 @@ public partial class PlayerController : Node {
 	private bool _dragging;
 
 	#endregion
+
+	public void CreateUnit(string unit) {
+		if (unit == Terran.Harvester) {
+			if (_selectedObjects[0] is Factory factory) {
+				var harvester =
+					FactionController.Terran.CreateHarvester(MapHelpers.PosToGrid(factory.BuildLocation.GlobalPosition),
+						this, _uiController);
+				this._units.Add(harvester);
+				AddChild(harvester);
+			}
+		}
+	}
 }

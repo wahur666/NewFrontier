@@ -12,13 +12,6 @@ texture_filter = 1
 collision_mask = 2
 script = ExtResource("1_ybyge")
 
-[node name="SelectionRect" type="TextureRect" parent="."]
-offset_left = -20.0
-offset_top = -35.0
-offset_right = 20.0
-offset_bottom = 35.0
-script = ExtResource("3_auyxh")
-
 [node name="Base" type="Sprite2D" parent="."]
 texture = ExtResource("2_xgk4u")
 hframes = 2
@@ -34,3 +27,10 @@ frame = 3
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
 shape = SubResource("CircleShape2D_jwm4m")
+
+[node name="SelectionRect" type="TextureRect" parent="."]
+offset_left = -20.0
+offset_top = -35.0
+offset_right = 20.0
+offset_bottom = 35.0
+script = ExtResource("3_auyxh")

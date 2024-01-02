@@ -1,5 +1,6 @@
 using Godot;
 using NewFrontier.scripts.Model;
+using NewFrontier.scripts.Model.Interfaces;
 
 namespace NewFrontier.scripts.Entities;
 
@@ -29,8 +30,8 @@ public partial class Wormhole : Node2D {
 		MousePointerIsOver = true;
 	}
 
-	public BuildingNode2D Build(BuildingNode2D buildingNode2D) {
-		Building = buildingNode2D.Duplicate() as BuildingNode2D;
+	public BuildingNode2D Build(IBuildable buildingNode2D) {
+		Building = buildingNode2D.Instance.Duplicate() as BuildingNode2D;
 		Building.BuildingShade = false;
 		Building.GlobalPosition = GlobalPosition;
 		_container.AddChild(Building);
