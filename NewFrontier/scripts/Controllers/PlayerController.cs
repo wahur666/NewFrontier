@@ -449,9 +449,9 @@ public partial class PlayerController : Node {
 
 	public void CreateUnit(string unit) {
 		if (unit == Terran.Harvester) {
-			if (_selectedObjects[0] is Factory factory) {
+			if (_selectedObjects[0] is Refinery refinery) {
 				var harvester =
-					FactionController.Terran.CreateHarvester(MapHelpers.PosToGrid(factory.BuildLocation.GlobalPosition),
+					FactionController.Terran.CreateHarvester(MapHelpers.PosToGrid(refinery.BuildLocation.GlobalPosition),
 						this, _uiController);
 				this._units.Add(harvester);
 				AddChild(harvester);

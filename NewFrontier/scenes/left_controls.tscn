@@ -105,7 +105,7 @@ icon = SubResource("AtlasTexture_6366j")
 icon_alignment = 1
 expand_icon = true
 
-[node name="Factory" type="Button" parent="Panel/ButtonContainer/HBoxContainer"]
+[node name="Refinery" type="Button" parent="Panel/ButtonContainer/HBoxContainer"]
 custom_minimum_size = Vector2(128, 128)
 layout_mode = 2
 icon = ExtResource("5_vmnqa")

@@ -2,7 +2,7 @@
 
 namespace NewFrontier.scripts.Entities;
 
-public partial class Factory : BuildingNode2D {
+public partial class Refinery : BuildingNode2D {
 	
 	public Marker2D BuildLocation;
 
