@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://puh55sbrd833"]
+[gd_scene load_steps=9 format=3 uid="uid://puh55sbrd833"]
 
 [ext_resource type="PackedScene" uid="uid://dsq1lag3r7s8o" path="res://scenes/left_controls.tscn" id="1_mnjuk"]
 [ext_resource type="Script" path="res://scripts/Controllers/UiController.cs" id="1_qu86p"]
 [ext_resource type="Texture2D" uid="uid://bvdunaiynaq4b" path="res://gfx/sectormap_BG_T.tga" id="3_7ap0f"]
+[ext_resource type="PackedScene" uid="uid://2k3oc8qc1ib3" path="res://scenes/player_stats.tscn" id="4_6s5sd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6hh77"]
 bg_color = Color(0.0980392, 0.0980392, 0.0980392, 0.2)
@@ -76,3 +77,5 @@ layout_mode = 0
 offset_right = 160.0
 offset_bottom = 160.0
 theme_override_styles/panel = SubResource("StyleBoxTexture_ovk7y")
+
+[node name="Stats" parent="." instance=ExtResource("4_6s5sd")]

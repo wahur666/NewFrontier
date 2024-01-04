@@ -53,6 +53,7 @@ public partial class PlayerController : Node {
 		CreateStartingUnits();
 		_camera.CenterOnGridPosition(new Vector2(12, 17));
 		CurrentSector = 0;
+		_uiController.PlayerStatsUi.UpdateLabels(_playerStats);
 		UpdateUi();
 	}
 
@@ -359,14 +360,17 @@ public partial class PlayerController : Node {
 
 	public void IncreaseOre(int amount) {
 		_playerStats.CurrentOre += amount;
+		_uiController.PlayerStatsUi.UpdateLabels(_playerStats);
 	}
 
 	public void IncreaseGas(int amount) {
 		_playerStats.CurrentGas += amount;
+		_uiController.PlayerStatsUi.UpdateLabels(_playerStats);
 	}
 
 	public void IncreaseCrew(int amount) {
 		_playerStats.CurrentCrew += amount;
+		_uiController.PlayerStatsUi.UpdateLabels(_playerStats);
 	}
 
 	#region Building Code

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Godot;
+using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
 using NewFrontier.scripts.UI;
@@ -17,9 +18,11 @@ public partial class UiController : CanvasLayer {
 	private LeftControls leftControls;
 	public Panel SectorPanel;
 	public Panel SelectionPanel;
+	public PlayerStatsUi PlayerStatsUi;
 
 	public override void _Ready() {
 		leftControls = GetNode<LeftControls>("LeftControls");
+		PlayerStatsUi = GetNode<PlayerStatsUi>("Stats");
 		Canvas = GetNode<Node2D>("../Canvas");
 		SectorPanel = GetNode<Panel>("SectorMap/Control/Panel");
 		SectorPanel.Draw += SectorPanelOnDraw;
