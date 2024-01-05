@@ -45,32 +45,32 @@ offset_bottom = 24.0
 grow_horizontal = 0
 theme_override_constants/separation = -1
 
-[node name="CapturePointPanel" type="PanelContainer" parent="HBoxContainer"]
+[node name="ControlPointPanel" type="PanelContainer" parent="HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hiacw")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/CapturePointPanel"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/ControlPointPanel"]
 layout_mode = 2
 alignment = 1
 
-[node name="Panel" type="PanelContainer" parent="HBoxContainer/CapturePointPanel/HBoxContainer2"]
+[node name="Panel" type="PanelContainer" parent="HBoxContainer/ControlPointPanel/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_8wsto")
 
-[node name="Label" type="Label" parent="HBoxContainer/CapturePointPanel/HBoxContainer2/Panel"]
+[node name="Label" type="Label" parent="HBoxContainer/ControlPointPanel/HBoxContainer2/Panel"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "CP"
 label_settings = SubResource("LabelSettings_2bdva")
 
-[node name="Panel2" type="PanelContainer" parent="HBoxContainer/CapturePointPanel/HBoxContainer2"]
+[node name="Panel2" type="PanelContainer" parent="HBoxContainer/ControlPointPanel/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_8wsto")
 
-[node name="CapturePointLabel" type="Label" parent="HBoxContainer/CapturePointPanel/HBoxContainer2/Panel2"]
+[node name="ControlPointLabel" type="Label" parent="HBoxContainer/ControlPointPanel/HBoxContainer2/Panel2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "200/250"
