@@ -1,0 +1,495 @@
+[gd_scene load_steps=19 format=3 uid="uid://bom3mt03okom1"]
+
+[ext_resource type="Texture2D" uid="uid://cuv4lrlxhvw70" path="res://gfx/aseprite/earth-planet-icon.png" id="1_ao7kd"]
+[ext_resource type="Script" path="res://scripts/Entities/PlanetUi.cs" id="1_td7qc"]
+[ext_resource type="Texture2D" uid="uid://c33bsi8puww5j" path="res://gfx/aseprite/ore-icon.png" id="2_yh06t"]
+[ext_resource type="Texture2D" uid="uid://vew1yhlyevh1" path="res://gfx/aseprite/gas-icon.png" id="3_x5lyw"]
+[ext_resource type="Texture2D" uid="uid://2mvuw77qqj6v" path="res://gfx/aseprite/crew-icon.png" id="4_i564y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yuneg"]
+bg_color = Color(0, 0, 0.129412, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.580392, 0.756863, 0.792157, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vsssm"]
+content_margin_left = 10.0
+bg_color = Color(0.129412, 0.290196, 0.439216, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_1tx1p"]
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_sn8bc"]
+font = SubResource("SystemFont_1tx1p")
+font_size = 24
+font_color = Color(0.258824, 0.839216, 0.905882, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vhov7"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+draw_center = false
+border_blend = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qmjhe"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+draw_center = false
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.160784, 0.376471, 0.678431, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7dt3j"]
+draw_center = false
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_15hth"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hx515"]
+draw_center = false
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0.419608, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f6lbh"]
+
+[sub_resource type="SystemFont" id="SystemFont_wurcl"]
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_7ewxm"]
+font = SubResource("SystemFont_wurcl")
+
+[sub_resource type="LabelSettings" id="LabelSettings_pnq7x"]
+font = SubResource("SystemFont_wurcl")
+
+[node name="PlanetUi" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_td7qc")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 200.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yuneg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vsssm")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="PlanetName" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Kappa Prime"
+label_settings = SubResource("LabelSettings_sn8bc")
+
+[node name="PlanetType" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Earth Planet
+"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vhov7")
+
+[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qmjhe")
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/PanelContainer/PanelContainer2"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7dt3j")
+
+[node name="PlanetTexture" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/PanelContainer/PanelContainer2/PanelContainer"]
+layout_mode = 2
+texture = ExtResource("1_ao7kd")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="OreContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_15hth")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hx515")
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+texture = ExtResource("2_yh06t")
+
+[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_f6lbh")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="OreLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ore: 2500/2500"
+label_settings = SubResource("LabelSettings_7ewxm")
+
+[node name="OreMinigLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/min
+"
+label_settings = SubResource("LabelSettings_pnq7x")
+horizontal_alignment = 2
+
+[node name="OreProgressContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="ColorRect" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect3" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect4" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect5" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect6" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect7" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect8" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect9" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect10" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect11" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect12" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect13" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect14" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect15" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer2/VBoxContainer/OreProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_15hth")
+
+[node name="GasContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hx515")
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer"]
+layout_mode = 2
+texture = ExtResource("3_x5lyw")
+
+[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_f6lbh")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="GasLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Gas: 2500/2500"
+label_settings = SubResource("LabelSettings_7ewxm")
+
+[node name="GasMiningLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/min
+"
+label_settings = SubResource("LabelSettings_pnq7x")
+horizontal_alignment = 2
+
+[node name="GasProgressContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="ColorRect" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect3" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect4" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect5" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect6" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect7" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect8" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect9" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect10" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect11" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect12" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect13" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect14" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect15" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="PanelContainer3" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_15hth")
+
+[node name="CrewContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hx515")
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer"]
+layout_mode = 2
+texture = ExtResource("4_i564y")
+
+[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_f6lbh")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="CrewLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Crew: 2500/2500"
+label_settings = SubResource("LabelSettings_7ewxm")
+
+[node name="CrewMiningLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0/min
+"
+label_settings = SubResource("LabelSettings_pnq7x")
+horizontal_alignment = 2
+
+[node name="CrewProgressContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="ColorRect" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect3" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect4" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect5" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect6" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect7" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect8" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect9" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect10" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect11" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect12" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect13" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect14" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)
+
+[node name="ColorRect15" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+custom_minimum_size = Vector2(15, 10)
+layout_mode = 2
+color = Color(0.137255, 0.588235, 0.470588, 1)

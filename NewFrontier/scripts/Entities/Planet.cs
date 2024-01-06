@@ -10,20 +10,26 @@ namespace NewFrontier.scripts.Entities;
 public partial class Planet : Node2D {
 	public static readonly int Radius = 150;
 
-	private readonly List<BuildingNode2D> _buildings = new();
+	private readonly List<BuildingNode2D> _buildings = [];
 	private readonly bool[] _slotOccupiedStatus = new Boolean[12];
 	private Node _buildingsContainer;
 	private PlanetBuildingScheme _planetBuildingScheme;
+	public PlanetStats PlanetStats;
 
+	private Area2D _selectionArea;
+
+	public bool MouseOver;
+	
 	[Export] public PlanetType PlanetType = PlanetType.Earth;
 
 	public override void _Ready() {
 		_buildingsContainer = GetNode<Node>("BuildingsContainer");
 		_planetBuildingScheme = GetNode<PlanetBuildingScheme>("PlanetBuildingScheme");
+		PlanetStats = GetNode<PlanetStats>("Stats");
+		_selectionArea = GetNode<Area2D>("SelectionArea");
+		_selectionArea.MouseEntered += () => MouseOver = true;
+		_selectionArea.MouseExited += () => MouseOver = false;
 		_planetBuildingScheme.Radius = Radius;
-	}
-
-	public override void _Process(double delta) {
 	}
 
 	public bool PointNearToRing(Vector2 mousePos) {

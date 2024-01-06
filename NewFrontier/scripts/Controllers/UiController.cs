@@ -19,6 +19,7 @@ public partial class UiController : CanvasLayer {
 	public Panel SectorPanel;
 	public Panel SelectionPanel;
 	public PlayerStatsUi PlayerStatsUi;
+	public PlanetUi PlanetUi;
 
 	public override void _Ready() {
 		leftControls = GetNode<LeftControls>("LeftControls");
@@ -27,6 +28,7 @@ public partial class UiController : CanvasLayer {
 		SectorPanel = GetNode<Panel>("SectorMap/Control/Panel");
 		SectorPanel.Draw += SectorPanelOnDraw;
 		SelectionPanel = GetNode<Panel>("SelectionRect");
+		PlanetUi = GetNode<PlanetUi>("PlanetUi");
 		SetupSectorPanelConstants();
 		SetupLeftPanelConstants();
 	}

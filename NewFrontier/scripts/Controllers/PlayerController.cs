@@ -58,7 +58,7 @@ public partial class PlayerController : Node {
 	}
 
 	private void CreateStartingUnits() {
-		_units = new List<UnitNode2D>();
+		_units = [];
 		var harvester = FactionController.Terran.CreateHarvester(new Vector2(10, 10), this, _uiController);
 		_units.Add(harvester);
 		var fabricator = FactionController.Terran.CreateFabricator(new Vector2(12, 17), this, _uiController);
@@ -129,6 +129,9 @@ public partial class PlayerController : Node {
 			var pos = _camera.GetGlobalMousePosition();
 			BuildHelper.CalculateBuildingPlace(_buildingShade, _mapGrid, pos);
 		}
+
+		var planet = _mapGrid.Planets.Find(planet => planet.MouseOver);
+		_uiController.PlanetUi.Visible = planet is not null;
 
 		CurrentSectorObj.CameraPosition = _camera.Position;
 	}
