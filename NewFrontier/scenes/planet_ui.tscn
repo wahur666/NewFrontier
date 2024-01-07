@@ -27,8 +27,15 @@ subpixel_positioning = 0
 
 [sub_resource type="LabelSettings" id="LabelSettings_sn8bc"]
 font = SubResource("SystemFont_1tx1p")
-font_size = 24
+font_size = 18
 font_color = Color(0.258824, 0.839216, 0.905882, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_wurcl"]
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_7ewxm"]
+font = SubResource("SystemFont_wurcl")
+font_size = 14
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vhov7"]
 content_margin_left = 10.0
@@ -73,24 +80,21 @@ corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f6lbh"]
 
-[sub_resource type="SystemFont" id="SystemFont_wurcl"]
-subpixel_positioning = 0
-
-[sub_resource type="LabelSettings" id="LabelSettings_7ewxm"]
-font = SubResource("SystemFont_wurcl")
-
 [sub_resource type="LabelSettings" id="LabelSettings_pnq7x"]
 font = SubResource("SystemFont_wurcl")
 
 [node name="PlanetUi" type="Control"]
 layout_mode = 3
 anchors_preset = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
 script = ExtResource("1_td7qc")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-layout_mode = 0
-offset_right = 500.0
-offset_bottom = 200.0
+custom_minimum_size = Vector2(0, 210)
+layout_mode = 1
+offset_right = 450.0
+offset_bottom = 210.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_yuneg")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
@@ -112,6 +116,7 @@ label_settings = SubResource("LabelSettings_sn8bc")
 layout_mode = 2
 text = "Earth Planet
 "
+label_settings = SubResource("LabelSettings_7ewxm")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -131,10 +136,11 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_7dt3j")
 [node name="PlanetTexture" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/PanelContainer/PanelContainer2/PanelContainer"]
 layout_mode = 2
 texture = ExtResource("1_ao7kd")
+expand_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="OreContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
@@ -152,6 +158,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_hx515")
 [node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer/PanelContainer"]
 layout_mode = 2
 texture = ExtResource("2_yh06t")
+expand_mode = 2
 
 [node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer/HBoxContainer"]
 layout_mode = 2
@@ -271,6 +278,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_hx515")
 [node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer"]
 layout_mode = 2
 texture = ExtResource("3_x5lyw")
+expand_mode = 2
 
 [node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer"]
 layout_mode = 2
@@ -390,6 +398,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_hx515")
 [node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer"]
 layout_mode = 2
 texture = ExtResource("4_i564y")
+expand_mode = 2
 
 [node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer"]
 layout_mode = 2

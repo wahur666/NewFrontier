@@ -81,7 +81,7 @@ public partial class PlayerController : Node {
 				} else if (_buildingShade.SnapOption == SnapOption.Wormhole) {
 					BuildBuildingOnWormholes(_buildingShade);
 				}
-			} else if (_uiController.MouseOverSectorMap(_mousePosition)) {
+			} else if (_uiController.SectorMap.MouseOverSectorMap(_mousePosition)) {
 				CheckSectorMapClick();
 			} else if (_mapGrid.Wormholes.Any(x => x.MousePointerIsOver)) {
 				_wormholeClick = true;
@@ -130,10 +130,14 @@ public partial class PlayerController : Node {
 			BuildHelper.CalculateBuildingPlace(_buildingShade, _mapGrid, pos);
 		}
 
-		var planet = _mapGrid.Planets.Find(planet => planet.MouseOver);
-		_uiController.PlanetUi.Visible = planet is not null;
+		UpdatePlanetUi();
 
 		CurrentSectorObj.CameraPosition = _camera.Position;
+	}
+
+	private void UpdatePlanetUi() {
+		var planet = _mapGrid.Planets.Find(planet => planet.MouseOver);
+		_uiController.PlanetUi.Visible = planet is not null;
 	}
 
 	private void SwitchCameraToJoinedWormhole() {
@@ -149,7 +153,7 @@ public partial class PlayerController : Node {
 
 	private void CheckSectorMapClick() {
 		var a = GetViewport().GetMousePosition();
-		var b = _uiController.SectorPanel.GlobalPosition;
+		var b = _uiController.SectorMap.SectorPanel.GlobalPosition;
 		var z = _mapGrid.Sectors.Where(x => x.Discovered).ToList()
 			.Find(x => Math.Abs((x.SectorPosition + b - a).Length()) < 10);
 		if (z is null) {
@@ -458,7 +462,8 @@ public partial class PlayerController : Node {
 		if (unit == Terran.Harvester) {
 			if (_selectedObjects[0] is Refinery refinery) {
 				var harvester =
-					FactionController.Terran.CreateHarvester(MapHelpers.PosToGrid(refinery.BuildLocation.GlobalPosition),
+					FactionController.Terran.CreateHarvester(
+						MapHelpers.PosToGrid(refinery.BuildLocation.GlobalPosition),
 						this, _uiController);
 				this._units.Add(harvester);
 				AddChild(harvester);
