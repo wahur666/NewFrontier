@@ -43,6 +43,7 @@ public partial class UiController : CanvasLayer {
 		Canvas.QueueRedraw();
 	}
 
+	// TODO: Move this to left panel
 	private void SetupLeftPanelConstants() {
 		_leftPanelGlobalPosition = leftControls.Bg.GlobalPosition;
 		_leftPanelSize = leftControls.Bg.Size;

@@ -138,6 +138,9 @@ public partial class PlayerController : Node {
 	private void UpdatePlanetUi() {
 		var planet = _mapGrid.Planets.Find(planet => planet.MouseOver);
 		_uiController.PlanetUi.Visible = planet is not null;
+		if (planet is not null) {
+			_uiController.PlanetUi.UpdateLabels(planet);
+		}
 	}
 
 	private void SwitchCameraToJoinedWormhole() {

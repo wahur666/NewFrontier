@@ -263,40 +263,40 @@ custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="GasContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_15hth")
 
-[node name="GasContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer"]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer"]
 custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hx515")
 
-[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer"]
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer"]
 layout_mode = 2
 texture = ExtResource("3_x5lyw")
 expand_mode = 2
 
-[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_f6lbh")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
 layout_mode = 2
 
-[node name="GasLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+[node name="GasLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Gas: 2500/2500"
 label_settings = SubResource("LabelSettings_7ewxm")
 
-[node name="GasMiningLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+[node name="GasMiningLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0/min
@@ -304,119 +304,119 @@ text = "0/min
 label_settings = SubResource("LabelSettings_pnq7x")
 horizontal_alignment = 2
 
-[node name="GasProgressContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer"]
+[node name="GasProgressContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="ColorRect" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect2" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect2" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect3" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect3" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect4" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect4" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect5" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect5" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect6" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect6" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect7" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect7" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect8" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect8" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect9" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect9" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect10" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect10" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect11" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect11" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect12" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect12" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect13" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect13" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect14" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect14" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect15" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer2/GasContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
+[node name="ColorRect15" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer/HBoxContainer/PanelContainer2/VBoxContainer/GasProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="PanelContainer3" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="CrewContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_15hth")
 
-[node name="CrewContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer"]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer"]
 custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hx515")
 
-[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer"]
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer"]
 layout_mode = 2
 texture = ExtResource("4_i564y")
 expand_mode = 2
 
-[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_f6lbh")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
 layout_mode = 2
 
-[node name="CrewLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+[node name="CrewLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Crew: 2500/2500"
 label_settings = SubResource("LabelSettings_7ewxm")
 
-[node name="CrewMiningLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
+[node name="CrewMiningLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0/min
@@ -424,81 +424,81 @@ text = "0/min
 label_settings = SubResource("LabelSettings_pnq7x")
 horizontal_alignment = 2
 
-[node name="CrewProgressContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer"]
+[node name="CrewProgressContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="ColorRect" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect2" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect2" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect3" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect3" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect4" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect4" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect5" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect5" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect6" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect6" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect7" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect7" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect8" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect8" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect9" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect9" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect10" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect10" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect11" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect11" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect12" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect12" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect13" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect13" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect14" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect14" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)
 
-[node name="ColorRect15" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer3/CrewContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
+[node name="ColorRect15" type="ColorRect" parent="PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer/HBoxContainer/PanelContainer2/VBoxContainer/CrewProgressContainer"]
 custom_minimum_size = Vector2(15, 10)
 layout_mode = 2
 color = Color(0.137255, 0.588235, 0.470588, 1)

@@ -8,13 +8,14 @@ using NewFrontier.scripts.Model.Interfaces;
 namespace NewFrontier.scripts.Entities;
 
 public partial class Planet : Node2D {
-	public static readonly int Radius = 150;
+	public const int Radius = 150;
 
-	private readonly List<BuildingNode2D> _buildings = [];
+	public List<BuildingNode2D> Buildings = [];
 	private readonly bool[] _slotOccupiedStatus = new Boolean[12];
 	private Node _buildingsContainer;
 	private PlanetBuildingScheme _planetBuildingScheme;
 	public PlanetStats PlanetStats;
+	public string PlanetName = "Kappa 2";
 
 	private Area2D _selectionArea;
 
@@ -48,7 +49,7 @@ public partial class Planet : Node2D {
 
 		var newBuilding = building.Instance.Duplicate() as BuildingNode2D;
 		newBuilding.BuildingShade = false;
-		_buildings.Add(newBuilding);
+		Buildings.Add(newBuilding);
 		_buildingsContainer.AddChild(newBuilding);
 		return newBuilding;
 	}
