@@ -88,7 +88,10 @@ public partial class PlanetUi : Control {
 		switch (planet.PlanetType) {
 			case PlanetType.Earth:
 				_oreMiningLabel.Text = $"{count * 150}/min";
+				UpdateProgressContainer(_oreContainer, planet.PlanetStats.CurrentOre, planet.PlanetStats.MaxOre);
 				_gasMiningLabel.Text = $"{count * 150}/min";
+				UpdateProgressContainer(_gasContainer, planet.PlanetStats.CurrentGas, planet.PlanetStats.MaxGas);
+				UpdateProgressContainer(_crewContainer, planet.PlanetStats.CurrentCrew, planet.PlanetStats.MaxCrew);
 				break;
 			case PlanetType.Moon:
 				_oreMiningLabel.Text = $"{count * 150}/min";
@@ -106,5 +109,15 @@ public partial class PlanetUi : Control {
 				break;
 		}
 		
+	}
+
+	private static void UpdateProgressContainer(PanelContainer panelContainer, int currentValue, int maxValue) {
+		var length = panelContainer.GetChildren().Count;
+		var availableResourceSteps = (int)(length * currentValue / (double)maxValue);
+		var children = panelContainer.GetChildren().ToList().Select(rect => rect as ColorRect).ToList();
+		for (int i = 0; i < length; i++){
+			var alpha = (byte)(i > availableResourceSteps ? 0 : 255); 
+			children[i].Modulate = Color.Color8(0, 0, 0, alpha);
+		}
 	}
 }
