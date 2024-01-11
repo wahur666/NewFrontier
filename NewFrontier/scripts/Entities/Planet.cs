@@ -51,6 +51,9 @@ public partial class Planet : Node2D {
 		newBuilding.BuildingShade = false;
 		Buildings.Add(newBuilding);
 		_buildingsContainer.AddChild(newBuilding);
+		if (newBuilding is Refinery refinery) {
+			refinery.StartTimers();
+		}
 		return newBuilding;
 	}
 }

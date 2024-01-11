@@ -392,6 +392,8 @@ public partial class PlayerController : Node {
 		}
 
 		if (building is not null) {
+			building.Init(this, buildingNode2D.BuildingName);
+			building.Planet = buildingNode2D.Planet;
 			_buildings.Add(building);
 		}
 	}

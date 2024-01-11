@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using NewFrontier.scripts.Model;
@@ -26,7 +27,7 @@ public partial class PlanetUi : Control {
 		_oreContainer =
 			GetNode<ResourceUiContainer>("PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer");
 		_gasContainer =
-			GetNode<ResourceUiContainer>("PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/OreContainer");
+			GetNode<ResourceUiContainer>("PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer");
 		_crewContainer =
 			GetNode<ResourceUiContainer>("PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer");
 
@@ -44,23 +45,23 @@ public partial class PlanetUi : Control {
 		_gasContainer.UpdateResourceLabel(planet.PlanetStats.CurrentGas, planet.PlanetStats.MaxGas);
 		_crewContainer.UpdateResourceLabel(planet.PlanetStats.CurrentCrew, planet.PlanetStats.MaxCrew);
 
-		var count = planet.Buildings.Count(building => building is Refinery);
+		var refineries = planet.Buildings.OfType<Refinery>().ToList();
 		switch (planet.PlanetType) {
 			case PlanetType.Earth:
-				_oreContainer.UpdateResourceMiningLabel(count * 150);
+				_oreContainer.UpdateResourceMiningLabel(refineries.Sum(refinery => refinery.OreMiningSpeed));
 				_oreContainer.UpdateProgressContainer(planet.PlanetStats.CurrentOre, planet.PlanetStats.MaxOre);
-				_gasContainer.UpdateResourceMiningLabel(count * 150);
+				_gasContainer.UpdateResourceMiningLabel(refineries.Sum(refinery => refinery.GasMiningSpeed));
 				_gasContainer.UpdateProgressContainer(planet.PlanetStats.CurrentGas, planet.PlanetStats.MaxGas);
 				// UpdateProgressContainer(_crewProgressContainer, planet.PlanetStats.CurrentCrew, planet.PlanetStats.MaxCrew);
 				break;
 			case PlanetType.Moon:
-				_oreContainer.UpdateResourceMiningLabel(count * 150);
+				_oreContainer.UpdateResourceMiningLabel(refineries.Sum(refinery => refinery.OreMiningSpeed));
 				_gasContainer.Modulate = Color.Color8(0, 0, 0, 0);
 				_crewContainer.Modulate = Color.Color8(0, 0, 0, 0);
 				break;
 			case PlanetType.GasGiant:
 				_oreContainer.Modulate = Color.Color8(0, 0, 0, 0);
-				_gasContainer.UpdateResourceMiningLabel(count * 150);
+				_gasContainer.UpdateResourceMiningLabel(refineries.Sum(refinery => refinery.GasMiningSpeed));
 				_crewContainer.Modulate = Color.Color8(0, 0, 0, 0);
 				break;
 			case PlanetType.Swamp:

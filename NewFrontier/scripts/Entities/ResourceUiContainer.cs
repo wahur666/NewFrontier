@@ -37,7 +37,7 @@ public partial class ResourceUiContainer : PanelContainer {
 		var availableResourceSteps = (int)(length * currentValue / (double)maxValue);
 		var children = _resourceProgressContainer.GetChildren().ToList().Select(rect => rect as ColorRect).ToList();
 		for (int i = 0; i < length; i++){
-			var alpha = (byte)(i > availableResourceSteps ? 0 : 255); 
+			var alpha = (byte)(i >= availableResourceSteps ? 0 : 255); 
 			children[i].Modulate = Color.Color8(255, 255, 255, alpha);
 		}
 	}
