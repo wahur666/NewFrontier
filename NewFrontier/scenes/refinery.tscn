@@ -21,3 +21,5 @@ script = ExtResource("3_gvrhn")
 
 [node name="BuildLocation" type="Marker2D" parent="."]
 position = Vector2(0, 47)
+
+[node name="Timer" type="Timer" parent="."]
