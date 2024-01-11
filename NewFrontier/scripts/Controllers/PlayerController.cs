@@ -53,11 +53,12 @@ public partial class PlayerController : Node {
 		CreateStartingUnits();
 		_camera.CenterOnGridPosition(new Vector2(12, 17));
 		CurrentSector = 0;
+		_uiController.PlayerStatsUi.UpdateLabels(_playerStats);
 		UpdateUi();
 	}
 
 	private void CreateStartingUnits() {
-		_units = new List<UnitNode2D>();
+		_units = [];
 		var harvester = FactionController.Terran.CreateHarvester(new Vector2(10, 10), this, _uiController);
 		_units.Add(harvester);
 		var fabricator = FactionController.Terran.CreateFabricator(new Vector2(12, 17), this, _uiController);
@@ -80,7 +81,7 @@ public partial class PlayerController : Node {
 				} else if (_buildingShade.SnapOption == SnapOption.Wormhole) {
 					BuildBuildingOnWormholes(_buildingShade);
 				}
-			} else if (_uiController.MouseOverSectorMap(_mousePosition)) {
+			} else if (_uiController.SectorMap.MouseOverSectorMap(_mousePosition)) {
 				CheckSectorMapClick();
 			} else if (_mapGrid.Wormholes.Any(x => x.MousePointerIsOver)) {
 				_wormholeClick = true;
@@ -129,7 +130,17 @@ public partial class PlayerController : Node {
 			BuildHelper.CalculateBuildingPlace(_buildingShade, _mapGrid, pos);
 		}
 
+		UpdatePlanetUi();
+
 		CurrentSectorObj.CameraPosition = _camera.Position;
+	}
+
+	private void UpdatePlanetUi() {
+		var planet = _mapGrid.Planets.Find(planet => planet.MouseOver);
+		_uiController.PlanetUi.Visible = planet is not null;
+		if (planet is not null) {
+			_uiController.PlanetUi.UpdateLabels(planet);
+		}
 	}
 
 	private void SwitchCameraToJoinedWormhole() {
@@ -145,7 +156,7 @@ public partial class PlayerController : Node {
 
 	private void CheckSectorMapClick() {
 		var a = GetViewport().GetMousePosition();
-		var b = _uiController.SectorPanel.GlobalPosition;
+		var b = _uiController.SectorMap.SectorPanel.GlobalPosition;
 		var z = _mapGrid.Sectors.Where(x => x.Discovered).ToList()
 			.Find(x => Math.Abs((x.SectorPosition + b - a).Length()) < 10);
 		if (z is null) {
@@ -359,14 +370,17 @@ public partial class PlayerController : Node {
 
 	public void IncreaseOre(int amount) {
 		_playerStats.CurrentOre += amount;
+		_uiController.PlayerStatsUi.UpdateLabels(_playerStats);
 	}
 
 	public void IncreaseGas(int amount) {
 		_playerStats.CurrentGas += amount;
+		_uiController.PlayerStatsUi.UpdateLabels(_playerStats);
 	}
 
 	public void IncreaseCrew(int amount) {
 		_playerStats.CurrentCrew += amount;
+		_uiController.PlayerStatsUi.UpdateLabels(_playerStats);
 	}
 
 	#region Building Code
@@ -378,6 +392,8 @@ public partial class PlayerController : Node {
 		}
 
 		if (building is not null) {
+			building.Init(this, buildingNode2D.BuildingName);
+			building.Planet = buildingNode2D.Planet;
 			_buildings.Add(building);
 		}
 	}
@@ -449,9 +465,10 @@ public partial class PlayerController : Node {
 
 	public void CreateUnit(string unit) {
 		if (unit == Terran.Harvester) {
-			if (_selectedObjects[0] is Factory factory) {
+			if (_selectedObjects[0] is Refinery refinery) {
 				var harvester =
-					FactionController.Terran.CreateHarvester(MapHelpers.PosToGrid(factory.BuildLocation.GlobalPosition),
+					FactionController.Terran.CreateHarvester(
+						MapHelpers.PosToGrid(refinery.BuildLocation.GlobalPosition),
 						this, _uiController);
 				this._units.Add(harvester);
 				AddChild(harvester);

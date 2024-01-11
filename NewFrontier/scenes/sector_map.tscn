@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3 uid="uid://beuvlb6jw45c4"]
+
+[ext_resource type="Script" path="res://scripts/Entities/SectorMap.cs" id="1_rao4o"]
+[ext_resource type="Texture2D" uid="uid://bvdunaiynaq4b" path="res://gfx/sectormap_BG_T.tga" id="1_sw8lr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nu6aa"]
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tdugm"]
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ovk7y"]
+texture = ExtResource("1_sw8lr")
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
+
+[node name="SectorMap" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+mouse_filter = 2
+script = ExtResource("1_rao4o")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -187.0
+offset_top = -210.0
+offset_right = -17.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_nu6aa")
+
+[node name="Control" type="Panel" parent="."]
+clip_children = 1
+layout_mode = 0
+offset_left = 970.0
+offset_top = 443.0
+offset_right = 1130.0
+offset_bottom = 603.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tdugm")
+
+[node name="SectorPanel" type="Panel" parent="Control"]
+layout_mode = 0
+offset_right = 160.0
+offset_bottom = 160.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_ovk7y")

@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://cqvvojetnnbqf"]
+
+[ext_resource type="Script" path="res://scripts/Entities/Refinery.cs" id="1_5ls7p"]
+[ext_resource type="Texture2D" uid="uid://msh2gp5x0d84" path="res://gfx/aseprite/factory.png" id="2_hr0cs"]
+[ext_resource type="Script" path="res://scripts/UI/SelectionRect.cs" id="3_gvrhn"]
+
+[node name="Refinery" type="Node2D"]
+script = ExtResource("1_5ls7p")
+Wide = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_hr0cs")
+offset = Vector2(0, 32)
+
+[node name="SelectionRect" type="TextureRect" parent="."]
+offset_left = -15.0
+offset_top = 17.0
+offset_right = 15.0
+offset_bottom = 41.0
+script = ExtResource("3_gvrhn")
+
+[node name="BuildLocation" type="Marker2D" parent="."]
+position = Vector2(0, 47)
+
+[node name="OreTimer" type="Timer" parent="."]
+
+[node name="GasTimer" type="Timer" parent="."]

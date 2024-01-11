@@ -8,22 +8,29 @@ using NewFrontier.scripts.Model.Interfaces;
 namespace NewFrontier.scripts.Entities;
 
 public partial class Planet : Node2D {
-	public static readonly int Radius = 150;
+	public const int Radius = 150;
 
-	private readonly List<BuildingNode2D> _buildings = new();
+	public List<BuildingNode2D> Buildings = [];
 	private readonly bool[] _slotOccupiedStatus = new Boolean[12];
 	private Node _buildingsContainer;
 	private PlanetBuildingScheme _planetBuildingScheme;
+	public PlanetStats PlanetStats;
+	public string PlanetName = "Kappa 2";
 
+	private Area2D _selectionArea;
+
+	public bool MouseOver;
+	
 	[Export] public PlanetType PlanetType = PlanetType.Earth;
 
 	public override void _Ready() {
 		_buildingsContainer = GetNode<Node>("BuildingsContainer");
 		_planetBuildingScheme = GetNode<PlanetBuildingScheme>("PlanetBuildingScheme");
+		PlanetStats = GetNode<PlanetStats>("Stats");
+		_selectionArea = GetNode<Area2D>("SelectionArea");
+		_selectionArea.MouseEntered += () => MouseOver = true;
+		_selectionArea.MouseExited += () => MouseOver = false;
 		_planetBuildingScheme.Radius = Radius;
-	}
-
-	public override void _Process(double delta) {
 	}
 
 	public bool PointNearToRing(Vector2 mousePos) {
@@ -42,8 +49,11 @@ public partial class Planet : Node2D {
 
 		var newBuilding = building.Instance.Duplicate() as BuildingNode2D;
 		newBuilding.BuildingShade = false;
-		_buildings.Add(newBuilding);
+		Buildings.Add(newBuilding);
 		_buildingsContainer.AddChild(newBuilding);
+		if (newBuilding is Refinery refinery) {
+			refinery.StartTimers();
+		}
 		return newBuilding;
 	}
 }

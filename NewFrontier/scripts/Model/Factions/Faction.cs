@@ -36,7 +36,7 @@ public class Faction {
 		LoadScene(Terran.Dreadnought, "res://scenes/dreadnought.tscn");
 		LoadScene(Terran.Satellite, "res://scenes/satelite.tscn");
 		LoadScene(Terran.IonCanon, "res://scenes/ion_canon.tscn");
-		LoadScene(Terran.Factory, "res://scenes/factory.tscn");
+		LoadScene(Terran.Refinery, "res://scenes/refinery.tscn");
 	}
 
 	private IBuildable CreateBuilding(PlayerController playerController, string name) {
@@ -57,8 +57,8 @@ public class Faction {
 		return CreateBuilding(playerController, Terran.Building3);
 	}
 	
-	public IBuildable CreateFactory(PlayerController playerController) {
-		return CreateBuilding(playerController, Terran.Factory);
+	public IBuildable CreateRefinery(PlayerController playerController) {
+		return CreateBuilding(playerController, Terran.Refinery);
 	}
 
 	public IBuildable CreateJumpgate(PlayerController playerController) {

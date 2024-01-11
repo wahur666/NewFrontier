@@ -23,7 +23,7 @@ public partial class LeftControls : Control {
 	private Button _ionCanonButton;
 	private Button _jumpgateButton;
 	private Button _satelliteCanonButton;
-	private Button _factoryButton;
+	private Button _refineryButton;
 	private Button _harvesterButton;
 	private int _spacing = 5;
 	public Panel Bg;
@@ -48,10 +48,10 @@ public partial class LeftControls : Control {
 		_jumpgateButton = GetNode<Button>("Panel/ButtonContainer/HBoxContainer/Jumpgate");
 		_ionCanonButton = GetNode<Button>("Panel/ButtonContainer/HBoxContainer/IonCanon");
 		_satelliteCanonButton = GetNode<Button>("Panel/ButtonContainer/HBoxContainer/Satelite");
-		_factoryButton = GetNode<Button>("Panel/ButtonContainer/HBoxContainer/Factory");
+		_refineryButton = GetNode<Button>("Panel/ButtonContainer/HBoxContainer/Refinery");
 		_buildContainer = GetNode<Control>("Panel/BuildContainer");
 		_harvesterButton = GetNode<Button>("Panel/BuildContainer/Harvester");
-		_buttons = [_button1, _button2, _button3, _jumpgateButton, _ionCanonButton, _satelliteCanonButton, _factoryButton, _harvesterButton];
+		_buttons = [_button1, _button2, _button3, _jumpgateButton, _ionCanonButton, _satelliteCanonButton, _refineryButton, _harvesterButton];
 	}
 
 	public void Init(PlayerController playerController) {
@@ -68,8 +68,8 @@ public partial class LeftControls : Control {
 			PlayerController.CreateBuilding(Terran.IonCanon, FactionController.Terran.CreateIonCanon);
 		_satelliteCanonButton.Pressed += () =>
 			PlayerController.CreateBuilding(Terran.Satellite, FactionController.Terran.CreateSatellite);
-		_factoryButton.Pressed += () =>
-			PlayerController.CreateBuilding(Terran.Factory, FactionController.Terran.CreateFactory);
+		_refineryButton.Pressed += () =>
+			PlayerController.CreateBuilding(Terran.Refinery, FactionController.Terran.CreateRefinery);
 
 		_harvesterButton.Pressed += () =>
 			PlayerController.CreateUnit(Terran.Harvester);

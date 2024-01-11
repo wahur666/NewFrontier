@@ -10,5 +10,5 @@ public static class Terran {
 	public static string Dreadnought => "Dreadnought";
 	public static string IonCanon => "IonCanon";
 	public static string Satellite => "Satellite";
-	public static string Factory => "Factory";
+	public static string Refinery => "Refinery";
 }

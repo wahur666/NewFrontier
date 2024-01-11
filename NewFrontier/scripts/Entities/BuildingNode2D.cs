@@ -12,7 +12,7 @@ namespace NewFrontier.scripts.Entities;
 public partial class BuildingNode2D : Node2D, IBase, ISelectable, IBuildable {
 	private const int PlanetImgSize = 34;
 
-	private PlayerController _playerController;
+	protected PlayerController PlayerController;
 	private bool _mouseOver;
 
 	public bool BuildingShade = true;
@@ -65,7 +65,7 @@ public partial class BuildingNode2D : Node2D, IBase, ISelectable, IBuildable {
 	}
 
 	public void Init(PlayerController playerController, string name, int zIndex = 10) {
-		_playerController = playerController;
+		PlayerController = playerController;
 		BuildingName = name;
 		ZIndex = zIndex;
 	}

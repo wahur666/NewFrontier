@@ -1,4 +1,4 @@
-[gd_scene load_steps=71 format=3 uid="uid://bm7rhlmjs1qir"]
+[gd_scene load_steps=72 format=3 uid="uid://bm7rhlmjs1qir"]
 
 [ext_resource type="Script" path="res://scripts/Entities/Planet.cs" id="1_aiyyj"]
 [ext_resource type="Script" path="res://scripts/Entities/PlanetStats.cs" id="2_ekojl"]
@@ -462,7 +462,10 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_q541v"]
-radius = 64.2806
+radius = 131.061
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7kwqs"]
+radius = 165.0
 
 [node name="SwampPlanet" type="Node2D" groups=["planet"]]
 script = ExtResource("1_aiyyj")
@@ -488,3 +491,9 @@ collision_layer = 2
 shape = SubResource("CircleShape2D_q541v")
 
 [node name="BuildingsContainer" type="Node" parent="."]
+
+[node name="SelectionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SelectionArea"]
+visible = false
+shape = SubResource("CircleShape2D_7kwqs")

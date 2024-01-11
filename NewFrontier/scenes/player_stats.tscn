@@ -1,0 +1,174 @@
+[gd_scene load_steps=7 format=3 uid="uid://2k3oc8qc1ib3"]
+
+[ext_resource type="Script" path="res://scripts/Entities/PlayerStatsUi.cs" id="1_cruaa"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hiacw"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8wsto"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+
+[sub_resource type="SystemFont" id="SystemFont_bf31m"]
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_2bdva"]
+font = SubResource("SystemFont_bf31m")
+font_size = 14
+
+[sub_resource type="LabelSettings" id="LabelSettings_h2ccl"]
+font = SubResource("SystemFont_bf31m")
+font_size = 14
+
+[node name="Stats" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_cruaa")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -527.0
+offset_bottom = 24.0
+grow_horizontal = 0
+theme_override_constants/separation = -1
+
+[node name="ControlPointPanel" type="PanelContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hiacw")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/ControlPointPanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="Panel" type="PanelContainer" parent="HBoxContainer/ControlPointPanel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8wsto")
+
+[node name="Label" type="Label" parent="HBoxContainer/ControlPointPanel/HBoxContainer2/Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "CP"
+label_settings = SubResource("LabelSettings_2bdva")
+
+[node name="Panel2" type="PanelContainer" parent="HBoxContainer/ControlPointPanel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8wsto")
+
+[node name="ControlPointLabel" type="Label" parent="HBoxContainer/ControlPointPanel/HBoxContainer2/Panel2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "200/250"
+label_settings = SubResource("LabelSettings_h2ccl")
+horizontal_alignment = 2
+
+[node name="OrePanel" type="PanelContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hiacw")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/OrePanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="Panel" type="PanelContainer" parent="HBoxContainer/OrePanel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8wsto")
+
+[node name="Label" type="Label" parent="HBoxContainer/OrePanel/HBoxContainer2/Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ore"
+label_settings = SubResource("LabelSettings_2bdva")
+
+[node name="Panel2" type="PanelContainer" parent="HBoxContainer/OrePanel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8wsto")
+
+[node name="OreLabel" type="Label" parent="HBoxContainer/OrePanel/HBoxContainer2/Panel2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2000/2500"
+label_settings = SubResource("LabelSettings_h2ccl")
+horizontal_alignment = 2
+
+[node name="GasPanel" type="PanelContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hiacw")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/GasPanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="Panel" type="PanelContainer" parent="HBoxContainer/GasPanel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8wsto")
+
+[node name="Label" type="Label" parent="HBoxContainer/GasPanel/HBoxContainer2/Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Gas"
+label_settings = SubResource("LabelSettings_2bdva")
+
+[node name="Panel2" type="PanelContainer" parent="HBoxContainer/GasPanel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8wsto")
+
+[node name="GasLabel" type="Label" parent="HBoxContainer/GasPanel/HBoxContainer2/Panel2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2000/2500"
+label_settings = SubResource("LabelSettings_h2ccl")
+horizontal_alignment = 2
+
+[node name="CrewPanel" type="PanelContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hiacw")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/CrewPanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="Panel" type="PanelContainer" parent="HBoxContainer/CrewPanel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8wsto")
+
+[node name="Label" type="Label" parent="HBoxContainer/CrewPanel/HBoxContainer2/Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Crew"
+label_settings = SubResource("LabelSettings_2bdva")
+
+[node name="Panel2" type="PanelContainer" parent="HBoxContainer/CrewPanel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_8wsto")
+
+[node name="CrewLabel" type="Label" parent="HBoxContainer/CrewPanel/HBoxContainer2/Panel2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "2000/250000"
+label_settings = SubResource("LabelSettings_h2ccl")
+horizontal_alignment = 2

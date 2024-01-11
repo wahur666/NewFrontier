@@ -1,4 +1,4 @@
-[gd_scene load_steps=71 format=3 uid="uid://l2ursg8x1iqc"]
+[gd_scene load_steps=72 format=3 uid="uid://l2ursg8x1iqc"]
 
 [ext_resource type="Script" path="res://scripts/Entities/Planet.cs" id="1_fs2uw"]
 [ext_resource type="Script" path="res://scripts/Entities/PlanetBuildingScheme.cs" id="2_irlwg"]
@@ -463,7 +463,10 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_q541v"]
-radius = 64.2806
+radius = 129.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2t080"]
+radius = 165.0
 
 [node name="GasPlanet" type="Node2D" groups=["planet"]]
 script = ExtResource("1_fs2uw")
@@ -490,3 +493,9 @@ collision_layer = 2
 shape = SubResource("CircleShape2D_q541v")
 
 [node name="BuildingsContainer" type="Node" parent="."]
+
+[node name="SelectionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SelectionArea"]
+visible = false
+shape = SubResource("CircleShape2D_2t080")
