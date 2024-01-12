@@ -10,6 +10,7 @@ public partial class PlanetStats : Node {
 	public int CurrentGas;
 	[Export] public int MaxCrew;
 	public int CurrentCrew;
+	[Export] public int RegenerationRate = 50;
 
 	public override void _Ready() {
 		CurrentOre = MaxOre;
@@ -33,5 +34,11 @@ public partial class PlanetStats : Node {
 		int harvestAmount = Math.Min(CurrentCrew, amount);
 		CurrentCrew -= harvestAmount;
 		return harvestAmount;
+	}
+
+	public void IncreaseResources() {
+		CurrentOre = Math.Min(CurrentOre + RegenerationRate, MaxOre);
+		CurrentGas = Math.Min(CurrentGas + RegenerationRate, MaxGas);
+		CurrentCrew = Math.Min(CurrentCrew + RegenerationRate, MaxCrew);
 	}
 }

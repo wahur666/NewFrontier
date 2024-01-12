@@ -16,6 +16,7 @@ public partial class Planet : Node2D {
 	private PlanetBuildingScheme _planetBuildingScheme;
 	public PlanetStats PlanetStats;
 	public string PlanetName = "Kappa 2";
+	private Timer _resourceTimer;
 
 	private Area2D _selectionArea;
 
@@ -31,6 +32,12 @@ public partial class Planet : Node2D {
 		_selectionArea.MouseEntered += () => MouseOver = true;
 		_selectionArea.MouseExited += () => MouseOver = false;
 		_planetBuildingScheme.Radius = Radius;
+		_resourceTimer = GetNode<Timer>("ResourceTimer");
+		_resourceTimer.Timeout += ResourceTimerOnTimeout;
+	}
+
+	private void ResourceTimerOnTimeout() {
+		PlanetStats.IncreaseResources();
 	}
 
 	public bool PointNearToRing(Vector2 mousePos) {

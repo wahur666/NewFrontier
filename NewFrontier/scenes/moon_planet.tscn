@@ -473,6 +473,7 @@ PlanetType = 1
 
 [node name="Stats" type="Node" parent="."]
 script = ExtResource("2_hym0v")
+MaxOre = 10000
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
 script = ExtResource("2_o7flg")
@@ -497,3 +498,7 @@ shape = SubResource("CircleShape2D_q541v")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SelectionArea"]
 visible = false
 shape = SubResource("CircleShape2D_cbied")
+
+[node name="ResourceTimer" type="Timer" parent="."]
+wait_time = 30.0
+autostart = true
