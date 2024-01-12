@@ -473,6 +473,7 @@ PlanetType = 3
 
 [node name="Stats" type="Node" parent="."]
 script = ExtResource("2_ekojl")
+MaxCrew = 5000
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
 script = ExtResource("2_tlsra")

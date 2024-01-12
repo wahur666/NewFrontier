@@ -473,6 +473,7 @@ PlanetType = 1
 
 [node name="Stats" type="Node" parent="."]
 script = ExtResource("2_hym0v")
+MaxOre = 10000
 
 [node name="PlanetBuildingScheme" type="Node2D" parent="."]
 script = ExtResource("2_o7flg")
