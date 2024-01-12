@@ -497,3 +497,7 @@ shape = SubResource("CircleShape2D_q541v")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SelectionArea"]
 visible = false
 shape = SubResource("CircleShape2D_cbied")
+
+[node name="ResourceTimer" type="Timer" parent="."]
+wait_time = 30.0
+autostart = true

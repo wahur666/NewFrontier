@@ -499,3 +499,7 @@ visible = false
 shape = SubResource("CircleShape2D_4rvwd")
 
 [node name="BuildingsContainer" type="Node" parent="."]
+
+[node name="ResourceTimer" type="Timer" parent="."]
+wait_time = 30.0
+autostart = true

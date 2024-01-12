@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using NewFrontier.scripts.Model;
@@ -30,7 +28,6 @@ public partial class PlanetUi : Control {
 			GetNode<ResourceUiContainer>("PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/GasContainer");
 		_crewContainer =
 			GetNode<ResourceUiContainer>("PanelContainer/VBoxContainer/HBoxContainer/VBoxContainer/CrewContainer");
-
 	}
 
 	public void UpdateLabels(Planet planet) {
