@@ -8,6 +8,7 @@
 z_index = 100
 script = ExtResource("1_d5es8")
 Wide = 3
+Icon = ExtResource("1_dipq8")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_dipq8")

@@ -14,4 +14,5 @@ public interface ISelectable {
 
 	public bool InsideSelectionRect(Vector2 position);
 
+	public Texture2D Icon { get; set; }
 }

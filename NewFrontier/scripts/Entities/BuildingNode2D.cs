@@ -28,6 +28,7 @@ public partial class BuildingNode2D : Node2D, IBase, ISelectable, IBuildable {
 	[Export] public int Wide { get; set; } = 1;
 	[Export] public SnapOption SnapOption { get; set; } = SnapOption.Planet;
 
+	[Export] public Texture2D Icon { get; set; }
 	private bool _selected;
 
 	[Export]
