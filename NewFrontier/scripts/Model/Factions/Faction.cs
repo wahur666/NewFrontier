@@ -27,16 +27,16 @@ public class Faction {
 	}
 
 	private void InitTerran() {
-		LoadScene(Terran.Building1, "res://scenes/base_1.tscn");
-		LoadScene(Terran.Building2, "res://scenes/base_2.tscn");
-		LoadScene(Terran.Building3, "res://scenes/base_3.tscn");
-		LoadScene(Terran.Jumpgate, "res://scenes/jumpgate.tscn");
-		LoadScene(Terran.Harvester, "res://scenes/harvester.tscn");
-		LoadScene(Terran.Fabricator, "res://scenes/fabricator.tscn");
-		LoadScene(Terran.Dreadnought, "res://scenes/dreadnought.tscn");
-		LoadScene(Terran.Satellite, "res://scenes/satelite.tscn");
-		LoadScene(Terran.IonCanon, "res://scenes/ion_canon.tscn");
-		LoadScene(Terran.Refinery, "res://scenes/refinery.tscn");
+		LoadScene(Terran.Building1, "res://scenes/buildings/base_1.tscn");
+		LoadScene(Terran.Building2, "res://scenes/buildings/base_2.tscn");
+		LoadScene(Terran.Building3, "res://scenes/buildings/base_3.tscn");
+		LoadScene(Terran.Jumpgate, "res://scenes/buildings/jumpgate.tscn");
+		LoadScene(Terran.Harvester, "res://scenes/units/harvester.tscn");
+		LoadScene(Terran.Fabricator, "res://scenes/units/fabricator.tscn");
+		LoadScene(Terran.Dreadnought, "res://scenes/units/dreadnought.tscn");
+		LoadScene(Terran.Satellite, "res://scenes/buildings/satelite.tscn");
+		LoadScene(Terran.IonCanon, "res://scenes/buildings/ion_canon.tscn");
+		LoadScene(Terran.Refinery, "res://scenes/buildings/refinery.tscn");
 	}
 
 	private IBuildable CreateBuilding(PlayerController playerController, string name) {

@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://cyr46mb4xlgu1"]
 
 [ext_resource type="Script" path="res://scripts/Entities/ResourceUiContainer.cs" id="1_bwqx2"]
-[ext_resource type="Texture2D" uid="uid://c33bsi8puww5j" path="res://gfx/aseprite/ore-icon.png" id="1_tnk6p"]
+[ext_resource type="Texture2D" uid="uid://pa4jdpbxy2wg" path="res://gfx/aseprite/placeholder.png" id="2_akoa3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_15hth"]
 
@@ -50,7 +50,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_hx515")
 
 [node name="IconTexture" type="TextureRect" parent="HBoxContainer/PanelContainer"]
 layout_mode = 2
-texture = ExtResource("1_tnk6p")
+texture = ExtResource("2_akoa3")
 expand_mode = 2
 
 [node name="PanelContainer2" type="PanelContainer" parent="HBoxContainer"]
@@ -66,13 +66,13 @@ layout_mode = 2
 [node name="ResourceLabel" type="Label" parent="HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Ore: 2500/2500"
+text = "Text: ????/????"
 label_settings = SubResource("LabelSettings_7ewxm")
 
 [node name="ResourceMinigLabel" type="Label" parent="HBoxContainer/PanelContainer2/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "0/min
+text = "?/min
 "
 label_settings = SubResource("LabelSettings_pnq7x")
 horizontal_alignment = 2

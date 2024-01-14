@@ -48,6 +48,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	}
 	
 	[Export] public Texture2D Icon { get; set; }
+	public virtual bool IsUnit => true;
 
 	private ISelectable AsISelectable => this;
 

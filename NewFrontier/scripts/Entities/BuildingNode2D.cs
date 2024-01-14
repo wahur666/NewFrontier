@@ -31,6 +31,8 @@ public partial class BuildingNode2D : Node2D, IBase, ISelectable, IBuildable {
 	[Export] public Texture2D Icon { get; set; }
 	private bool _selected;
 
+	public bool IsUnit => false;
+
 	[Export]
 	public bool Selected {
 		get => _selected;
