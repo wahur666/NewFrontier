@@ -291,10 +291,10 @@ public partial class PlayerController : Node {
 		}
 
 		LeftControls.SetContainerVisibility(true, false, false);
-		LeftControls.CalculateSelectedUnits(selectedObjects.Select(x => (UnitNode2D)x).ToList());
+		LeftControls.CalculateSelectedUnits(selectedObjects);
 	}
 
-	public void SelectUnitFromUi(UnitNode2D unit) {
+	public void SelectUnitFromUi(ISelectable unit) {
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
 		if (shiftDown) {
 			unit.Selected = false;
