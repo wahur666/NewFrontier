@@ -256,11 +256,6 @@ public partial class PlayerController : Node {
 		UpdateUi();
 	}
 
-
-	#region TODO: Refactor this!!!!!!
-
-	// TODO: REFACTOR SELECTION
-
 	private void SelectUnitNearPoint(Vector2 point) {
 		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
 			return;
@@ -301,8 +296,6 @@ public partial class PlayerController : Node {
 		
 		UpdateUi();
 	}
-
-	#endregion
 
 	private void UpdateUi() {
 		var selectedObjects = _selectedObjects;
