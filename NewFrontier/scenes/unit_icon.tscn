@@ -1,11 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://0u1iorittqc2"]
+[gd_scene load_steps=5 format=3 uid="uid://0u1iorittqc2"]
 
 [ext_resource type="Script" path="res://scripts/Entities/UnitIcon.cs" id="1_btw4j"]
-[ext_resource type="Texture2D" uid="uid://dy1ps31o4d1ck" path="res://gfx/Fabgal.tga" id="2_diajv"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_oeckg"]
-atlas = ExtResource("2_diajv")
-region = Rect2(0, 64, 64, 64)
+[ext_resource type="Texture2D" uid="uid://pa4jdpbxy2wg" path="res://gfx/aseprite/placeholder.png" id="2_t3106"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3hev"]
 bg_color = Color(1, 0, 0, 1)
@@ -16,6 +12,7 @@ bg_color = Color(0, 0, 1, 1)
 [node name="UnitIcon" type="Button"]
 offset_right = 32.0
 offset_bottom = 32.0
+action_mode = 0
 script = ExtResource("1_btw4j")
 
 [node name="TextureRect" type="TextureRect" parent="."]
@@ -25,7 +22,7 @@ offset_top = 3.0
 offset_right = 67.0
 offset_bottom = 67.0
 scale = Vector2(0.4, 0.4)
-texture = SubResource("AtlasTexture_oeckg")
+texture = ExtResource("2_t3106")
 expand_mode = 2
 stretch_mode = 4
 

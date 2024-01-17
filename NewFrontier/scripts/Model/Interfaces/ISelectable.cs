@@ -16,5 +16,7 @@ public interface ISelectable {
 
 	public Texture2D Icon { get; set; }
 
-	public bool IsUnit { get; }
+	public bool IsUnitSelectable { get; }
+	
+	public Vector2 Pos { get; }
 }

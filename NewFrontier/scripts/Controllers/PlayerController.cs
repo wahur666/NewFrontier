@@ -214,12 +214,21 @@ public partial class PlayerController : Node {
 		AddChild(_buildingShade.Instance);
 	}
 
-	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
-		var shiftDown = Input.IsKeyPressed(Key.Shift);
-		_buildingMode = false;
+	private List<ISelectable> AllSelectable => [.._units, .._buildings];
 
+
+	#region TODO: Refactor this!!!!!!
+
+	// TODO: REFACTOR SELECTION
+
+	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
+		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
+			return;
+		}
+
+		var shiftDown = Input.IsKeyPressed(Key.Shift);
 		if (shiftDown) {
-			var units = _units.Where(unit => AreaHelper.InRect(unit.Position, start, end)).ToList();
+			var units = AllSelectable.Where(unit => AreaHelper.InRect(unit.Pos, start, end)).ToList();
 			if (units.Count == 0) {
 				_selectedObjects.ForEach(x => x.Selected = false);
 				_selectedObjects = [];
@@ -228,18 +237,28 @@ public partial class PlayerController : Node {
 					unit.Selected = !unit.Selected;
 				}
 
-				_selectedObjects = _units.Select(x => (ISelectable)x).Where(x => x.Selected).ToList();
+				_selectedObjects = AllSelectable.Where(x => x.Selected).ToList();
 			}
 		} else {
-			foreach (var unit in _units) {
-				unit.Selected = AreaHelper.InRect(unit.Position, start, end);
+			foreach (var unit in AllSelectable) {
+				unit.Selected = AreaHelper.InRect(unit.Pos, start, end);
 			}
 
-			_selectedObjects = _units.Select(x => (ISelectable)x).Where(x => x.Selected).ToList();
+			_selectedObjects = AllSelectable.Where(x => x.Selected).ToList();
+		}
+
+		if (_selectedObjects.Any(unit => unit.IsUnitSelectable) &&
+		    _selectedObjects.Any(unit => !unit.IsUnitSelectable)) {
+			foreach (var selectedObject in _selectedObjects.Where(selectedObject => !selectedObject.IsUnitSelectable)) {
+				selectedObject.Selected = false;
+			}
+
+			_selectedObjects = _selectedObjects.Where(unit => unit.Selected).ToList();
 		}
 
 		UpdateUi();
 	}
+
 
 	private void SelectUnitNearPoint(Vector2 point) {
 		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
@@ -247,25 +266,31 @@ public partial class PlayerController : Node {
 		}
 
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
-
-		List<ISelectable> allSelectable = [.._units, .._buildings];
-
 		if (!shiftDown) {
-			allSelectable.ForEach(x => x.Selected = false);
+			AllSelectable.ForEach(x => x.Selected = false);
 		}
 
-
-		var selectedObject = allSelectable.Find(x => x.InsideSelectionRect(point));
+		var selectedObject = AllSelectable.Find(x => x.InsideSelectionRect(point));
 		if (selectedObject is null) {
 			_selectedObjects.ForEach(x => x.Selected = false);
 			_selectedObjects.Clear();
 		} else {
 			if (shiftDown) {
-				selectedObject.Selected = !selectedObject.Selected;
-				if (selectedObject.Selected) {
-					_selectedObjects.Add(selectedObject);
+				if (_selectedObjects.Count == 0) {
+					selectedObject.Selected = true;
+					_selectedObjects = [selectedObject];
+				} else if (selectedObject.IsUnitSelectable) {
+					if (_selectedObjects.All(unit => unit.IsUnitSelectable)) {
+						selectedObject.Selected = !selectedObject.Selected;
+						if (selectedObject.Selected) {
+							_selectedObjects.Add(selectedObject);
+						} else {
+							_selectedObjects.Remove(selectedObject);
+						}
+					}
 				} else {
-					_selectedObjects.Remove(selectedObject);
+					_selectedObjects.ForEach(x => x.Selected = false);
+					_selectedObjects.Clear();
 				}
 			} else {
 				selectedObject.Selected = true;
@@ -275,6 +300,8 @@ public partial class PlayerController : Node {
 
 		UpdateUi();
 	}
+
+	#endregion
 
 	private void UpdateUi() {
 		var selectedObjects = _selectedObjects;

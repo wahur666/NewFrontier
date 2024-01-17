@@ -15,7 +15,7 @@ public partial class OffensiveBuildingNode2D : BuildingNode2D, IAttack, ISelecta
 	[ExportGroup("OffensiveStats")] [Export]
 	public int MaxSupply;
 
-	public new bool IsUnit => true;
+	public new bool IsUnitSelectable => true;
 
 	public int CalculateDamage(IBase target) {
 		throw new NotImplementedException();

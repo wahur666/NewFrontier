@@ -1,13 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://2jwalneqdrnf"]
+[gd_scene load_steps=5 format=3 uid="uid://2jwalneqdrnf"]
 
 [ext_resource type="Texture2D" uid="uid://btk10rm5wfhl4" path="res://gfx/aseprite/satelite.png" id="1_7oevl"]
 [ext_resource type="Script" path="res://scripts/Entities/OffensiveBuildingNode2D.cs" id="1_ob5qu"]
 [ext_resource type="Script" path="res://scripts/UI/SelectionRect.cs" id="2_ohcgt"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_iqkae"]
+atlas = ExtResource("1_7oevl")
+region = Rect2(0, 0, 64, 64)
+
 [node name="Satelite" type="Node2D"]
 script = ExtResource("1_ob5qu")
 SnapOption = 0
-Icon = ExtResource("1_7oevl")
+Icon = SubResource("AtlasTexture_iqkae")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_7oevl")

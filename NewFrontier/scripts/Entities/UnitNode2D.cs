@@ -48,9 +48,10 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	}
 	
 	[Export] public Texture2D Icon { get; set; }
-	public virtual bool IsUnit => true;
+	public virtual bool IsUnitSelectable => true;
 
 	private ISelectable AsISelectable => this;
+	public Vector2 Pos { get => Position; } 
 
 	[ExportGroup("Stats")] [Export] public int MaxHealth { get; set; }
 
