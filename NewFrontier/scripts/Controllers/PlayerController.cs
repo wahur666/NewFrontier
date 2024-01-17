@@ -217,35 +217,32 @@ public partial class PlayerController : Node {
 	private List<ISelectable> AllSelectable => [.._units, .._buildings];
 
 
-	#region TODO: Refactor this!!!!!!
-
-	// TODO: REFACTOR SELECTION
-
 	private void SelectUnitsInArea(Vector2 start, Vector2 end) {
 		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
 			return;
 		}
 
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
-		if (shiftDown) {
-			var units = AllSelectable.Where(unit => AreaHelper.InRect(unit.Pos, start, end)).ToList();
-			if (units.Count == 0) {
-				_selectedObjects.ForEach(x => x.Selected = false);
-				_selectedObjects = [];
-			} else {
-				foreach (var unit in units) {
-					unit.Selected = !unit.Selected;
-				}
 
-				_selectedObjects = AllSelectable.Where(x => x.Selected).ToList();
+		var units = AllSelectable.Where(unit => AreaHelper.InRect(unit.Pos, start, end)).ToList();
+		if (shiftDown && units.Count == 0) {
+			_selectedObjects.ForEach(x => x.Selected = false);
+			_selectedObjects.Clear();
+			UpdateUi();
+			return;
+		}
+
+		if (shiftDown) {
+			foreach (var unit in units) {
+				unit.Selected = !unit.Selected;
 			}
 		} else {
 			foreach (var unit in AllSelectable) {
 				unit.Selected = AreaHelper.InRect(unit.Pos, start, end);
 			}
-
-			_selectedObjects = AllSelectable.Where(x => x.Selected).ToList();
 		}
+
+		_selectedObjects = AllSelectable.Where(x => x.Selected).ToList();
 
 		if (_selectedObjects.Any(unit => unit.IsUnitSelectable) &&
 		    _selectedObjects.Any(unit => !unit.IsUnitSelectable)) {
@@ -260,44 +257,48 @@ public partial class PlayerController : Node {
 	}
 
 
+	#region TODO: Refactor this!!!!!!
+
+	// TODO: REFACTOR SELECTION
+
 	private void SelectUnitNearPoint(Vector2 point) {
 		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
 			return;
 		}
 
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
-		if (!shiftDown) {
-			AllSelectable.ForEach(x => x.Selected = false);
-		}
-
+		
 		var selectedObject = AllSelectable.Find(x => x.InsideSelectionRect(point));
 		if (selectedObject is null) {
 			_selectedObjects.ForEach(x => x.Selected = false);
 			_selectedObjects.Clear();
-		} else {
-			if (shiftDown) {
-				if (_selectedObjects.Count == 0) {
-					selectedObject.Selected = true;
-					_selectedObjects = [selectedObject];
-				} else if (selectedObject.IsUnitSelectable) {
-					if (_selectedObjects.All(unit => unit.IsUnitSelectable)) {
-						selectedObject.Selected = !selectedObject.Selected;
-						if (selectedObject.Selected) {
-							_selectedObjects.Add(selectedObject);
-						} else {
-							_selectedObjects.Remove(selectedObject);
-						}
+			UpdateUi();
+			return;
+		}
+
+		if (shiftDown) {
+			if (selectedObject.IsUnitSelectable) {
+				// Unit Selected
+				if (_selectedObjects.All(x => x.IsUnitSelectable)) {
+					// Only  units we have here
+					selectedObject.Selected = !selectedObject.Selected;
+					if (selectedObject.Selected) {
+						_selectedObjects.Add(selectedObject);
+					} else {
+						_selectedObjects.Remove(selectedObject);
 					}
 				} else {
+					// We have a building in the list
 					_selectedObjects.ForEach(x => x.Selected = false);
 					_selectedObjects.Clear();
 				}
-			} else {
-				selectedObject.Selected = true;
-				_selectedObjects = [selectedObject];
-			}
+			} 
+			
+		} else {
+			selectedObject.Selected = true;
+			_selectedObjects = [selectedObject];
 		}
-
+		
 		UpdateUi();
 	}
 
