@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using NewFrontier.scripts.Controllers;
-using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
 using NewFrontier.scripts.Model.Interfaces;
 using NewFrontier.scripts.UI;
@@ -25,10 +24,15 @@ public partial class BuildingNode2D : Node2D, IBase, ISelectable, IBuildable {
 	public Planet Planet { get; set; }
 	public string BuildingName { get; set; }
 	public Sprite2D BuildingSprite { get; set; }
+	
 	[Export] public int Wide { get; set; } = 1;
 	[Export] public SnapOption SnapOption { get; set; } = SnapOption.Planet;
 
+	[Export] public Texture2D Icon { get; set; }
 	private bool _selected;
+
+	public bool IsUnitSelectable => false;
+	public Vector2 Pos { get => Position; } 
 
 	[Export]
 	public bool Selected {

@@ -1,8 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://cd4ok3k787pu5"]
+[gd_scene load_steps=6 format=3 uid="uid://cd4ok3k787pu5"]
 
 [ext_resource type="Script" path="res://scripts/Entities/Fabricator.cs" id="1_60k43"]
 [ext_resource type="Script" path="res://scripts/UI/SelectionRect.cs" id="2_70lo1"]
 [ext_resource type="Texture2D" uid="uid://dy1ps31o4d1ck" path="res://gfx/Fabgal.tga" id="2_v6w1u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_24ked"]
+atlas = ExtResource("2_v6w1u")
+region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_yluv4"]
 radius = 41.0122
@@ -10,6 +14,7 @@ radius = 41.0122
 [node name="Fabricator" type="CharacterBody2D"]
 collision_mask = 2
 script = ExtResource("1_60k43")
+Icon = SubResource("AtlasTexture_24ked")
 
 [node name="SelectionRect" type="TextureRect" parent="."]
 offset_left = -27.0

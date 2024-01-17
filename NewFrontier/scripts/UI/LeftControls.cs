@@ -5,6 +5,7 @@ using Godot;
 using NewFrontier.scripts.Controllers;
 using NewFrontier.scripts.Entities;
 using NewFrontier.scripts.Model.Factions;
+using NewFrontier.scripts.Model.Interfaces;
 
 namespace NewFrontier.scripts.UI;
 
@@ -17,6 +18,7 @@ public partial class LeftControls : Control {
 	private List<Button> _buttons;
 	private PackedScene _fabricatorIcon;
 	private PackedScene _harvesterIcon;
+	private PackedScene _unitIcon;
 	private Control _iconContainer;
 
 	private int _iconSize = 32;
@@ -39,6 +41,7 @@ public partial class LeftControls : Control {
 	public override void _Ready() {
 		_fabricatorIcon = GD.Load<PackedScene>("res://scenes/fabricator_icon.tscn");
 		_harvesterIcon = GD.Load<PackedScene>("res://scenes/harvester_icon.tscn");
+		_unitIcon = GD.Load<PackedScene>("res://scenes/unit_icon.tscn");
 		_buttonContainer = GetNode<Control>("Panel/ButtonContainer");
 		_iconContainer = GetNode<Control>("Panel/IconContainer");
 		Bg = GetNode<Panel>("Panel");
@@ -84,7 +87,7 @@ public partial class LeftControls : Control {
 		PlayerController.LeftControls = this;
 	}
 
-	public void CalculateSelectedUnits(List<UnitNode2D> units) {
+	public void CalculateSelectedUnits(List<ISelectable> units) {
 		_iconContainer.GetChildren().ToList().ForEach(x => x.QueueFree());
 		_iconContainer.GetChildren().Clear();
 		const int startY = 10; // Adjust the starting Y-coordinate as needed
@@ -101,26 +104,27 @@ public partial class LeftControls : Control {
 		}
 	}
 
-	private void DrawRow(int rowCount, int startX, int startY, int startNumber, int endIndex, List<UnitNode2D> units) {
+	private void DrawRow(int rowCount, int startX, int startY, int startNumber, int endIndex, List<ISelectable> units) {
 		for (var i = 0; i < rowCount && startNumber < endIndex; i++) {
 			var a = units[startNumber];
 			var scene = a switch {
 				Fabricator => _fabricatorIcon,
 				Harvester => _harvesterIcon,
-				_ => _harvesterIcon
+				_ => _unitIcon
 			};
 			DrawIcon(startX + (i * (_iconSize + _spacing)), startY, scene, a);
 			startNumber++;
 		}
 	}
 
-	private void DrawIcon(int x, int y, PackedScene scene, UnitNode2D unitNode2D) {
+	private void DrawIcon(int x, int y, PackedScene scene, ISelectable unitNode2D) {
 		var icon = scene.Instantiate() as UnitIcon;
 		icon.Position = new Vector2(x, y);
 		icon.MouseEntered += MouseEnteredPanelElement;
 		icon.Unit = unitNode2D;
 		icon.PlayerController = PlayerController;
 		_iconContainer.AddChild(icon);
+		icon.TextureRect.Texture = unitNode2D.Icon;
 	}
 
 

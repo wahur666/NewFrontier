@@ -5,7 +5,7 @@ using NewFrontier.scripts.Model.Interfaces;
 
 namespace NewFrontier.scripts.Entities;
 
-public partial class OffensiveBuildingNode2D : BuildingNode2D, IAttack {
+public partial class OffensiveBuildingNode2D : BuildingNode2D, IAttack, ISelectable {
 	[ExportGroup("OffensiveStats")] [Export]
 	public int CurrentSupply;
 
@@ -14,6 +14,8 @@ public partial class OffensiveBuildingNode2D : BuildingNode2D, IAttack {
 
 	[ExportGroup("OffensiveStats")] [Export]
 	public int MaxSupply;
+
+	public new bool IsUnitSelectable => true;
 
 	public int CalculateDamage(IBase target) {
 		throw new NotImplementedException();

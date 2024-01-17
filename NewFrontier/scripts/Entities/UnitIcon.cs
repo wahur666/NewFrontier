@@ -1,14 +1,17 @@
 using Godot;
 using NewFrontier.scripts.Controllers;
+using NewFrontier.scripts.Model.Interfaces;
 
 namespace NewFrontier.scripts.Entities;
 
 public partial class UnitIcon : Button {
 	public PlayerController PlayerController;
-	public UnitNode2D Unit;
+	public ISelectable Unit;
+	public TextureRect TextureRect;
 
 	public override void _Ready() {
 		Pressed += SelectUnit;
+		TextureRect = GetNode<TextureRect>("TextureRect");
 	}
 
 	private void SelectUnit() {
