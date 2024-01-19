@@ -13,6 +13,9 @@ public partial class CameraController : Camera2D {
 	public PlayerController PlayerControllerInstance;
 	[Export] public float Speed = 10.0f;
 
+	[Export] public float ZoomSpeed = 0.1f;
+
+
 	public override void _Ready() {
 		_uiController = GetNode<UiController>("../Ui");
 	}
@@ -41,7 +44,14 @@ public partial class CameraController : Camera2D {
 		var inpx = 0;
 		var inpy = 0;
 
-		if (EnableEdgePanning) {
+
+		inpx = (Input.IsActionPressed("ui_right") ? 1 : 0) 
+		 		   - (Input.IsActionPressed("ui_left") ? 1 : 0);
+		inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
+		 		   - (Input.IsActionPressed("ui_up") ? 1 : 0);
+
+
+		if (inpx == 0 && inpy == 0 && EnableEdgePanning) {
 			var windowSize = DisplayServer.WindowGetSize();
 			var windowPosition = DisplayServer.WindowGetPosition();
 			var windowMousePosition = DisplayServer.MouseGetPosition();
@@ -59,12 +69,16 @@ public partial class CameraController : Camera2D {
 			}
 		}
 
-		// inpx = (Input.IsActionPressed("ui_right") ? 1 : 0) 
-		// 		   - (Input.IsActionPressed("ui_left") ? 1 : 0);
-		// inpy = (Input.IsActionPressed("ui_down") ? 1 : 0) 
-		// 		   - (Input.IsActionPressed("ui_up") ? 1 : 0);
+		var oldZoom = Zoom;
+		if (Input.IsActionJustPressed("WheelUp")) {
+			Zoom += new Vector2(ZoomSpeed, ZoomSpeed);
+			Zoom = Zoom.Clamp(new Vector2(0.5f, 0.5f), new Vector2(1.5f, 1.5f));
+		} else if (Input.IsActionJustPressed("WheelDown")) {
+			Zoom -= new Vector2(ZoomSpeed, ZoomSpeed);
+			Zoom = Zoom.Clamp(new Vector2(0.5f, 0.5f), new Vector2(1.5f, 1.5f));
+		}
 
-		if (inpx == 0 && inpy == 0) {
+		if (inpx == 0 && inpy == 0 && oldZoom != Zoom) {
 			return;
 		}
 
@@ -72,7 +86,7 @@ public partial class CameraController : Camera2D {
 		var diameter = _mapGrid.RealMapSize * MapHelpers.DrawSize;
 		var radius = diameter / 2;
 		var center = new Vector2(radius, radius) + offset;
-		var size = GetViewport().GetVisibleRect().Size;
+		var size = GetViewport().GetVisibleRect().Size / Zoom * 0.9f;
 		var a = radius - (size.X / 2);
 		var b = radius - (size.Y / 2);
 		Position += new Vector2(inpx * Speed, inpy * Speed);

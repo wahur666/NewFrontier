@@ -290,6 +290,7 @@ public partial class PlayerController : Node {
 			} 
 			
 		} else {
+			_selectedObjects.ForEach(x => x.Selected = false);
 			selectedObject.Selected = true;
 			_selectedObjects = [selectedObject];
 		}
