@@ -90,6 +90,10 @@ public partial class PlayerController : Node {
 				_dragging = true;
 				_camera.EnableEdgePanning = false;
 			}
+		} else if (Input.IsActionJustPressed("CMD+RMB")) {
+			if (SetTarget()) {
+				return;
+			}
 		} else if (Input.IsActionJustPressed("RMB")) {
 			if (_buildingMode) {
 				FreeBuildingShade();
@@ -118,6 +122,7 @@ public partial class PlayerController : Node {
 			_wormholeClick = false;
 		}
 
+
 		if (_dragging) {
 			_dragEnd = _camera.GetGlobalMousePosition();
 			_dragEndV = _mousePosition;
@@ -133,6 +138,24 @@ public partial class PlayerController : Node {
 		UpdatePlanetUi();
 
 		CurrentSectorObj.CameraPosition = _camera.Position;
+	}
+
+	private bool SetTarget() {
+		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
+			return true;
+		}
+
+		var point = _camera.GetGlobalMousePosition();
+		if (AllSelectable.Find(x => x.InsideSelectionRect(point)) is not IBase baseObject) {
+			return false;
+		}
+
+		foreach (var selectedObject in _selectedObjects) {
+			GD.Print("TARGET AQUIRED");
+			((IAttack)selectedObject).Target = baseObject;
+		}
+
+		return false;
 	}
 
 	private void UpdatePlanetUi() {
@@ -262,7 +285,7 @@ public partial class PlayerController : Node {
 		}
 
 		var shiftDown = Input.IsKeyPressed(Key.Shift);
-		
+
 		var selectedObject = AllSelectable.Find(x => x.InsideSelectionRect(point));
 		if (selectedObject is null) {
 			_selectedObjects.ForEach(x => x.Selected = false);
@@ -287,14 +310,13 @@ public partial class PlayerController : Node {
 					_selectedObjects.ForEach(x => x.Selected = false);
 					_selectedObjects.Clear();
 				}
-			} 
-			
+			}
 		} else {
 			_selectedObjects.ForEach(x => x.Selected = false);
 			selectedObject.Selected = true;
 			_selectedObjects = [selectedObject];
 		}
-		
+
 		UpdateUi();
 	}
 
@@ -496,5 +518,9 @@ public partial class PlayerController : Node {
 				AddChild(harvester);
 			}
 		}
+	}
+
+	public void RemoveUnit(UnitNode2D unitNode2D) {
+		_units.Remove(unitNode2D);
 	}
 }

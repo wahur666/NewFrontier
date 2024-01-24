@@ -15,11 +15,20 @@ public partial class OffensiveUnitNode2D : UnitNode2D, IAttack {
 	[ExportGroup("OffensiveStats")] [Export]
 	public int MaxSupply;
 
-	public int CalculateDamage(IBase target) {
-		throw new NotImplementedException();
+	public IBase Target { get; set; }
+
+	public int CalculateDamage() {
+		return Damage;
 	}
 
-	public void Attack(IBase target) {
-		throw new NotImplementedException();
+	public override void _Process(double delta) {
+		base._Process(delta);
+		if (Target is null) {
+			return;
+		}
+
+		var d = Target.Instance.Position.DistanceTo(Position);
+		GD.Print(d < 200f ? "Pew pew" : $"Distance: {d}");
+		((IAttack)this).Attack();
 	}
 }

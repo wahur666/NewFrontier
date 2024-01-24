@@ -56,9 +56,11 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	[ExportGroup("Stats")] [Export] public int MaxHealth { get; set; }
 
 	[ExportGroup("Stats")] [Export] public int CurrentHealth { get; set; }
+	public Node2D Instance { get => this; }
 
 	public void Destroy() {
-		throw new NotImplementedException();
+		_playerController.RemoveUnit(this);
+		QueueFree();
 	}
 
 	public override void _Ready() {
