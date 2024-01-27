@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://1iilugq5w5px"]
+
+[ext_resource type="Texture2D" uid="uid://b2d3kncqysfbl" path="res://gfx/aseprite/dual-laser.png" id="1_tah74"]
+
+[node name="DualLaster" type="Sprite2D"]
+texture = ExtResource("1_tah74")

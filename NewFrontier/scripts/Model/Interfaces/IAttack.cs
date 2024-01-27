@@ -1,11 +1,15 @@
-﻿using NewFrontier.scripts.Model.Interfaces;
-
-namespace NewFrontier.scripts.Model;
+﻿namespace NewFrontier.scripts.Model.Interfaces;
 
 public interface IAttack {
-	protected int CalculateDamage(IBase target);
 
-	public void Attack(IBase target) {
-		target.TakeDamage(CalculateDamage(target));
+	public float AttackRange { get; set; }
+	
+	public IBase Target { get; set; }
+	
+	protected int CalculateDamage();
+
+	public void Attack() {
+		var free = Target.TakeDamage(CalculateDamage());
+		if (free) Target = null;
 	}
 }
