@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://vbosmb4o44ao"]
+
+[ext_resource type="Script" path="res://scripts/Entities/SingleLaser.cs" id="1_c1737"]
+[ext_resource type="Texture2D" uid="uid://nt71rv0cg4sv" path="res://gfx/aseprite/single-laser.png" id="1_j3u3i"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v033l"]
+radius = 7.0
+
+[node name="SingleLaser" type="Area2D"]
+script = ExtResource("1_c1737")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 1.5708
+texture = ExtResource("1_j3u3i")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_v033l")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+autostart = true

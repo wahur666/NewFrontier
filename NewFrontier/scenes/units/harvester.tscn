@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dihes1xsb3asa"]
+[gd_scene load_steps=7 format=3 uid="uid://dihes1xsb3asa"]
 
 [ext_resource type="Script" path="res://scripts/Entities/Harvester.cs" id="1_ybyge"]
 [ext_resource type="Texture2D" uid="uid://dy1ps31o4d1ck" path="res://gfx/Fabgal.tga" id="2_xgk4u"]
@@ -10,6 +10,9 @@ region = Rect2(0, 64, 64, 64)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jwm4m"]
 radius = 37.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4h8p1"]
+bg_color = Color(0, 0.745098, 0, 1)
 
 [node name="Harvester" type="CharacterBody2D" groups=["harvester", "unit"]]
 texture_filter = 1
@@ -41,3 +44,15 @@ offset_top = -35.0
 offset_right = 20.0
 offset_bottom = 35.0
 script = ExtResource("3_auyxh")
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="Healthbar" type="ProgressBar" parent="Node2D"]
+top_level = true
+offset_left = -52.0
+offset_top = -69.0
+offset_right = 48.0
+offset_bottom = -59.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_4h8p1")
+value = 100.0
+show_percentage = false

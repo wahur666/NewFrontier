@@ -17,6 +17,7 @@ public partial class OffensiveBuildingNode2D : BuildingNode2D, IAttack, ISelecta
 
 	public new bool IsUnitSelectable => true;
 
+	public float AttackRange { get; set; } = 400f;
 	public IBase Target { get; set; }
 
 	public int CalculateDamage() {

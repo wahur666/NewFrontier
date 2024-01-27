@@ -2,6 +2,8 @@
 
 public interface IAttack {
 
+	public float AttackRange { get; set; }
+	
 	public IBase Target { get; set; }
 	
 	protected int CalculateDamage();

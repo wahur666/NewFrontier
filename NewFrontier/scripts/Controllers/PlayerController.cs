@@ -29,6 +29,9 @@ public partial class PlayerController : Node {
 	private UiController _uiController;
 	private List<UnitNode2D> _units = [];
 	private bool _wormholeClick;
+	
+	public Vector2 GlobalMousePosition { get => _camera.GetGlobalMousePosition(); }
+
 
 	public LeftControls LeftControls;
 

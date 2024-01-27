@@ -17,7 +17,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	private bool _moving;
 
 	private Queue<GameNode> _navPoints = new();
-	private PlayerController _playerController;
+	protected PlayerController PlayerController;
 	private bool _rotatedCorrectly;
 	private float _rotationSpeed = 2.0f;
 	private bool _selected;
@@ -29,12 +29,16 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 	private double _travelTime = 1d;
 	private UiController _uiController;
+	private ProgressBar healthbar;
+
 
 	/// <summary>
 	///     Big ship (2x2 tiles) or little ship (1x1 tile)
 	///     https://youtu.be/1AaNj7W4AKo
 	/// </summary>
 	[Export] public bool BigShip;
+
+	private int _currentHealth;
 
 	[Export]
 	public bool Selected {
@@ -47,6 +51,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		}
 	}
 	
+	
 	[Export] public Texture2D Icon { get; set; }
 	public virtual bool IsUnitSelectable => true;
 
@@ -55,22 +60,34 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 	[ExportGroup("Stats")] [Export] public int MaxHealth { get; set; }
 
-	[ExportGroup("Stats")] [Export] public int CurrentHealth { get; set; }
+	[ExportGroup("Stats")]
+	[Export]
+	public int CurrentHealth {
+		get => _currentHealth;
+		set {
+			_currentHealth = value;
+			if (healthbar is not null) {
+				healthbar.Value = CurrentHealth / (float)MaxHealth * 100;
+			}
+		}
+	}
+
 	public Node2D Instance { get => this; }
 
 	public void Destroy() {
-		_playerController.RemoveUnit(this);
+		PlayerController.RemoveUnit(this);
 		QueueFree();
 	}
 
 	public override void _Ready() {
 		SelectionRect = GetNode<SelectionRect>("SelectionRect");
+		healthbar = GetNode<ProgressBar>("Node2D/Healthbar");
 		_targetDestination = Position;
 	}
 
 	public void Init(Vector2 pos, PlayerController playerController, UiController uiController) {
 		Position = GetTargetPosition(pos);
-		_playerController = playerController;
+		PlayerController = playerController;
 		_uiController = uiController;
 		_canvas = _uiController.Canvas;
 		_canvas.Draw += CanvasOnDraw;
@@ -94,6 +111,13 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		var size = SelectionRect.Size;
 		return AreaHelper.InRect(position, Position + (size * new Vector2(.5f, .5f)),
 			Position - (size * new Vector2(.5f, .5f)));
+	}
+
+	public override void _Process(double delta) {
+		base._Process(delta);
+		if (healthbar is not null) {
+			healthbar.GlobalPosition = GlobalPosition + new Vector2(-50, -100);
+		}
 	}
 
 	public override void _PhysicsProcess(double delta) {
