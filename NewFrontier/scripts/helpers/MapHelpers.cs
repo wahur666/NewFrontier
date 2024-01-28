@@ -28,11 +28,21 @@ public class MapHelpers {
 		return (node.Position * DrawSize) + new Vector2(DrawSize / 2f, DrawSize / 2f);
 	}
 
+	/// <summary>
+	/// Get the Grid Point relative to the top left edge
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <returns></returns>
 	public static Vector2I PosToGridPoint(Vector2 pos) {
 		const int halfDrawSize = DrawSize / 2;
 		return new Vector2I((int)((pos.X + halfDrawSize) / DrawSize), (int)((pos.Y + halfDrawSize) / DrawSize));
 	}
 
+	/// <summary>
+	/// Get the Grid point relative to center
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <returns></returns>
 	public static Vector2I PosToGrid(Vector2 pos) {
 		return new Vector2I((int)pos.X / DrawSize, (int)pos.Y / DrawSize);
 	}

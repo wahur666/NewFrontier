@@ -17,6 +17,7 @@ public class GameNode(Vector2 pos) {
 	public bool Occupied;
 	public int PassiveAttribute;
 	public Vector2 Position = pos;
+	public Vector2I PositionI { get => new((int)pos.X, (int)pos.Y); }
 	public int StaticAttribute;
 
 	public GameNode WormholeNode;

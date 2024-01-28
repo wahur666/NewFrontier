@@ -78,6 +78,7 @@ public partial class MapGrid : Node2D {
 				var a = GridLayer[(int)origin.X + i, (int)origin.Y + j];
 				if (a is not null) {
 					a.Blocking = true;
+					GD.Print($"Blocking tile: {a.PositionI}");
 				}
 			}
 		}
