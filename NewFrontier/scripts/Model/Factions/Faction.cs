@@ -56,7 +56,7 @@ public class Faction {
 	public IBuildable CreateBuilding3(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.Building3);
 	}
-	
+
 	public IBuildable CreateRefinery(PlayerController playerController) {
 		return CreateBuilding(playerController, Terran.Refinery);
 	}
@@ -74,24 +74,24 @@ public class Faction {
 	}
 
 	private T CreateUnit<T>(PlayerController playerController, string name, Vector2 position,
-		UiController uiController) where T : UnitNode2D {
+		UiController uiController, MapGrid mapGrid) where T : UnitNode2D {
 		var instance = _scenes[name].Instantiate<T>();
-		instance.Init(position, playerController, uiController);
+		instance.Init(position, playerController, uiController, mapGrid);
 		return instance;
 	}
 
 	public Harvester CreateHarvester(Vector2 position, PlayerController playerController,
-		UiController uiController) {
-		return CreateUnit<Harvester>(playerController, Terran.Harvester, position, uiController);
+		UiController uiController, MapGrid mapGrid) {
+		return CreateUnit<Harvester>(playerController, Terran.Harvester, position, uiController, mapGrid);
 	}
 
 	public Fabricator CreateFabricator(Vector2 position, PlayerController playerController,
-		UiController uiController) {
-		return CreateUnit<Fabricator>(playerController, Terran.Fabricator, position, uiController);
+		UiController uiController, MapGrid mapGrid) {
+		return CreateUnit<Fabricator>(playerController, Terran.Fabricator, position, uiController, mapGrid);
 	}
 
 	public Dreadnought CreateDreadnought(Vector2 position, PlayerController playerController,
-		UiController uiController) {
-		return CreateUnit<Dreadnought>(playerController, Terran.Dreadnought, position, uiController);
+		UiController uiController, MapGrid mapGrid) {
+		return CreateUnit<Dreadnought>(playerController, Terran.Dreadnought, position, uiController, mapGrid);
 	}
 }

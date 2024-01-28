@@ -63,6 +63,23 @@ public class Sector {
 		}
 	}
 
+	public List<GameNode> SectorGameNodes() {
+		var nodes = new List<GameNode>();
+		var radius = _size - 1;
+		var center = new Vector2(_size - 0.5f, _size - 0.5f);
+		var diameter = (_size * 2) - 1;
+		for (var i = 0; i < diameter + 1; i++) {
+			for (var j = 0; j < diameter + 1; j++) {
+				if (AreaHelper.IsVector2InsideCircle(new Vector2(i + 0.5f, j + 0.5f), center, radius + 0.5f)) {
+					var offset = MapHelpers.CalculateOffset(i, j, Index);
+					nodes.Add(_map[offset.X, offset.Y]); 
+				}
+			}
+		}
+
+		return nodes;
+	}
+
 	private void GenerateNeighbours() {
 		var diameter = (_size * 2) - 1;
 		for (var i = 0; i < diameter; i++) {

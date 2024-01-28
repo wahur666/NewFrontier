@@ -32,6 +32,7 @@ public partial class MapGrid : Node2D {
 	public List<Sector> Sectors = new();
 
 	public List<GameNode> WormholeNodes = new();
+	private Timer _redrawTimer;
 
 	public int RealMapSize => MapSize * 2;
 
@@ -54,6 +55,8 @@ public partial class MapGrid : Node2D {
 		Sectors.Add(sector2);
 		_cameraController = GetNode<CameraController>("../Camera2D");
 		_cameraController.Init(this);
+		_redrawTimer = GetNode<Timer>("Timer");
+		_redrawTimer.Timeout += QueueRedraw;
 	}
 
 	public override void _Draw() {
@@ -68,6 +71,17 @@ public partial class MapGrid : Node2D {
 					new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize,
 						MapHelpers.DrawSize),
 					valid ? Color.FromHtml("#FF00001A") : Color.FromHtml("#0000FF"), valid, valid ? -1 : 2);
+				if (GridLayer[i, j].Occupied) {
+					DrawRect(
+						new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize,
+							MapHelpers.DrawSize), Color.FromHtml("#EEF5FF1A"));
+				}
+				
+				if (GridLayer[i, j].PreOccupied) {
+					DrawRect(
+						new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize,
+							MapHelpers.DrawSize), Color.FromHtml("#176B871A"));
+				}
 			}
 		}
 	}
@@ -78,7 +92,7 @@ public partial class MapGrid : Node2D {
 				var a = GridLayer[(int)origin.X + i, (int)origin.Y + j];
 				if (a is not null) {
 					a.Blocking = true;
-					GD.Print($"Blocking tile: {a.PositionI}");
+					// GD.Print($"Blocking tile: {a.PositionI}");
 				}
 			}
 		}

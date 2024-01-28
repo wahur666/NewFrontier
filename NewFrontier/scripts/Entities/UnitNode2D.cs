@@ -31,6 +31,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	private UiController _uiController;
 	private ProgressBar healthbar;
 
+	private List<GameNode> currentNodes;
 
 	/// <summary>
 	///     Big ship (2x2 tiles) or little ship (1x1 tile)
@@ -39,6 +40,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	[Export] public bool BigShip;
 
 	private int _currentHealth;
+	private MapGrid _mapGrid;
 
 	[Export]
 	public bool Selected {
@@ -85,12 +87,20 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		_targetDestination = Position;
 	}
 
-	public void Init(Vector2 pos, PlayerController playerController, UiController uiController) {
+	public void Init(Vector2 pos, PlayerController playerController, UiController uiController, MapGrid mapGrid) {
 		Position = GetTargetPosition(pos);
 		PlayerController = playerController;
 		_uiController = uiController;
 		_canvas = _uiController.Canvas;
 		_canvas.Draw += CanvasOnDraw;
+		_mapGrid = mapGrid;
+		
+		if (BigShip) {
+			currentNodes = [];
+		} else {
+			currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
+			currentNodes.ForEach(x => x.Occupied = true);
+		}
 	}
 
 	private Vector2 GetTargetPosition(Vector2 position) {
@@ -117,6 +127,14 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		base._Process(delta);
 		if (healthbar is not null) {
 			healthbar.GlobalPosition = GlobalPosition + new Vector2(-50, -100);
+		}
+
+		if (BigShip) {
+			
+		} else {
+			currentNodes.ForEach(x => x.Occupied = false);
+			currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
+			currentNodes.ForEach(x => x.Occupied = true);
 		}
 	}
 
@@ -169,11 +187,15 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 			return;
 		}
 
+		if (_navPoints.Count > 0) {
+			_navPoints.ToList().ForEach(x => x.PreOccupied = false);
+		}
+
 		_targetDestination = Position;
 		if (vector2S.Count > 1) {
 			vector2S.RemoveAt(0);
 		}
-
+		
 		_navPoints = new Queue<GameNode>(vector2S);
 	}
 
