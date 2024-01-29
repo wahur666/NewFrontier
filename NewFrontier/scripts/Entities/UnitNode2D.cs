@@ -188,7 +188,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		}
 
 		if (_navPoints.Count > 0) {
-			_navPoints.ToList().ForEach(x => x.PreOccupied = false);
+			_navPoints.ToList()[^1].PreOccupied = false;
 		}
 
 		_targetDestination = Position;

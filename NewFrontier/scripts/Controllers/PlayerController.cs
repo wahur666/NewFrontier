@@ -401,7 +401,7 @@ public partial class PlayerController : Node {
 			}
 
 			List<GameNode> nodes = _mapGrid.GetSector(end.SectorIndex).SectorGameNodes().ToList();
-			nodes.Sort((a, b) => (int)(a.Distance(end) - b.Distance(end)));
+			nodes.Sort((a, b) => a.Distance(end).CompareTo(b.Distance(end)));
 
 			if (unitNode2D.BigShip) {
 				var flag = false;
@@ -436,7 +436,11 @@ public partial class PlayerController : Node {
 				}
 			} else {
 				var flag = false;
-				foreach (var node in nodes.Where(node => node.FreeNode())) {
+				GD.Print(String.Join(", ", nodes.Select(x => x.Position).Take(25).Select(x => x - nodes.Select(x => x.Position).First())));
+				foreach (var node in nodes) {
+					if (!node.FreeNode()) {
+						continue;
+					} 
 					GD.Print($"End: {end.PositionI}, new End: {node.PositionI}");
 					node.PreOccupied = true;
 					end = node;
