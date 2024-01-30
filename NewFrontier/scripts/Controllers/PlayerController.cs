@@ -366,7 +366,7 @@ public partial class PlayerController : Node {
 			return;
 		}
 
-		var unitSectors = units.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition())).ToHashSet();
+		var unitSectors = units.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition(x.GlobalPosition))).ToHashSet();
 		if (mouseEndNode.HasWormhole) {
 			if (unitSectors.Count > 1) {
 				return;
@@ -378,7 +378,7 @@ public partial class PlayerController : Node {
 		}
 
 		units.ForEach(unitNode2D => {
-			var startVector2 = unitNode2D.GridPosition();
+			var startVector2 = unitNode2D.GridPosition(unitNode2D.GlobalPosition);
 			var start = _mapGrid.GridLayer[(int)startVector2.X, (int)startVector2.Y];
 			if (unitNode2D.BigShip) {
 				List<Vector2I> topLeft = [new(-1, -1), new(-1, 0), new(0, -1), new(0, 0)];
@@ -398,6 +398,10 @@ public partial class PlayerController : Node {
 				var otherNode = _mapGrid.GetConnectedWormholeNode(end.WormholeNode);
 				var arr = otherNode.Neighbours.Keys.Where(x => !x.HasWormhole).ToArray();
 				end = arr[random.Next(arr.Length)];
+			}
+
+			if (end == start) {
+				return;
 			}
 
 			List<GameNode> nodes = _mapGrid.GetSector(end.SectorIndex).SectorGameNodes().ToList();
@@ -436,12 +440,12 @@ public partial class PlayerController : Node {
 				}
 			} else {
 				var flag = false;
-				GD.Print(String.Join(", ", nodes.Select(x => x.Position).Take(25).Select(x => x - nodes.Select(x => x.Position).First())));
+				// GD.Print(String.Join(", ", nodes.Select(x => x.Position).Take(25).Select(x => x - nodes.Select(x => x.Position).First())));
 				foreach (var node in nodes) {
 					if (!node.FreeNode()) {
 						continue;
 					} 
-					GD.Print($"End: {end.PositionI}, new End: {node.PositionI}");
+					// GD.Print($"End: {end.PositionI}, new End: {node.PositionI}");
 					node.PreOccupied = true;
 					end = node;
 					flag = true;
