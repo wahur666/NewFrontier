@@ -221,8 +221,6 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 	private void UpdateNotTraveling(double delta) {
 		if (Position.DistanceTo(_targetDestinationPoint) < 5) {
-			GD.Print($"Position: {Position}");
-			GD.Print($"_targetDestination: {_targetDestination}");
 			if (GridPosition(_targetDestination) == GridPosition(Position)) {
 				if (_navPoints.Count > 0) {
 					_moving = true;
@@ -237,6 +235,9 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 					GD.Print("prepare for travelling");
 					_rotatedCorrectly = false;
 				} else {
+					if (_smoothedPoints.Count > 0) {
+						_smoothedPoints = new([_targetDestination]);
+					}
 					StopBody();
 				}
 			}
