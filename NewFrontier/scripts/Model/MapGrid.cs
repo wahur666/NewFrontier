@@ -77,10 +77,10 @@ public partial class MapGrid : Node2D {
 							MapHelpers.DrawSize), Color.FromHtml("#EEF5FF1A"));
 				}
 				
-				if (GridLayer[i, j].PreOccupied) {
+				if (GridLayer[i, j].PreOccupied is not null) {
 					DrawRect(
 						new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize,
-							MapHelpers.DrawSize), Color.FromHtml("#176B871A"));
+							MapHelpers.DrawSize), Color.FromHtml("#176B875A"));
 				}
 			}
 		}
@@ -225,5 +225,15 @@ public partial class MapGrid : Node2D {
 		}
 
 		return nodes;
+	}
+
+	public void ClearUnitPreOccupation(UnitNode2D unitNode2D) {
+		for (var i = 0; i < GridLayer.GetLength(0); i += 1) {
+			for (var j = 0; j < GridLayer.GetLength(1); j += 1) {
+				if (GridLayer[i, j] is not null && GridLayer[i, j].PreOccupied == unitNode2D) {
+					GridLayer[i, j].PreOccupied = null;
+				}
+			}
+		}
 	}
 }

@@ -378,16 +378,12 @@ public partial class PlayerController : Node {
 		}
 
 		units.ForEach(unitNode2D => {
+			
+			_mapGrid.ClearUnitPreOccupation(unitNode2D);
+
+			
 			var startVector2 = unitNode2D.GridPosition(unitNode2D.GlobalPosition);
 			var start = _mapGrid.GridLayer[(int)startVector2.X, (int)startVector2.Y];
-			if (unitNode2D.BigShip) {
-				List<Vector2I> topLeft = [new(-1, -1), new(-1, 0), new(0, -1), new(0, 0)];
-				var nodez = topLeft.Select(x => x + start.PositionI).Select(x => _mapGrid[x.X, x.Y]).ToList();
-				nodez.ForEach(x => x.PreOccupied = false);
-			} else {
-				start.PreOccupied = false;
-			}
-
 			var endVector = unitNode2D.BigShip
 				? MapHelpers.PosToGridPoint(mouseGlobalPosition)
 				: MapHelpers.PosToGrid(mouseGlobalPosition);
@@ -423,7 +419,7 @@ public partial class PlayerController : Node {
 					foreach (var nodez in directions.Select(direction =>
 						         direction.Select(x => x + pos).Select(x => _mapGrid[x.X, x.Y]).ToList())) {
 						if (nodez.All(x => x is not null && x.FreeNode())) {
-							nodez.ForEach(x => x.PreOccupied = true);
+							nodez.ForEach(x => x.PreOccupied = unitNode2D);
 							end = nodez[^1];
 							flag = true;
 						}
@@ -446,7 +442,7 @@ public partial class PlayerController : Node {
 						continue;
 					} 
 					// GD.Print($"End: {end.PositionI}, new End: {node.PositionI}");
-					node.PreOccupied = true;
+					node.PreOccupied = unitNode2D;
 					end = node;
 					flag = true;
 					break;

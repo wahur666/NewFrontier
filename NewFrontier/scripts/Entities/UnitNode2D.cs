@@ -195,11 +195,6 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		if (_travelState is TravelState.Traveling or TravelState.EndTraveling) {
 			return;
 		}
-
-		if (_navPoints.Count > 0) {
-			_navPoints.ToList()[^1].PreOccupied = false;
-		}
-
 		_targetDestination = Position;
 		_targetDestinationPoint = Position;
 		if (vector2S.Count > 1) {
