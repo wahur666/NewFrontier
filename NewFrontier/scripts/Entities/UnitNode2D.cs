@@ -121,9 +121,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		
 		var points = new List<Vector2> { Position, _targetDestination };
 		points.AddRange(_navPoints.Select(x => GetTargetPosition(x.Position)));
-		var z = PathHelper.CalculateSmoothPath(points);
 		DrawPath(points, Colors.Aqua);
-		DrawPath(z, Colors.Red);
 	}
 
 	public bool InsideSelectionRect(Vector2 position) {
