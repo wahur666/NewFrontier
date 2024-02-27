@@ -28,9 +28,11 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 	private double _travelTime = 1d;
 	private UiController _uiController;
-	private ProgressBar healthbar;
+	private ProgressBar _healthBar;
 
-	private List<GameNode> currentNodes;
+	private List<GameNode> _currentNodes;
+	
+	private static readonly Vector2[] FourDirections = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
 
 	/// <summary>
 	///     Big ship (2x2 tiles) or little ship (1x1 tile)
@@ -69,8 +71,8 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		get => _currentHealth;
 		set {
 			_currentHealth = value;
-			if (healthbar is not null) {
-				healthbar.Value = CurrentHealth / (float)MaxHealth * 100;
+			if (_healthBar is not null) {
+				_healthBar.Value = CurrentHealth / (float)MaxHealth * 100;
 			}
 		}
 	}
@@ -84,7 +86,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 	public override void _Ready() {
 		SelectionRect = GetNode<SelectionRect>("SelectionRect");
-		healthbar = GetNode<ProgressBar>("Node2D/Healthbar");
+		_healthBar = GetNode<ProgressBar>("Node2D/Healthbar");
 		_targetDestination = Position;
 		_targetDestinationPoint = Position;
 	}
@@ -98,10 +100,12 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		_mapGrid = mapGrid;
 		
 		if (BigShip) {
-			currentNodes = [];
+			var originPos = MapHelpers.PosToGridPoint(GlobalPosition);
+			_currentNodes = FourDirections.Select(x => x + originPos).Select(x => _mapGrid.GetGameNode(x)).ToList();
+			_currentNodes.ForEach(x => x.Occupied = true);
 		} else {
-			currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
-			currentNodes.ForEach(x => x.Occupied = true);
+			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
+			_currentNodes.ForEach(x => x.Occupied = true);
 		}
 	}
 
@@ -132,17 +136,23 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 	public override void _Process(double delta) {
 		base._Process(delta);
-		if (healthbar is not null) {
-			healthbar.GlobalPosition = GlobalPosition + new Vector2(-50, -100);
+		if (_healthBar is not null) {
+			_healthBar.GlobalPosition = GlobalPosition + new Vector2(-50, -100);
 		}
 
+		UpdateCurrentMapPosition();
+	}
+
+	private void UpdateCurrentMapPosition()
+	{
+		_currentNodes.ForEach(x => x.Occupied = false);
 		if (BigShip) {
-			
+			var originPos = MapHelpers.PosToGridPoint(GlobalPosition);
+			_currentNodes = FourDirections.Select(x => x + originPos).Select(x => _mapGrid.GetGameNode(x)).ToList();
 		} else {
-			currentNodes.ForEach(x => x.Occupied = false);
-			currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
-			currentNodes.ForEach(x => x.Occupied = true);
+			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
 		}
+		_currentNodes.ForEach(x => x.Occupied = true);
 	}
 
 	public override void _PhysicsProcess(double delta) {
@@ -325,6 +335,8 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		if (GlobalPosition.DistanceTo(_targetDestinationPoint) < 5) {
 			var target = _navPoints.Dequeue();
 			_targetDestinationPoint = GetTargetPosition(target.Position);
+			var sectorIndex = MapHelpers.GetSectorIndexFromOffset(MapHelpers.PosToGrid(_targetDestinationPoint));
+			PlayerController.MarkSectorDiscovered(sectorIndex);
 			_currentTravelTime = 0;
 			_travelState = TravelState.Traveling;
 			GD.Print("Travelling");

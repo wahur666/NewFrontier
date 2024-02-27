@@ -588,4 +588,8 @@ public partial class PlayerController : Node {
 	public void RemoveUnit(UnitNode2D unitNode2D) {
 		_units.Remove(unitNode2D);
 	}
+
+	public void MarkSectorDiscovered(byte sectorIndex) {
+		_mapGrid.Sectors[sectorIndex].Discovered = true;
+	}
 }

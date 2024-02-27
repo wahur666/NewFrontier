@@ -16,6 +16,8 @@ public partial class MapGrid : Node2D {
 
 	private int _radius;
 	private PackedScene _wormholeScene;
+	private static Vector2[] fourDirections = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
+
 
 
 	/// <summary>
@@ -48,7 +50,7 @@ public partial class MapGrid : Node2D {
 		Sectors.Add(sector);
 		// TODO: remove manual assignment
 		var sector2 = new Sector(GridLayer, new Vector2I(120, 90), (byte)MapSize, 1) {
-			Discovered = true,
+			Discovered = false,
 			SectorBuildingStatus = SectorBuildingStatus.HasBuilding,
 			EnemyInSector = true
 		};
@@ -193,8 +195,7 @@ public partial class MapGrid : Node2D {
 				gridPos += new Vector2I(0, 1);
 			}
 
-			Vector2[] directions = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
-			var allGirdSpacesFree = directions
+			var allGirdSpacesFree = fourDirections
 				.Select(direction => gridPos + direction)
 				.Select(vector2 => GetGameNode(vector2))
 				.All(node => !node.Occupied && !node.Blocking && node.HasWormhole == wormhole);
@@ -219,9 +220,8 @@ public partial class MapGrid : Node2D {
 		foreach (var wormhole in wormholes) {
 			var pos = wormhole.GameNode.Position;
 			pos = new Vector2(Mathf.Ceil(pos.X), Mathf.Ceil(pos.Y));
-			List<Vector2> directions = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
 
-			nodes.AddRange(directions.Select(direction => direction + pos).Select(vector2 => GetGameNode(vector2)));
+			nodes.AddRange(fourDirections.Select(direction => direction + pos).Select(vector2 => GetGameNode(vector2)));
 		}
 
 		return nodes;
