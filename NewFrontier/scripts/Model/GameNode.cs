@@ -15,11 +15,17 @@ public class GameNode(Vector2 pos) {
 	public bool HasWormhole;
 	public Dictionary<GameNode, float> Neighbours = new();
 	public bool Occupied;
+	public UnitNode2D PreOccupied = null;
 	public int PassiveAttribute;
 	public Vector2 Position = pos;
+	public Vector2I PositionI { get => new((int)pos.X, (int)pos.Y); }
 	public int StaticAttribute;
 
 	public GameNode WormholeNode;
+
+	public bool FreeNode() {
+		return !Blocking && PreOccupied is null && !Occupied && !HasWormhole;
+	}
 
 	public byte SectorIndex => MapHelpers.GetSectorIndexFromOffset(Position);
 

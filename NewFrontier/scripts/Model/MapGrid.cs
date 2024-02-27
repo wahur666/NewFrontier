@@ -16,6 +16,8 @@ public partial class MapGrid : Node2D {
 
 	private int _radius;
 	private PackedScene _wormholeScene;
+	private static Vector2[] fourDirections = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
+
 
 
 	/// <summary>
@@ -32,6 +34,7 @@ public partial class MapGrid : Node2D {
 	public List<Sector> Sectors = new();
 
 	public List<GameNode> WormholeNodes = new();
+	private Timer _redrawTimer;
 
 	public int RealMapSize => MapSize * 2;
 
@@ -47,13 +50,15 @@ public partial class MapGrid : Node2D {
 		Sectors.Add(sector);
 		// TODO: remove manual assignment
 		var sector2 = new Sector(GridLayer, new Vector2I(120, 90), (byte)MapSize, 1) {
-			Discovered = true,
+			Discovered = false,
 			SectorBuildingStatus = SectorBuildingStatus.HasBuilding,
 			EnemyInSector = true
 		};
 		Sectors.Add(sector2);
 		_cameraController = GetNode<CameraController>("../Camera2D");
 		_cameraController.Init(this);
+		_redrawTimer = GetNode<Timer>("Timer");
+		_redrawTimer.Timeout += QueueRedraw;
 	}
 
 	public override void _Draw() {
@@ -68,6 +73,17 @@ public partial class MapGrid : Node2D {
 					new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize,
 						MapHelpers.DrawSize),
 					valid ? Color.FromHtml("#FF00001A") : Color.FromHtml("#0000FF"), valid, valid ? -1 : 2);
+				if (GridLayer[i, j].Occupied) {
+					DrawRect(
+						new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize,
+							MapHelpers.DrawSize), Color.FromHtml("#EEF5FF1A"));
+				}
+				
+				if (GridLayer[i, j].PreOccupied is not null) {
+					DrawRect(
+						new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize,
+							MapHelpers.DrawSize), Color.FromHtml("#176B875A"));
+				}
 			}
 		}
 	}
@@ -78,6 +94,7 @@ public partial class MapGrid : Node2D {
 				var a = GridLayer[(int)origin.X + i, (int)origin.Y + j];
 				if (a is not null) {
 					a.Blocking = true;
+					// GD.Print($"Blocking tile: {a.PositionI}");
 				}
 			}
 		}
@@ -178,8 +195,7 @@ public partial class MapGrid : Node2D {
 				gridPos += new Vector2I(0, 1);
 			}
 
-			Vector2[] directions = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
-			var allGirdSpacesFree = directions
+			var allGirdSpacesFree = fourDirections
 				.Select(direction => gridPos + direction)
 				.Select(vector2 => GetGameNode(vector2))
 				.All(node => !node.Occupied && !node.Blocking && node.HasWormhole == wormhole);
@@ -204,11 +220,20 @@ public partial class MapGrid : Node2D {
 		foreach (var wormhole in wormholes) {
 			var pos = wormhole.GameNode.Position;
 			pos = new Vector2(Mathf.Ceil(pos.X), Mathf.Ceil(pos.Y));
-			List<Vector2> directions = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
 
-			nodes.AddRange(directions.Select(direction => direction + pos).Select(vector2 => GetGameNode(vector2)));
+			nodes.AddRange(fourDirections.Select(direction => direction + pos).Select(vector2 => GetGameNode(vector2)));
 		}
 
 		return nodes;
+	}
+
+	public void ClearUnitPreOccupation(UnitNode2D unitNode2D) {
+		for (var i = 0; i < GridLayer.GetLength(0); i += 1) {
+			for (var j = 0; j < GridLayer.GetLength(1); j += 1) {
+				if (GridLayer[i, j] is not null && GridLayer[i, j].PreOccupied == unitNode2D) {
+					GridLayer[i, j].PreOccupied = null;
+				}
+			}
+		}
 	}
 }

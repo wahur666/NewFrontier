@@ -29,7 +29,7 @@ public partial class PlayerController : Node {
 	private UiController _uiController;
 	private List<UnitNode2D> _units = [];
 	private bool _wormholeClick;
-	
+
 	public Vector2 GlobalMousePosition { get => _camera.GetGlobalMousePosition(); }
 
 
@@ -62,11 +62,11 @@ public partial class PlayerController : Node {
 
 	private void CreateStartingUnits() {
 		_units = [];
-		var harvester = FactionController.Terran.CreateHarvester(new Vector2(10, 10), this, _uiController);
+		var harvester = FactionController.Terran.CreateHarvester(new Vector2(10, 10), this, _uiController, _mapGrid);
 		_units.Add(harvester);
-		var fabricator = FactionController.Terran.CreateFabricator(new Vector2(12, 17), this, _uiController);
+		var fabricator = FactionController.Terran.CreateFabricator(new Vector2(12, 17), this, _uiController, _mapGrid);
 		_units.Add(fabricator);
-		var dreadnought = FactionController.Terran.CreateDreadnought(new Vector2(12, 19), this, _uiController);
+		var dreadnought = FactionController.Terran.CreateDreadnought(new Vector2(12, 19), this, _uiController, _mapGrid);
 		_units.Add(dreadnought);
 		_units.ForEach(e => AddChild(e));
 	}
@@ -366,7 +366,7 @@ public partial class PlayerController : Node {
 			return;
 		}
 
-		var unitSectors = units.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition())).ToHashSet();
+		var unitSectors = units.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition(x.GlobalPosition))).ToHashSet();
 		if (mouseEndNode.HasWormhole) {
 			if (unitSectors.Count > 1) {
 				return;
@@ -378,7 +378,11 @@ public partial class PlayerController : Node {
 		}
 
 		units.ForEach(unitNode2D => {
-			var startVector2 = unitNode2D.GridPosition();
+			
+			_mapGrid.ClearUnitPreOccupation(unitNode2D);
+
+			
+			var startVector2 = unitNode2D.GridPosition(unitNode2D.GlobalPosition);
 			var start = _mapGrid.GridLayer[(int)startVector2.X, (int)startVector2.Y];
 			var endVector = unitNode2D.BigShip
 				? MapHelpers.PosToGridPoint(mouseGlobalPosition)
@@ -390,6 +394,63 @@ public partial class PlayerController : Node {
 				var otherNode = _mapGrid.GetConnectedWormholeNode(end.WormholeNode);
 				var arr = otherNode.Neighbours.Keys.Where(x => !x.HasWormhole).ToArray();
 				end = arr[random.Next(arr.Length)];
+			}
+
+			if (end == start) {
+				return;
+			}
+
+			List<GameNode> nodes = _mapGrid.GetSector(end.SectorIndex).SectorGameNodes().ToList();
+			nodes.Sort((a, b) => a.Distance(end).CompareTo(b.Distance(end)));
+
+			if (unitNode2D.BigShip) {
+				var flag = false;
+
+				foreach (var node in nodes) {
+					var pos = node.PositionI;
+
+					List<List<Vector2I>> directions = [
+						[new(-1, -1), new(-1, 0), new(0, -1), new(0, 0)],
+						[new(-1, 0), new(-1, 1), new(0, 0), new(0, 1)],
+						[new(0, -1), new(0, 0), new(1, -1), new(1, 0)],
+						[new(0, 0), new(0, 1), new(1, 0), new(1, 1)]
+					];
+
+					foreach (var nodez in directions.Select(direction =>
+						         direction.Select(x => x + pos).Select(x => _mapGrid[x.X, x.Y]).ToList())) {
+						if (nodez.All(x => x is not null && x.FreeNode())) {
+							nodez.ForEach(x => x.PreOccupied = unitNode2D);
+							end = nodez[^1];
+							flag = true;
+						}
+
+						if (flag) break;
+					}
+
+					if (flag) break;
+				}
+
+
+				if (!flag) {
+					return;
+				}
+			} else {
+				var flag = false;
+				// GD.Print(String.Join(", ", nodes.Select(x => x.Position).Take(25).Select(x => x - nodes.Select(x => x.Position).First())));
+				foreach (var node in nodes) {
+					if (!node.FreeNode()) {
+						continue;
+					} 
+					// GD.Print($"End: {end.PositionI}, new End: {node.PositionI}");
+					node.PreOccupied = unitNode2D;
+					end = node;
+					flag = true;
+					break;
+				}
+
+				if (!flag) {
+					return;
+				}
 			}
 
 			var path = new List<GameNode>();
@@ -516,7 +577,8 @@ public partial class PlayerController : Node {
 				var harvester =
 					FactionController.Terran.CreateHarvester(
 						MapHelpers.PosToGrid(refinery.BuildLocation.GlobalPosition),
-						this, _uiController);
+						this, _uiController,
+						_mapGrid);
 				this._units.Add(harvester);
 				AddChild(harvester);
 			}
@@ -525,5 +587,9 @@ public partial class PlayerController : Node {
 
 	public void RemoveUnit(UnitNode2D unitNode2D) {
 		_units.Remove(unitNode2D);
+	}
+
+	public void MarkSectorDiscovered(byte sectorIndex) {
+		_mapGrid.Sectors[sectorIndex].Discovered = true;
 	}
 }
