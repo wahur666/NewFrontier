@@ -107,7 +107,8 @@ public partial class PlayerController : Node {
 				_dragging = false;
 				_camera.EnableEdgePanning = true;
 				DrawArea(false);
-				MoveToPoint(_camera.GetGlobalMousePosition());
+				var units = _units.Where(x => x.Selected).ToList();
+				MoveToPoint(units, _camera.GetGlobalMousePosition());
 			}
 		} else if (Input.IsActionJustReleased("LMB")) {
 			_dragEnd = _camera.GetGlobalMousePosition();
@@ -354,15 +355,16 @@ public partial class PlayerController : Node {
 		UpdateUi();
 	}
 
-	private void MoveToPoint(Vector2 mouseGlobalPosition) {
-		var units = _units.Where(x => x.Selected).ToList();
+	private void MoveToPoint(UnitNode2D unit, Vector2 mouseGlobalPosition) => MoveToPoint([unit], mouseGlobalPosition);
+	
+	private void MoveToPoint(List<UnitNode2D> units, Vector2 mouseGlobalPosition) {
 		if (units.Count == 0) {
 			return;
 		}
 
 		var mouseEndVector = MapHelpers.PosToGrid(mouseGlobalPosition);
 		var mouseEndNode = _mapGrid.GridLayer[mouseEndVector.X, mouseEndVector.Y];
-		if (mouseEndNode is null || mouseEndNode.Blocking) {
+		if (mouseEndNode is null) {
 			return;
 		}
 
@@ -377,11 +379,13 @@ public partial class PlayerController : Node {
 			}
 		}
 
-		units.ForEach(unitNode2D => {
+		foreach (var unitNode2D in units) {
+			if (mouseEndNode.PreOccupied is not null && mouseEndNode.PreOccupied == unitNode2D) {
+				continue;
+			}
 			
 			_mapGrid.ClearUnitPreOccupation(unitNode2D);
 
-			
 			var startVector2 = unitNode2D.GridPosition(unitNode2D.GlobalPosition);
 			var start = _mapGrid.GridLayer[(int)startVector2.X, (int)startVector2.Y];
 			var endVector = unitNode2D.BigShip
@@ -396,63 +400,19 @@ public partial class PlayerController : Node {
 				end = arr[random.Next(arr.Length)];
 			}
 
-			if (end == start) {
-				return;
-			}
-
-			List<GameNode> nodes = _mapGrid.GetSector(end.SectorIndex).SectorGameNodes().ToList();
-			nodes.Sort((a, b) => a.Distance(end).CompareTo(b.Distance(end)));
-
-			if (unitNode2D.BigShip) {
-				var flag = false;
-
-				foreach (var node in nodes) {
-					var pos = node.PositionI;
-
-					List<List<Vector2I>> directions = [
-						[new(-1, -1), new(-1, 0), new(0, -1), new(0, 0)],
-						[new(-1, 0), new(-1, 1), new(0, 0), new(0, 1)],
-						[new(0, -1), new(0, 0), new(1, -1), new(1, 0)],
-						[new(0, 0), new(0, 1), new(1, 0), new(1, 1)]
-					];
-
-					foreach (var nodez in directions.Select(direction =>
-						         direction.Select(x => x + pos).Select(x => _mapGrid[x.X, x.Y]).ToList())) {
-						if (nodez.All(x => x is not null && x.FreeNode())) {
-							nodez.ForEach(x => x.PreOccupied = unitNode2D);
-							end = nodez[^1];
-							flag = true;
-						}
-
-						if (flag) break;
-					}
-
-					if (flag) break;
-				}
-
-
-				if (!flag) {
-					return;
-				}
+			List<GameNode> nodes = _mapGrid.FindFreePosition(end, unitNode2D.BigShip);
+			if (nodes.Count > 0) {
+				nodes.ForEach(x => x.PreOccupied = unitNode2D);
+				end = nodes[^1];
 			} else {
-				var flag = false;
-				// GD.Print(String.Join(", ", nodes.Select(x => x.Position).Take(25).Select(x => x - nodes.Select(x => x.Position).First())));
-				foreach (var node in nodes) {
-					if (!node.FreeNode()) {
-						continue;
-					} 
-					// GD.Print($"End: {end.PositionI}, new End: {node.PositionI}");
-					node.PreOccupied = unitNode2D;
-					end = node;
-					flag = true;
-					break;
-				}
-
-				if (!flag) {
-					return;
-				}
+				continue;
 			}
 
+			if (end == start) {
+				continue;
+			}
+			
+			
 			var path = new List<GameNode>();
 			if (start is not null) {
 				path = _mapGrid.Navigation
@@ -461,7 +421,7 @@ public partial class PlayerController : Node {
 			}
 
 			unitNode2D.SetNavigation(path);
-		});
+		}
 	}
 
 	public int AvailableOreStorage() {
@@ -581,6 +541,7 @@ public partial class PlayerController : Node {
 						_mapGrid);
 				this._units.Add(harvester);
 				AddChild(harvester);
+				MoveToPoint(harvester, refinery.BuildLocation.GlobalPosition);
 			}
 		}
 	}

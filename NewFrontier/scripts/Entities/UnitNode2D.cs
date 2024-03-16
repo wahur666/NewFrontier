@@ -102,11 +102,10 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		if (BigShip) {
 			var originPos = MapHelpers.PosToGridPoint(GlobalPosition);
 			_currentNodes = FourDirections.Select(x => x + originPos).Select(x => _mapGrid.GetGameNode(x)).ToList();
-			_currentNodes.ForEach(x => x.Occupied = true);
 		} else {
 			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
-			_currentNodes.ForEach(x => x.Occupied = true);
 		}
+		_currentNodes.ForEach(x => x.Occupied = true);
 	}
 
 	/// <summary>

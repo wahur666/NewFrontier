@@ -236,4 +236,33 @@ public partial class MapGrid : Node2D {
 			}
 		}
 	}
+
+	public List<GameNode> FindFreePosition(GameNode end, bool bigShip) {
+		List<GameNode> nodes = GetSector(end.SectorIndex).SectorGameNodes().ToList();
+		nodes.Sort((a, b) => a.Distance(end).CompareTo(b.Distance(end)));
+
+		if (bigShip) {
+			foreach (var node in nodes) {
+				var pos = node.PositionI;
+				List<List<Vector2I>> directions = [
+					[new(-1, -1), new(-1, 0), new(0, -1), new(0, 0)],
+					[new(-1, 0), new(-1, 1), new(0, 0), new(0, 1)],
+					[new(0, -1), new(0, 0), new(1, -1), new(1, 0)],
+					[new(0, 0), new(0, 1), new(1, 0), new(1, 1)]
+				];
+
+				foreach (var nodez in directions.Select(direction =>
+					         direction.Select(x => x + pos).Select(x => this[x.X, x.Y]).ToList())) {
+					if (nodez.All(x => x is not null && x.FreeNode())) {
+						return nodez;
+					}
+				}
+			}
+		} else {
+			var node = nodes.FirstOrDefault(node => node.FreeNode());
+			return node is not null ? [node] : [];
+		}
+
+		return [];
+	}
 }
