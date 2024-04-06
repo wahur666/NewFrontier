@@ -252,7 +252,7 @@ public partial class MapGrid : Node2D {
 				];
 
 				foreach (var nodez in directions.Select(direction =>
-					         direction.Select(x => x + pos).Select(x => this[x.X, x.Y]).ToList())) {
+							 direction.Select(x => x + pos).Select(x => this[x.X, x.Y]).ToList())) {
 					if (nodez.All(x => x is not null && x.FreeNode())) {
 						return nodez;
 					}

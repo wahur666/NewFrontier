@@ -42,8 +42,6 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 	private int _currentHealth;
 	private MapGrid _mapGrid;
-	private Queue<Vector2> _smoothedPoints = new();
-	private Vector2 _targetDestinationPoint;
 
 	[Export]
 	public bool Selected {
@@ -88,7 +86,6 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		SelectionRect = GetNode<SelectionRect>("SelectionRect");
 		_healthBar = GetNode<ProgressBar>("Node2D/Healthbar");
 		_targetDestination = Position;
-		_targetDestinationPoint = Position;
 	}
 
 	public void Init(Vector2 pos, PlayerController playerController, UiController uiController, MapGrid mapGrid) {
@@ -203,49 +200,32 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 			return;
 		}
 		_targetDestination = Position;
-		_targetDestinationPoint = Position;
 		if (vector2S.Count > 1) {
 			vector2S.RemoveAt(0);
 		}
 		
 		_navPoints = new Queue<GameNode>(vector2S);
-		_smoothedPoints = new Queue<Vector2>(GenerateSmoothNavPoints(_navPoints.ToList()));
 	}
-
-	private List<Vector2> GenerateSmoothNavPoints(List<GameNode> nodes) {
-		return PathHelper.CalculateSmoothPath(nodes.Select(x => GetTargetPosition(x.Position)).ToList());
-	}
-
+	
 	private void StopBody() {
 		_moving = false;
 		Velocity = Vector2.Zero;
 	}
 
 	private void UpdateNotTraveling(double delta) {
-		if (Position.DistanceTo(_targetDestinationPoint) < 5) {
-			if (GridPosition(_targetDestination) == GridPosition(Position)) {
-				if (_navPoints.Count > 0) {
-					_moving = true;
-					var target = _navPoints.Dequeue();
-					_targetDestination = GetTargetPosition(target.Position);
-					if (!target.HasWormhole || _navPoints.Count <= 0 || !_navPoints.Peek().HasWormhole ||
-					    _navPoints.Peek().SectorIndex == target.SectorIndex) {
-						return;
-					}
-
-					_travelState = TravelState.PrepareForTraveling;
-					GD.Print("prepare for travelling");
-					_rotatedCorrectly = false;
-				} else {
-					if (_smoothedPoints.Count > 0) {
-						_smoothedPoints = new([_targetDestination]);
-					}
-					StopBody();
+		if (Position.DistanceTo(_targetDestination) < 5) {
+			if (_navPoints.Count > 0) {
+				_moving = true;
+				var target = _navPoints.Dequeue();
+				_targetDestination = GetTargetPosition(target.Position);
+				if (!target.HasWormhole || _navPoints.Count <= 0 || !_navPoints.Peek().HasWormhole ||
+				    _navPoints.Peek().SectorIndex == target.SectorIndex) {
+					return;
 				}
-			}
 
-			if (_smoothedPoints.Count > 0) {
-				_targetDestinationPoint = _smoothedPoints.Dequeue();
+				_travelState = TravelState.PrepareForTraveling;
+				GD.Print("prepare for travelling");
+				_rotatedCorrectly = false;
 			} else {
 				StopBody();
 			}
@@ -280,7 +260,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 	private void MoveTowardsTarget(double delta, float speed = 1) {
 		// When the rotation aligns with the direction vector, assign the velocity
-		var direction = GlobalPosition.DirectionTo(_targetDestinationPoint);
+		var direction = GlobalPosition.DirectionTo(_targetDestination);
 		Velocity = direction * _speed * (float)delta * 20 * speed;
 		MoveAndSlide();
 	}
@@ -300,7 +280,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	}
 
 	private float CalculateTargetRotation() {
-		var targetRotation = GlobalPosition.AngleToPoint(_targetDestinationPoint);
+		var targetRotation = GlobalPosition.AngleToPoint(_targetDestination);
 		while (targetRotation - Rotation > Mathf.Pi) {
 			targetRotation -= Mathf.Tau;
 		}
@@ -314,7 +294,6 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 	private void UpdatePrepareForTraveling(double delta) {
 		// Wait until everybody is read for jump
-		_smoothedPoints = new Queue<Vector2>(_navPoints.Select(x => GetTargetPosition(x.Position)).ToList());
 		StopBody();
 		if (!_rotatedCorrectly) {
 			var rotationDifference = CalculateRotationDifference();
@@ -326,22 +305,22 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 		_rotatedCorrectly = true;
 		if (_currentTravelTime < _travelTime) {
-			_jumpDistance = GlobalPosition.DistanceTo(_targetDestinationPoint);
+			_jumpDistance = GlobalPosition.DistanceTo(_targetDestination);
 			_currentTravelTime += delta;
 			return;
 		}
 
-		if (GlobalPosition.DistanceTo(_targetDestinationPoint) < 5) {
+		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
 			var target = _navPoints.Dequeue();
-			_targetDestinationPoint = GetTargetPosition(target.Position);
-			var sectorIndex = MapHelpers.GetSectorIndexFromOffset(MapHelpers.PosToGrid(_targetDestinationPoint));
+			_targetDestination = GetTargetPosition(target.Position);
+			var sectorIndex = MapHelpers.GetSectorIndexFromOffset(MapHelpers.PosToGrid(_targetDestination));
 			PlayerController.MarkSectorDiscovered(sectorIndex);
 			_currentTravelTime = 0;
 			_travelState = TravelState.Traveling;
 			GD.Print("Travelling");
 		} else {
 			MoveToTarget(delta, 4);
-			var scale = Mathf.Clamp(GlobalPosition.DistanceTo(_targetDestinationPoint) / _jumpDistance, 0.1f, 1);
+			var scale = Mathf.Clamp(GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance, 0.1f, 1);
 			Scale = new Vector2(scale, scale);
 		}
 	}
@@ -353,11 +332,11 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 			return;
 		}
 
-		GlobalPosition = _targetDestinationPoint;
+		GlobalPosition = _targetDestination;
 		_currentTravelTime = 0;
 		var target = _navPoints.Dequeue();
-		_targetDestinationPoint = GetTargetPosition(target.Position);
-		Rotation = GlobalPosition.AngleToPoint(_targetDestinationPoint) + (Mathf.Pi / 2);
+		_targetDestination = GetTargetPosition(target.Position);
+		Rotation = GlobalPosition.AngleToPoint(_targetDestination) + (Mathf.Pi / 2);
 		_travelState = TravelState.EndTraveling;
 		GD.Print("End traveling");
 	}
@@ -365,18 +344,13 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	private void UpdateEndTraveling(double delta) {
 		Visible = true;
 		// speed up ship until its reached the next position
-		if (GlobalPosition.DistanceTo(_targetDestinationPoint) < 5) {
-			_smoothedPoints = new Queue<Vector2>(GenerateSmoothNavPoints(_navPoints.ToList()));
+		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
 			if (_navPoints.Count > 0) {
 				var target = _navPoints.Dequeue();
 				_targetDestination = GetTargetPosition(target.Position);
 			}
-
-			if (_smoothedPoints.Count > 0) {
-				_targetDestinationPoint = _smoothedPoints.Dequeue();
-			}
 		} else {
-			var scale = Mathf.Clamp(1 - (GlobalPosition.DistanceTo(_targetDestinationPoint) / _jumpDistance), 0.1f, 1);
+			var scale = Mathf.Clamp(1 - (GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance), 0.1f, 1);
 			Scale = new Vector2(scale, scale);
 			MoveToTarget(delta, 4);
 			return;
