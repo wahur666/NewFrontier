@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Godot;
 using NewFrontier.scripts.helpers;
@@ -72,9 +71,10 @@ public class Navigation {
 		if (optimisePath.Count < 2) {
 			return optimisePath;
 		}
+
 		var start = 0;
 		var current = 2;
-		List<GameNode> nPath  = [optimisePath[start]];
+		List<GameNode> nPath = [optimisePath[start]];
 		var i = 0;
 		const int maxIterations = 1000;
 		for (; i < maxIterations && current < optimisePath.Count; i++) {
@@ -86,6 +86,7 @@ public class Navigation {
 				current = start + 2;
 				continue;
 			}
+
 			var pixels = GetPixelsOnLine(p1, p2);
 			if (pixels.All(p => _mapGrid[(int)p.X, (int)p.Y] is not null && !_mapGrid[(int)p.X, (int)p.Y].Blocking)) {
 				current += 1;
@@ -95,6 +96,7 @@ public class Navigation {
 				current = start + 2;
 			}
 		}
+
 		if (i == maxIterations) {
 			GD.Print($"Path optimization failed {optimisePath}");
 			return optimisePath;
@@ -104,42 +106,43 @@ public class Navigation {
 		GD.Print($"Path optimized {optimisePath.Count} -> ${nPath.Count}");
 		return nPath;
 	}
-    
-    private List<Vector2> GetPixelsOnLine(Vector2 p1, Vector2 p2) {
-            List<Vector2> pixels = [];
-    
-            // Calculate differences and directions
-            var dx = Math.Abs(p2.X - p1.X);
-            var dy = Math.Abs(p2.Y - p1.Y);
-            var sx = (p1.X < p2.X) ? 1 : -1;
-            var sy = (p1.Y < p2.Y) ? 1 : -1;
-            var err = dx - dy;
-    
-            // Initial pixel
-            var x = p1.X;
-            var y = p1.Y;
-    
-            while (true) {
-                // Add current pixel
-                pixels.Add(new Vector2(x, y));
-    
-                // Check if end point is reached
-                if (Math.Abs(x - p2.X) < 0.01 && Math.Abs(y - p2.Y) < 0.01) {
-                    break;
-                }
-    
-                // Calculate next pixel
-                var e2 = 2 * err;
-                if (e2 > -dy) {
-                    err -= dy;
-                    x += sx;
-                }
-                if (e2 < dx) {
-                    err += dx;
-                    y += sy;
-                }
-            }
-    
-            return pixels;
-        }
+
+	private List<Vector2> GetPixelsOnLine(Vector2 p1, Vector2 p2) {
+		List<Vector2> pixels = [];
+
+		// Calculate differences and directions
+		var dx = Math.Abs(p2.X - p1.X);
+		var dy = Math.Abs(p2.Y - p1.Y);
+		var sx = (p1.X < p2.X) ? 1 : -1;
+		var sy = (p1.Y < p2.Y) ? 1 : -1;
+		var err = dx - dy;
+
+		// Initial pixel
+		var x = p1.X;
+		var y = p1.Y;
+
+		while (true) {
+			// Add current pixel
+			pixels.Add(new Vector2(x, y));
+
+			// Check if end point is reached
+			if (Math.Abs(x - p2.X) < 0.01 && Math.Abs(y - p2.Y) < 0.01) {
+				break;
+			}
+
+			// Calculate next pixel
+			var e2 = 2 * err;
+			if (e2 > -dy) {
+				err -= dy;
+				x += sx;
+			}
+
+			if (e2 < dx) {
+				err += dx;
+				y += sy;
+			}
+		}
+
+		return pixels;
+	}
 }
