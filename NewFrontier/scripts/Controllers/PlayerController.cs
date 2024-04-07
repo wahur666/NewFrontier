@@ -86,7 +86,7 @@ public partial class PlayerController : Node {
 					BuildBuildingOnWormholes(_buildingShade);
 				}
 			} else if (_uiController.SectorMap.MouseOverSectorMap(_mousePosition)) {
-				CheckSectorMapClick();
+				CheckSectorMapClick(_mousePosition);
 			} else if (_mapGrid.Wormholes.Any(x => x.MousePointerIsOver)) {
 				_wormholeClick = true;
 				SwitchCameraToJoinedWormhole();
@@ -102,6 +102,8 @@ public partial class PlayerController : Node {
 			if (_buildingMode) {
 				FreeBuildingShade();
 				_buildingMode = false;
+			} else if (_uiController.SectorMap.MouseOverSectorMap(_mousePosition)) {
+				NavigateToSectorFromSectorMap(_mousePosition);
 			} else {
 				_dragStart = _camera.GetGlobalMousePosition();
 				_dragStartV = _mousePosition;
@@ -145,6 +147,16 @@ public partial class PlayerController : Node {
 		CurrentSectorObj.CameraPosition = _camera.Position;
 	}
 
+	private void NavigateToSectorFromSectorMap(Vector2 mousePosition) {
+		var units = _units.Where(x => x.Selected).ToList();
+		var sectorPanelGlobalPosition = _uiController.SectorMap.SectorPanel.GlobalPosition;
+		var sector = _mapGrid.Sectors.Where(x => x.Discovered).ToList()
+			.Find(x => Math.Abs((x.SectorPosition + sectorPanelGlobalPosition - mousePosition).Length()) < 10);
+		var endPosition = _mapGrid.FindFreePosition(_mapGrid.GetGameNode(sector.CenterPosition()), false).First().PositionI;
+		var targetGlobalPosition = MapHelpers.GridCoordToGridPointPos(endPosition);
+		MoveToPoint(units, targetGlobalPosition);
+	}
+
 	private bool SetTarget() {
 		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
 			return true;
@@ -182,21 +194,15 @@ public partial class PlayerController : Node {
 		}
 	}
 
-	private void CheckSectorMapClick() {
-		var a = GetViewport().GetMousePosition();
-		var b = _uiController.SectorMap.SectorPanel.GlobalPosition;
-		var z = _mapGrid.Sectors.Where(x => x.Discovered).ToList()
-			.Find(x => Math.Abs((x.SectorPosition + b - a).Length()) < 10);
-		if (z is null) {
-			return;
-		}
-
-		var sector = _mapGrid.GetSector(z.Index);
+	private void CheckSectorMapClick(Vector2 mousePosition) {
+		var sectorPanelGlobalPosition = _uiController.SectorMap.SectorPanel.GlobalPosition;
+		var sector = _mapGrid.Sectors.Where(x => x.Discovered).ToList()
+			.Find(x => Math.Abs((x.SectorPosition + sectorPanelGlobalPosition - mousePosition).Length()) < 10);
 		if (sector is null) {
 			return;
 		}
 
-		CurrentSector = z.Index;
+		CurrentSector = sector.Index;
 		_camera.Position = sector.CameraPosition;
 	}
 
@@ -243,13 +249,14 @@ public partial class PlayerController : Node {
 			    && _pathCache.sector == sector) {
 				return;
 			}
+
 			var start = _mapGrid.GetGameNode(unitNode2D.GridPosition());
 			var end = _mapGrid.GetGameNode(sector.CenterPosition());
 
 			if (start.SectorIndex == end.SectorIndex) {
 				return;
 			}
-			
+
 			var path = _mapGrid.Navigation.FindPath(start, end, disableOptimisation: true).ToList();
 			_pathCache = new(unitNode2D, unitNode2D.GridPosition(), sector, path);
 
@@ -264,6 +271,7 @@ public partial class PlayerController : Node {
 			if (_pathCache.unit is null) {
 				return;
 			}
+
 			_mapGrid.WormholeObjects.ForEach(wo => wo.Highlighted = false);
 			ClearPathCache();
 		}
