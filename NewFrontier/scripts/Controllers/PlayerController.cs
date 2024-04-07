@@ -354,7 +354,6 @@ public partial class PlayerController : Node {
 	private void ClearSelectedObjects() {
 		_selectedObjects.ForEach(x => x.Selected = false);
 		_selectedObjects.Clear();
-		ClearPathCache();
 	}
 
 	private void SelectUnitNearPoint(Vector2 point) {
