@@ -15,7 +15,7 @@ public class Navigation {
 		_mapGrid = mapGrid;
 	}
 
-	public IEnumerable<GameNode> FindPath(GameNode start, GameNode end) {
+	public IEnumerable<GameNode> FindPath(GameNode start, GameNode end, bool disableOptimisation = true) {
 		var frontier = new Heap<PriorityNode>((a, b) => b.Priority.CompareTo(a.Priority));
 		frontier.Add(new PriorityNode(start, 0));
 		var cameFrom = new Dictionary<GameNode, GameNode>();
@@ -47,9 +47,7 @@ public class Navigation {
 		}
 
 		var path = RetracePath(start, end, cameFrom);
-		return path;
-		var optimized = OptimisePath(path);
-		return optimized;
+		return disableOptimisation ? path : OptimisePath(path);
 	}
 
 	private static IEnumerable<GameNode> RetracePath(GameNode start, GameNode end,
