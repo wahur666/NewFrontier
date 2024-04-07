@@ -20,6 +20,7 @@ public partial class GameController : Node {
 		_mapGrid.SetBlocking(new Vector2(12, 12), 4);
 		CreatePlanet(new Vector2(14, 14));
 		_mapGrid.CreateWormholes(new Vector2(19, 19), 0, new Vector2(29, 23), 1);
+		_mapGrid.CreateWormholes(new Vector2(25, 25), 0, new Vector2(25, 25), 2);
 	}
 
 	public override void _Process(double delta) {

@@ -120,4 +120,8 @@ public class Sector {
 			}
 		}
 	}
+
+	public Vector2 CenterPosition() {
+		return MapHelpers.CalculateOffset(new Vector2(_size - 1, _size - 1), Index);
+	}
 }
