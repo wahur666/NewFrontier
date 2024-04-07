@@ -94,7 +94,7 @@ public partial class PlayerController : Node {
 				_dragging = true;
 				_camera.EnableEdgePanning = false;
 			}
-		} else if (Input.IsActionJustPressed("CMD+RMB")) {
+		} else if (Input.IsActionJustPressed("CTRL+RMB")) {
 			if (SetTarget()) {
 				return;
 			}
