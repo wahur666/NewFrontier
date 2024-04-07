@@ -66,7 +66,8 @@ public partial class PlayerController : Node {
 		_units.Add(harvester);
 		var fabricator = FactionController.Terran.CreateFabricator(new Vector2(12, 17), this, _uiController, _mapGrid);
 		_units.Add(fabricator);
-		var dreadnought = FactionController.Terran.CreateDreadnought(new Vector2(12, 19), this, _uiController, _mapGrid);
+		var dreadnought =
+			FactionController.Terran.CreateDreadnought(new Vector2(12, 19), this, _uiController, _mapGrid);
 		_units.Add(dreadnought);
 		_units.ForEach(e => AddChild(e));
 	}
@@ -209,11 +210,71 @@ public partial class PlayerController : Node {
 		panel.Size *= s ? 1 : 0;
 	}
 
+	private record PathCache(
+		UnitNode2D unit,
+		Vector2 position,
+		Sector sector,
+		List<GameNode> path
+	);
+
+	private void ClearPathCache() {
+		_pathCache = new(null, Vector2.Zero, null, []);
+	}
+
+	private PathCache _pathCache = new(null, Vector2.Zero, null, []);
+
 	public override void _Input(InputEvent @event) {
 		if (@event is InputEventMouse mouse) {
 			_mousePosition = mouse.Position;
 			_mousePosGlobal = _camera.GetGlobalMousePosition();
+			CheckSectorMapHoverWithUnit();
 		}
+	}
+
+	private void CheckSectorMapHoverWithUnit() {
+		if (CheckSectorMap(_mousePosition) is { } sector) {
+			if (_selectedObjects.Count <= 0
+			    || _selectedObjects[^1] is not UnitNode2D unitNode2D) {
+				return;
+			}
+
+			if (_pathCache.unit == unitNode2D
+			    && _pathCache.position == unitNode2D.GridPosition()
+			    && _pathCache.sector == sector) {
+				return;
+			}
+			var start = _mapGrid.GetGameNode(unitNode2D.GridPosition());
+			var end = _mapGrid.GetGameNode(sector.CenterPosition());
+
+			if (start.SectorIndex == end.SectorIndex) {
+				return;
+			}
+			
+			var path = _mapGrid.Navigation.FindPath(start, end, disableOptimisation: true).ToList();
+			_pathCache = new(unitNode2D, unitNode2D.GridPosition(), sector, path);
+
+			var wormholes = _pathCache.path.Where(node => node.HasWormhole).ToList();
+			_mapGrid.WormholeObjects.ForEach(wo => wo.Highlighted = false);
+			foreach (var wormholeObject in wormholes
+				         .SelectMany(wormhole => _mapGrid.WormholeObjects
+					         .Where(wormholeObject => wormholeObject.IsConnected(wormhole)))) {
+				wormholeObject.Highlighted = true;
+			}
+		} else {
+			if (_pathCache.unit is null) {
+				return;
+			}
+			_mapGrid.WormholeObjects.ForEach(wo => wo.Highlighted = false);
+			ClearPathCache();
+		}
+	}
+
+	private Sector CheckSectorMap(Vector2 position) {
+		var sectorPanelPosition = _uiController.SectorMap.SectorPanel.GlobalPosition;
+		return _mapGrid.Sectors
+			.Where(x => x.Discovered)
+			.ToList()
+			.Find(sec => Math.Abs((sec.SectorPosition + sectorPanelPosition - position).Length()) < 10);
 	}
 
 
@@ -253,8 +314,7 @@ public partial class PlayerController : Node {
 
 		var units = AllSelectable.Where(unit => AreaHelper.InRect(unit.Pos, start, end)).ToList();
 		if (shiftDown && units.Count == 0) {
-			_selectedObjects.ForEach(x => x.Selected = false);
-			_selectedObjects.Clear();
+			ClearSelectedObjects();
 			UpdateUi();
 			return;
 		}
@@ -283,6 +343,12 @@ public partial class PlayerController : Node {
 		UpdateUi();
 	}
 
+	private void ClearSelectedObjects() {
+		_selectedObjects.ForEach(x => x.Selected = false);
+		_selectedObjects.Clear();
+		ClearPathCache();
+	}
+
 	private void SelectUnitNearPoint(Vector2 point) {
 		if (_uiController.MouseOverGui(_mousePosition) || _buildingMode || _wormholeClick) {
 			return;
@@ -292,8 +358,7 @@ public partial class PlayerController : Node {
 
 		var selectedObject = AllSelectable.Find(x => x.InsideSelectionRect(point));
 		if (selectedObject is null) {
-			_selectedObjects.ForEach(x => x.Selected = false);
-			_selectedObjects.Clear();
+			ClearSelectedObjects();
 			UpdateUi();
 			return;
 		}
@@ -311,8 +376,7 @@ public partial class PlayerController : Node {
 					}
 				} else {
 					// We have a building in the list
-					_selectedObjects.ForEach(x => x.Selected = false);
-					_selectedObjects.Clear();
+					ClearSelectedObjects();
 				}
 			}
 		} else {
@@ -356,7 +420,7 @@ public partial class PlayerController : Node {
 	}
 
 	private void MoveToPoint(UnitNode2D unit, Vector2 mouseGlobalPosition) => MoveToPoint([unit], mouseGlobalPosition);
-	
+
 	private void MoveToPoint(List<UnitNode2D> units, Vector2 mouseGlobalPosition) {
 		if (units.Count == 0) {
 			return;
@@ -368,7 +432,9 @@ public partial class PlayerController : Node {
 			return;
 		}
 
-		var unitSectors = units.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition(x.GlobalPosition))).ToHashSet();
+		var unitSectors = units
+			.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition(x.GlobalPosition)))
+			.ToHashSet();
 		if (mouseEndNode.HasWormhole) {
 			if (unitSectors.Count > 1) {
 				return;
@@ -383,7 +449,7 @@ public partial class PlayerController : Node {
 			if (mouseEndNode.PreOccupied is not null && mouseEndNode.PreOccupied == unitNode2D) {
 				continue;
 			}
-			
+
 			_mapGrid.ClearUnitPreOccupation(unitNode2D);
 
 			var startVector2 = unitNode2D.GridPosition(unitNode2D.GlobalPosition);
@@ -411,8 +477,8 @@ public partial class PlayerController : Node {
 			if (end == start) {
 				continue;
 			}
-			
-			
+
+
 			var path = new List<GameNode>();
 			if (start is not null) {
 				path = _mapGrid.Navigation

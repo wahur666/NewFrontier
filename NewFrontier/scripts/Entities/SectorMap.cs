@@ -83,11 +83,10 @@ public partial class SectorMap : Control {
 			}
 
 			var midPoint = (sector1.SectorPosition + sector2.SectorPosition) / 2;
-			var color = mapGridWormhole.SectorJumpGateStatus switch {
+			var color = mapGridWormhole.Highlighted ? Colors.White : mapGridWormhole.SectorJumpGateStatus switch {
 				SectorJumpGateStatus.AllyJumpGate => Colors.DodgerBlue,
 				SectorJumpGateStatus.EnemyJumpGate => Colors.Red,
 				SectorJumpGateStatus.NoJumpGate => Colors.Gray,
-				SectorJumpGateStatus.Highlighted => Colors.White,
 				_ => Colors.Gray
 			};
 

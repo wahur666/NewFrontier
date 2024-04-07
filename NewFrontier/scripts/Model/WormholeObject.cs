@@ -6,6 +6,7 @@ public class WormholeObject {
 	private readonly GameNode _node1;
 	private readonly GameNode _node2;
 	public SectorJumpGateStatus SectorJumpGateStatus;
+	public bool Highlighted = false;
 
 	public WormholeObject(GameNode node1, GameNode node2) {
 		_node1 = node1;
