@@ -16,8 +16,13 @@ public partial class MapGrid : Node2D {
 
 	private int _radius;
 	private PackedScene _wormholeScene;
-	private static Vector2[] fourDirections = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
 
+	private static readonly Vector2[] FourDirections = [
+		Vector2.Zero,
+		new Vector2(-1, 0),
+		new Vector2(0, -1),
+		-Vector2.One
+	];
 
 
 	/// <summary>
@@ -55,6 +60,12 @@ public partial class MapGrid : Node2D {
 			EnemyInSector = true
 		};
 		Sectors.Add(sector2);
+		var sector3 = new Sector(GridLayer, new Vector2I(140, 64), (byte)MapSize, 2) {
+			Discovered = false,
+			SectorBuildingStatus = SectorBuildingStatus.NoBuilding,
+			EnemyInSector = false
+		};
+		Sectors.Add(sector3);
 		_cameraController = GetNode<CameraController>("../Camera2D");
 		_cameraController.Init(this);
 		_redrawTimer = GetNode<Timer>("Timer");
@@ -78,7 +89,7 @@ public partial class MapGrid : Node2D {
 						new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize,
 							MapHelpers.DrawSize), Color.FromHtml("#EEF5FF1A"));
 				}
-				
+
 				if (GridLayer[i, j].PreOccupied is not null) {
 					DrawRect(
 						new Rect2(i * MapHelpers.DrawSize, j * MapHelpers.DrawSize, MapHelpers.DrawSize,
@@ -195,7 +206,7 @@ public partial class MapGrid : Node2D {
 				gridPos += new Vector2I(0, 1);
 			}
 
-			var allGirdSpacesFree = fourDirections
+			var allGirdSpacesFree = FourDirections
 				.Select(direction => gridPos + direction)
 				.Select(vector2 => GetGameNode(vector2))
 				.All(node => !node.Occupied && !node.Blocking && node.HasWormhole == wormhole);
@@ -221,7 +232,7 @@ public partial class MapGrid : Node2D {
 			var pos = wormhole.GameNode.Position;
 			pos = new Vector2(Mathf.Ceil(pos.X), Mathf.Ceil(pos.Y));
 
-			nodes.AddRange(fourDirections.Select(direction => direction + pos).Select(vector2 => GetGameNode(vector2)));
+			nodes.AddRange(FourDirections.Select(direction => direction + pos).Select(vector2 => GetGameNode(vector2)));
 		}
 
 		return nodes;
@@ -252,7 +263,7 @@ public partial class MapGrid : Node2D {
 				];
 
 				foreach (var nodez in directions.Select(direction =>
-							 direction.Select(x => x + pos).Select(x => this[x.X, x.Y]).ToList())) {
+					         direction.Select(x => x + pos).Select(x => this[x.X, x.Y]).ToList())) {
 					if (nodez.All(x => x is not null && x.FreeNode())) {
 						return nodez;
 					}
