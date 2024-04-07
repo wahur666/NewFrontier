@@ -22,6 +22,9 @@ public partial class Dreadnought : OffensiveUnitNode2D {
 		base._Process(delta);
 
 		if (Target is null) {
+			foreach (var cannon in _cannonList) {
+				cannon.Rotation = 0;
+			}
 			return;
 		}
 

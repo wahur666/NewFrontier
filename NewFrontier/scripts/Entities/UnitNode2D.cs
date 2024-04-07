@@ -236,6 +236,10 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		MoveToTarget(delta);
 	}
 
+	public Vector2 GridPosition() {
+		return BigShip ? MapHelpers.PosToGridPoint(GlobalPosition) : MapHelpers.PosToGrid(GlobalPosition);
+	}
+	
 	public Vector2 GridPosition(Vector2 position) {
 		return BigShip ? MapHelpers.PosToGridPoint(position) : MapHelpers.PosToGrid(position);
 	}
