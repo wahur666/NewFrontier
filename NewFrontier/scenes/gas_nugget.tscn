@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://ddkn0wk5cvsm"]
 
 [ext_resource type="Texture2D" uid="uid://c23vejt5tn0gr" path="res://gfx/gas-nugget.png" id="1_d63vg"]
-[ext_resource type="Script" path="res://scripts/Entities/GasNugget.cs" id="1_miqrq"]
+[ext_resource type="Script" uid="uid://c48o2o4ujulyo" path="res://scripts/Entities/GasNugget.cs" id="1_miqrq"]
 
 [sub_resource type="Animation" id="Animation_2t67g"]
 length = 0.001
@@ -37,8 +37,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_egnpm"]
 _data = {
-"RESET": SubResource("Animation_2t67g"),
-"pulse": SubResource("Animation_2ddbe")
+&"RESET": SubResource("Animation_2t67g"),
+&"pulse": SubResource("Animation_2ddbe")
 }
 
 [node name="GasNugget" type="Node2D" groups=["gas", "resource"]]

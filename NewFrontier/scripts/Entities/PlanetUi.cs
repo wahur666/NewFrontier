@@ -49,7 +49,8 @@ public partial class PlanetUi : Control {
 				_oreContainer.UpdateProgressContainer(planet.PlanetStats.CurrentOre, planet.PlanetStats.MaxOre);
 				_gasContainer.UpdateResourceMiningLabel(refineries.Sum(refinery => refinery.GasMiningSpeed));
 				_gasContainer.UpdateProgressContainer(planet.PlanetStats.CurrentGas, planet.PlanetStats.MaxGas);
-				// UpdateProgressContainer(_crewProgressContainer, planet.PlanetStats.CurrentCrew, planet.PlanetStats.MaxCrew);
+				_crewContainer.UpdateResourceMiningLabel(0);
+				_crewContainer.UpdateProgressContainer(planet.PlanetStats.CurrentCrew, planet.PlanetStats.MaxCrew);
 				break;
 			case PlanetType.Moon:
 				_oreContainer.UpdateResourceMiningLabel(refineries.Sum(refinery => refinery.OreMiningSpeed));

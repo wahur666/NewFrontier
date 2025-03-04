@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cu5fulqucf14o"]
 
-[ext_resource type="Script" path="res://scripts/UI/MainMenu.cs" id="1_w86cs"]
+[ext_resource type="Script" uid="uid://cid5apw025bmb" path="res://scripts/UI/MainMenu.cs" id="1_w86cs"]
 
 [sub_resource type="SystemFont" id="SystemFont_wikoy"]
 

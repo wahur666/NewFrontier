@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://dsq1lag3r7s8o"]
 
-[ext_resource type="Script" path="res://scripts/UI/LeftControls.cs" id="1_gw5hu"]
+[ext_resource type="Script" uid="uid://yquphm1131cg" path="res://scripts/UI/LeftControls.cs" id="1_gw5hu"]
 [ext_resource type="Texture2D" uid="uid://ct0gshyqjllb0" path="res://gfx/Jumpgate1.png" id="2_18l88"]
 [ext_resource type="Texture2D" uid="uid://d0pvu2eii8s32" path="res://gfx/aseprite/ion-canon.png" id="3_jceti"]
 [ext_resource type="Texture2D" uid="uid://btk10rm5wfhl4" path="res://gfx/aseprite/satelite.png" id="4_3ff3u"]

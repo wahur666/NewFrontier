@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://oriq1ywl735f"]
 
-[ext_resource type="Script" path="res://scripts/UI/LoadingScene.cs" id="1_rence"]
+[ext_resource type="Script" uid="uid://cg27i3prr57yp" path="res://scripts/UI/LoadingScene.cs" id="1_rence"]
 
 [sub_resource type="SystemFont" id="SystemFont_m7ti5"]
 

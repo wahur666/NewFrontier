@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://beuvlb6jw45c4"]
 
-[ext_resource type="Script" path="res://scripts/Entities/SectorMap.cs" id="1_rao4o"]
+[ext_resource type="Script" uid="uid://ddsjs1prvcahw" path="res://scripts/Entities/SectorMap.cs" id="1_rao4o"]
 [ext_resource type="Texture2D" uid="uid://bvdunaiynaq4b" path="res://gfx/sectormap_BG_T.tga" id="1_sw8lr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nu6aa"]

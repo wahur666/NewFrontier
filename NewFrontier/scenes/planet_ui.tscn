@@ -1,7 +1,7 @@
 [gd_scene load_steps=16 format=3 uid="uid://bom3mt03okom1"]
 
 [ext_resource type="Texture2D" uid="uid://cuv4lrlxhvw70" path="res://gfx/aseprite/earth-planet-icon.png" id="1_ao7kd"]
-[ext_resource type="Script" path="res://scripts/Entities/PlanetUi.cs" id="1_td7qc"]
+[ext_resource type="Script" uid="uid://db3rrg8ojjtew" path="res://scripts/Entities/PlanetUi.cs" id="1_td7qc"]
 [ext_resource type="Texture2D" uid="uid://c33bsi8puww5j" path="res://gfx/aseprite/ore-icon.png" id="2_yh06t"]
 [ext_resource type="PackedScene" uid="uid://cyr46mb4xlgu1" path="res://scenes/resource_ui_container.tscn" id="3_f2gk1"]
 [ext_resource type="Texture2D" uid="uid://vew1yhlyevh1" path="res://gfx/aseprite/gas-icon.png" id="3_x5lyw"]
