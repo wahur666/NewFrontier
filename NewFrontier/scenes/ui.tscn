@@ -24,13 +24,36 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_6hh77")
 mouse_filter = 2
 
 [node name="SectorMap" parent="." instance=ExtResource("3_kiqkv")]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 0
 
 [node name="Stats" parent="." instance=ExtResource("4_6s5sd")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 1
 
 [node name="PlanetUi" parent="." instance=ExtResource("5_3owu6")]
-offset_left = 306.0
-offset_top = 438.0
-offset_right = 306.0
-offset_bottom = 438.0
-size_flags_vertical = 8
-mouse_filter = 2
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -222.5
+offset_top = -210.0
+offset_right = 222.5
+grow_horizontal = 2
+grow_vertical = 0

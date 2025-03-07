@@ -13,11 +13,16 @@ public partial class SectorMap : Control {
 	public Panel SectorPanel { get; private set; }
 
 	private Vector2 _sectorPanelGlobalPositionBottomLeft;
-	private MapGrid _mapGrid;
+
+	private MapGrid _mapGrid {
+		get;
+		set;
+	}
+
 	private PlayerController _playerController;
 
 	public override void _Ready() {
-		SectorPanel = GetNode<Panel>("Control/SectorPanel");
+		SectorPanel = GetNode<Panel>("Background/CenterContainer/Control/SectorPanel");
 		SectorPanel.Draw += SectorPanelOnDraw;
 		SetupSectorPanelConstants();
 	}
@@ -30,7 +35,7 @@ public partial class SectorMap : Control {
 		_playerController = playerController;
 		_mapGrid = mapGrid;
 	}
-	
+
 	private void SetupSectorPanelConstants() {
 		_sectorPanelGlobalPosition = SectorPanel.GlobalPosition;
 		_sectorPanelSize = SectorPanel.Size;
@@ -40,7 +45,7 @@ public partial class SectorMap : Control {
 	public bool MouseOverSectorMap(Vector2 mousePosition) {
 		return AreaHelper.InRect(mousePosition, _sectorPanelGlobalPosition, _sectorPanelGlobalPositionBottomLeft);
 	}
-	
+
 	private void SectorPanelOnDraw() {
 		var shorterSide = Math.Min(SectorPanel.Size.X, SectorPanel.Size.Y);
 		var center = new Vector2(shorterSide, shorterSide) / 2;
@@ -48,7 +53,7 @@ public partial class SectorMap : Control {
 		SectorPanel.DrawArc(center, radius, 0, Mathf.Tau, 32, Colors.Azure, 2, true);
 		DrawSectors(SectorPanel);
 	}
-	
+
 	private void DrawSectors(CanvasItem sectorPanel) {
 		const int innerPointRadius = 4;
 		const int pointRadius = 7;
@@ -83,12 +88,14 @@ public partial class SectorMap : Control {
 			}
 
 			var midPoint = (sector1.SectorPosition + sector2.SectorPosition) / 2;
-			var color = mapGridWormhole.Highlighted ? Colors.White : mapGridWormhole.SectorJumpGateStatus switch {
-				SectorJumpGateStatus.AllyJumpGate => Colors.DodgerBlue,
-				SectorJumpGateStatus.EnemyJumpGate => Colors.Red,
-				SectorJumpGateStatus.NoJumpGate => Colors.Gray,
-				_ => Colors.Gray
-			};
+			var color = mapGridWormhole.Highlighted
+				? Colors.White
+				: mapGridWormhole.SectorJumpGateStatus switch {
+					SectorJumpGateStatus.AllyJumpGate => Colors.DodgerBlue,
+					SectorJumpGateStatus.EnemyJumpGate => Colors.Red,
+					SectorJumpGateStatus.NoJumpGate => Colors.Gray,
+					_ => Colors.Gray
+				};
 
 			if (sector1.Discovered) {
 				var pos = CalculatePointOnCircle(sector1.SectorPosition, midPoint, pointRadius);
@@ -104,12 +111,11 @@ public partial class SectorMap : Control {
 		sectorPanel.DrawArc(_playerController.CurrentSectorObj.SectorPosition, selectorPointRadius, 0, Mathf.Tau, 32,
 			Colors.White, 2);
 	}
-	
+
 	private static Vector2 CalculatePointOnCircle(Vector2 pos1, Vector2 pos2, float radius) {
 		var angle = pos1.AngleToPoint(pos2);
 		var x = radius * Mathf.Cos(angle);
 		var y = radius * Mathf.Sin(angle);
 		return new Vector2(x, y) + pos1;
 	}
-
 }
