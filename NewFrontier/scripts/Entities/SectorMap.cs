@@ -14,6 +14,8 @@ public partial class SectorMap : Control {
 
 	private Vector2 _sectorPanelGlobalPositionBottomLeft;
 
+	[Export] public bool SectorMapMode = true;
+
 	private MapGrid _mapGrid {
 		get;
 		set;
@@ -25,6 +27,10 @@ public partial class SectorMap : Control {
 		SectorPanel = GetNode<Panel>("Background/CenterContainer/Control/SectorPanel");
 		SectorPanel.Draw += SectorPanelOnDraw;
 		SetupSectorPanelConstants();
+	}
+
+	private void RemoveHandlers() {
+		SectorPanel.Draw -= SectorPanelOnDraw;
 	}
 
 	public override void _Process(double delta) {
@@ -51,7 +57,18 @@ public partial class SectorMap : Control {
 		var center = new Vector2(shorterSide, shorterSide) / 2;
 		var radius = shorterSide / 2;
 		SectorPanel.DrawArc(center, radius, 0, Mathf.Tau, 32, Colors.Azure, 2, true);
-		DrawSectors(SectorPanel);
+		if (SectorMapMode) {
+			DrawSectors(SectorPanel);
+		} else {
+			DrawMinimap(SectorPanel);
+		}
+	}
+
+	private void DrawMinimap(Panel sectorPanel) {
+		if (_mapGrid is null) {
+			RemoveHandlers();
+			throw new Exception($"{GetPath()} was not Initalized!!");
+		}
 	}
 
 	private void DrawSectors(CanvasItem sectorPanel) {
@@ -60,6 +77,11 @@ public partial class SectorMap : Control {
 		const int enemyPointRadius = 10;
 		const int selectorPointRadius = 12;
 
+		if (_mapGrid is null) {
+			RemoveHandlers();
+			throw new Exception($"{GetPath()} was not Initalized!!");
+		}
+		
 		foreach (var sector in _mapGrid.Sectors.Where(sector => sector.Discovered)) {
 			switch (sector.SectorBuildingStatus) {
 				case SectorBuildingStatus.NoBuilding:
