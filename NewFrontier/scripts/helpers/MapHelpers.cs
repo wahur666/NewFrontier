@@ -5,14 +5,41 @@ using NewFrontier.scripts.Model;
 namespace NewFrontier.scripts.helpers;
 
 public class MapHelpers {
-	public const int DrawSize = 80;
+	public const int DrawSize = 160;
 
+	/// <summary>
+	/// Get the grid coordinate relative to the top left edge
+	/// </summary>
+	/// <param name="gridCoordinate"></param>
+	/// <returns></returns>
 	public static Vector2 GridCoordToGridPointPos(Vector2 gridCoordinate) {
 		return gridCoordinate * DrawSize;
 	}
 
+	
+	/// <summary>
+	/// Get the grid coordinate relative to the center
+	/// </summary>
+	/// <param name="gridCoordinate"></param>
+	/// <returns></returns>
 	public static Vector2 GridCoordToGridCenterPos(Vector2 gridCoordinate) {
 		return (gridCoordinate * DrawSize) + new Vector2(DrawSize / 2f, DrawSize / 2f);
+	}
+	
+	public static Vector2 GridCoordinateToTopLeftPos(Vector2 gridCoordinate) {
+		return (gridCoordinate * DrawSize) + new Vector2(DrawSize / 4f, DrawSize / 4f);
+	}
+	
+	public static Vector2 GridCoordinateToBottomRightPos(Vector2 gridCoordinate) {
+		return (gridCoordinate * DrawSize) + new Vector2(DrawSize * 3 / 4f, DrawSize * 3 / 4f);
+	}
+	
+	public static Vector2 GridCoordinateToTopRightPos(Vector2 gridCoordinate) {
+		return (gridCoordinate * DrawSize) + new Vector2(DrawSize * 3 / 4f, DrawSize / 4f);
+	}
+	
+	public static Vector2 GridCoordinateToBottomLeftPos(Vector2 gridCoordinate) {
+		return (gridCoordinate * DrawSize) + new Vector2(DrawSize / 4f, DrawSize * 3 / 4f);
 	}
 
 	public static Vector2 GridCoordToGridRandomPos(Vector2 gridCoordinate) {

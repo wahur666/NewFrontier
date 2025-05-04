@@ -41,7 +41,7 @@ public partial class MapGrid : Node2D {
 	public List<GameNode> WormholeNodes = new();
 	private Timer _redrawTimer;
 
-	public int RealMapSize => MapSize * 2;
+	public int RealMapSize => MapSize;
 
 	public GameNode this[int vector2X, int vector2Y] => GridLayer[vector2X, vector2Y];
 
@@ -116,10 +116,10 @@ public partial class MapGrid : Node2D {
 		var pos1 = MapHelpers.CalculateOffset(position1, sector1);
 		var pos2 = MapHelpers.CalculateOffset(position2, sector2);
 		var w1 = _wormholeScene.Instantiate<Wormhole>();
-		w1.Position = MapHelpers.GridCoordToGridPointPos(pos1);
+		w1.Position = MapHelpers.GridCoordToGridCenterPos(pos1);
 		AddChild(w1);
 		var w2 = _wormholeScene.Instantiate<Wormhole>();
-		w2.Position = MapHelpers.GridCoordToGridPointPos(pos2);
+		w2.Position = MapHelpers.GridCoordToGridCenterPos(pos2);
 		AddChild(w2);
 
 		var w1Node = SetupWormholeGameNode(position1, sector1);
@@ -138,33 +138,9 @@ public partial class MapGrid : Node2D {
 
 	private GameNode SetupWormholeGameNode(Vector2 position, int sector) {
 		var offset = MapHelpers.CalculateOffset(position, sector);
-		var gameNode = new GameNode(offset - new Vector2(0.5f, 0.5f)) {
-			HasWormhole = true
-		};
-
-		ConnectNeighbours(offset, gameNode, -2, -2);
-		ConnectNeighbours(offset, gameNode, -1, -2);
-		ConnectNeighbours(offset, gameNode, 0, -2);
-		ConnectNeighbours(offset, gameNode, 1, -2);
-
-		ConnectNeighbours(offset, gameNode, -2, -1);
-		ConnectNeighbours(offset, gameNode, -2, 0);
-
-		ConnectNeighbours(offset, gameNode, 1, -1);
-		ConnectNeighbours(offset, gameNode, 1, 0);
-
-		ConnectNeighbours(offset, gameNode, -2, 1);
-		ConnectNeighbours(offset, gameNode, -1, 1);
-		ConnectNeighbours(offset, gameNode, 0, 1);
-		ConnectNeighbours(offset, gameNode, 1, 1);
-
+		var gameNode = GridLayer[offset.X, offset.Y];
 		WormholeNodes.Add(gameNode);
-
-		SetWormhole(offset, -1, -1, gameNode);
-		SetWormhole(offset, -1, 0, gameNode);
-		SetWormhole(offset, 0, -1, gameNode);
 		SetWormhole(offset, 0, 0, gameNode);
-
 		return gameNode;
 	}
 
@@ -252,7 +228,7 @@ public partial class MapGrid : Node2D {
 		List<GameNode> nodes = GetSector(end.SectorIndex).SectorGameNodes().ToList();
 		nodes.Sort((a, b) => a.Distance(end).CompareTo(b.Distance(end)));
 
-		if (bigShip) {
+		if (bigShip && false) {
 			foreach (var node in nodes) {
 				var pos = node.PositionI;
 				List<List<Vector2I>> directions = [

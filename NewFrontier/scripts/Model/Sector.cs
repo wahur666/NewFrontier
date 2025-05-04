@@ -34,6 +34,8 @@ public class Sector {
 
 	public bool SupplyLineForSector;
 
+	private List<GameNode> _sectorNodes = new();
+
 	public Sector(GameNode[,] map, Vector2I sectorPosition, byte size, byte index) {
 		_map = map;
 		_size = size;
@@ -50,34 +52,24 @@ public class Sector {
 	}
 
 	private void GenerateMap() {
-		var radius = _size - 1;
-		var center = new Vector2(_size - 0.5f, _size - 0.5f);
-		var diameter = (_size * 2) - 1;
-		for (var i = 0; i < diameter + 1; i++) {
-			for (var j = 0; j < diameter + 1; j++) {
-				if (AreaHelper.IsVector2InsideCircle(new Vector2(i + 0.5f, j + 0.5f), center, radius + 0.5f)) {
-					var offset = MapHelpers.CalculateOffset(i, j, Index);
-					_map[offset.X, offset.Y] = new GameNode(offset);
+		int centerDist = _size / 2;
+		int centerDist2 = centerDist * centerDist;
+		for (int i = 0; i < _size; ++i) {
+			for (int j = 0; j < _size; ++j) {
+				int dist = (i - centerDist) * (i - centerDist) + (j - centerDist) * (j - centerDist);
+				if (dist >= centerDist2) {
+					continue;
 				}
+				var offset = MapHelpers.CalculateOffset(i, j, Index);
+				var gameNode = new GameNode(offset);
+				_map[offset.X, offset.Y] = gameNode;
+				_sectorNodes.Add(gameNode);
 			}
 		}
 	}
 
 	public List<GameNode> SectorGameNodes() {
-		var nodes = new List<GameNode>();
-		var radius = _size - 1;
-		var center = new Vector2(_size - 0.5f, _size - 0.5f);
-		var diameter = (_size * 2) - 1;
-		for (var i = 0; i < diameter + 1; i++) {
-			for (var j = 0; j < diameter + 1; j++) {
-				if (AreaHelper.IsVector2InsideCircle(new Vector2(i + 0.5f, j + 0.5f), center, radius + 0.5f)) {
-					var offset = MapHelpers.CalculateOffset(i, j, Index);
-					nodes.Add(_map[offset.X, offset.Y]); 
-				}
-			}
-		}
-
-		return nodes;
+		return [.._sectorNodes];
 	}
 
 	private void GenerateNeighbours() {

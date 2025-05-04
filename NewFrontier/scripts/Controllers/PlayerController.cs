@@ -461,7 +461,7 @@ public partial class PlayerController : Node {
 
 			var startVector2 = unitNode2D.GridPosition(unitNode2D.GlobalPosition);
 			var start = _mapGrid.GridLayer[(int)startVector2.X, (int)startVector2.Y];
-			var endVector = unitNode2D.BigShip
+			var endVector = unitNode2D.BigShip && false
 				? MapHelpers.PosToGridPoint(mouseGlobalPosition)
 				: MapHelpers.PosToGrid(mouseGlobalPosition);
 			var end = _mapGrid.GridLayer[endVector.X, endVector.Y];

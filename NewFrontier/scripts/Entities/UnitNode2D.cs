@@ -97,8 +97,10 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		_mapGrid = mapGrid;
 		
 		if (BigShip) {
-			var originPos = MapHelpers.PosToGridPoint(GlobalPosition);
-			_currentNodes = FourDirections.Select(x => x + originPos).Select(x => _mapGrid.GetGameNode(x)).ToList();
+			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
+
+			// var originPos = MapHelpers.PosToGridPoint(GlobalPosition);
+			// _currentNodes = FourDirections.Select(x => x + originPos).Select(x => _mapGrid.GetGameNode(x)).ToList();
 		} else {
 			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
 		}
@@ -111,7 +113,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	/// <param name="position"></param>
 	/// <returns></returns>
 	private Vector2 GetTargetPosition(Vector2 position) {
-		return BigShip ? MapHelpers.GridCoordToGridPointPos(position) : MapHelpers.GridCoordToGridCenterPos(position);
+		return BigShip ? MapHelpers.GridCoordToGridCenterPos(position) : MapHelpers.GridCoordinateToTopLeftPos(position);
 	}
 
 	private void CanvasOnDraw() {
@@ -143,8 +145,9 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	{
 		_currentNodes.ForEach(x => x.Occupied = false);
 		if (BigShip) {
-			var originPos = MapHelpers.PosToGridPoint(GlobalPosition);
-			_currentNodes = FourDirections.Select(x => x + originPos).Select(x => _mapGrid.GetGameNode(x)).ToList();
+			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
+			// var originPos = MapHelpers.PosToGridPoint(GlobalPosition);
+			// _currentNodes = FourDirections.Select(x => x + originPos).Select(x => _mapGrid.GetGameNode(x)).ToList();
 		} else {
 			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
 		}
@@ -237,11 +240,11 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	}
 
 	public Vector2 GridPosition() {
-		return BigShip ? MapHelpers.PosToGridPoint(GlobalPosition) : MapHelpers.PosToGrid(GlobalPosition);
+		return BigShip && false ? MapHelpers.PosToGridPoint(GlobalPosition) : MapHelpers.PosToGrid(GlobalPosition);
 	}
 	
 	public Vector2 GridPosition(Vector2 position) {
-		return BigShip ? MapHelpers.PosToGridPoint(position) : MapHelpers.PosToGrid(position);
+		return BigShip && false ? MapHelpers.PosToGridPoint(position) : MapHelpers.PosToGrid(position);
 	}
 
 	private void MoveToTarget(double delta, float speed = 1) {

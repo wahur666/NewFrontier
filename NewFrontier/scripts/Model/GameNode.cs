@@ -6,20 +6,16 @@ using NewFrontier.scripts.helpers;
 namespace NewFrontier.scripts.Model;
 
 public class GameNode(Vector2 pos) {
-	// TODO: remove this in favour of the attributes
-	public int ActiveAttribute;
-
 	// TODO: replace this with a proper enums
 	public bool Blocking;
 	public BuildingNode2D Building;
 	public bool HasWormhole;
-	public Dictionary<GameNode, float> Neighbours = new();
 	public bool Occupied;
+	public Dictionary<GameNode, float> Neighbours = new();
 	public UnitNode2D PreOccupied = null;
-	public int PassiveAttribute;
 	public Vector2 Position = pos;
+	public CornerFlags Corners = 0;
 	public Vector2I PositionI { get => new((int)pos.X, (int)pos.Y); }
-	public int StaticAttribute;
 
 	public GameNode WormholeNode;
 
