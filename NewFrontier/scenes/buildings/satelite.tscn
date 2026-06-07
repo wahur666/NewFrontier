@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://2jwalneqdrnf"]
 
 [ext_resource type="Texture2D" uid="uid://btk10rm5wfhl4" path="res://gfx/aseprite/satelite.png" id="1_7oevl"]
-[ext_resource type="Script" path="res://scripts/Entities/OffensiveBuildingNode2D.cs" id="1_ob5qu"]
-[ext_resource type="Script" path="res://scripts/UI/SelectionRect.cs" id="2_ohcgt"]
+[ext_resource type="Script" uid="uid://b20jw7p6g2nt7" path="res://scripts/Entities/OffensiveBuildingNode2D.cs" id="1_ob5qu"]
+[ext_resource type="Script" uid="uid://bktturvhqjboe" path="res://scripts/UI/SelectionRect.cs" id="2_ohcgt"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_iqkae"]
 atlas = ExtResource("1_7oevl")

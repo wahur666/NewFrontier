@@ -13,7 +13,7 @@ public class Sector {
 	/// <summary>
 	///     Size of the Sector max 128
 	/// </summary>
-	private readonly byte _size;
+	public readonly byte Size;
 
 	public Vector2 CameraPosition;
 	public bool Discovered = true;
@@ -36,7 +36,7 @@ public class Sector {
 
 	public Sector(GameNode[,] map, Vector2I sectorPosition, byte size, byte index) {
 		_map = map;
-		_size = size;
+		Size = size;
 		SectorPosition = sectorPosition;
 		Index = index;
 		CameraPosition =
@@ -50,9 +50,9 @@ public class Sector {
 	}
 
 	private void GenerateMap() {
-		var radius = _size - 1;
-		var center = new Vector2(_size - 0.5f, _size - 0.5f);
-		var diameter = (_size * 2) - 1;
+		var radius = Size - 1;
+		var center = new Vector2(Size - 0.5f, Size - 0.5f);
+		var diameter = (Size * 2) - 1;
 		for (var i = 0; i < diameter + 1; i++) {
 			for (var j = 0; j < diameter + 1; j++) {
 				if (AreaHelper.IsVector2InsideCircle(new Vector2(i + 0.5f, j + 0.5f), center, radius + 0.5f)) {
@@ -65,9 +65,9 @@ public class Sector {
 
 	public List<GameNode> SectorGameNodes() {
 		var nodes = new List<GameNode>();
-		var radius = _size - 1;
-		var center = new Vector2(_size - 0.5f, _size - 0.5f);
-		var diameter = (_size * 2) - 1;
+		var radius = Size - 1;
+		var center = new Vector2(Size - 0.5f, Size - 0.5f);
+		var diameter = (Size * 2) - 1;
 		for (var i = 0; i < diameter + 1; i++) {
 			for (var j = 0; j < diameter + 1; j++) {
 				if (AreaHelper.IsVector2InsideCircle(new Vector2(i + 0.5f, j + 0.5f), center, radius + 0.5f)) {
@@ -81,7 +81,7 @@ public class Sector {
 	}
 
 	private void GenerateNeighbours() {
-		var diameter = (_size * 2) - 1;
+		var diameter = (Size * 2) - 1;
 		for (var i = 0; i < diameter; i++) {
 			for (var j = 0; j < diameter; j++) {
 				var offset = MapHelpers.CalculateOffset(i, j, Index);
@@ -94,7 +94,7 @@ public class Sector {
 	}
 
 	private void SetupNeighbours(GameNode node) {
-		var diameter = (_size * 2) - 1;
+		var diameter = (Size * 2) - 1;
 		List<Vector2> directions = new() {
 			new Vector2(-1, -1),
 			new Vector2(-1, 0),
@@ -122,6 +122,6 @@ public class Sector {
 	}
 
 	public Vector2 CenterPosition() {
-		return MapHelpers.CalculateOffset(new Vector2(_size - 1, _size - 1), Index);
+		return MapHelpers.CalculateOffset(new Vector2(Size - 1, Size - 1), Index);
 	}
 }

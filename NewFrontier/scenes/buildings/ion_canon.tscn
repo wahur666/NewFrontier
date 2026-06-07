@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://b005upsg2hjvr"]
 
-[ext_resource type="Script" path="res://scripts/Entities/OffensiveBuildingNode2D.cs" id="1_68s5m"]
+[ext_resource type="Script" uid="uid://b20jw7p6g2nt7" path="res://scripts/Entities/OffensiveBuildingNode2D.cs" id="1_68s5m"]
 [ext_resource type="Texture2D" uid="uid://trm0bwduq43r" path="res://gfx/aseprite/ion-canon/Layer 1.png" id="1_651h7"]
 [ext_resource type="Texture2D" uid="uid://d0pvu2eii8s32" path="res://gfx/aseprite/ion-canon.png" id="2_kif62"]
 [ext_resource type="Texture2D" uid="uid://cjwxiuho1c3ub" path="res://gfx/aseprite/ion-canon/Layer 2.png" id="2_u3j0l"]
-[ext_resource type="Script" path="res://scripts/UI/SelectionRect.cs" id="4_d26wf"]
+[ext_resource type="Script" uid="uid://bktturvhqjboe" path="res://scripts/UI/SelectionRect.cs" id="4_d26wf"]
 
 [node name="IonCanon" type="Node2D"]
 script = ExtResource("1_68s5m")

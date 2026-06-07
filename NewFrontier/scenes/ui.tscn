@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://puh55sbrd833"]
 
 [ext_resource type="PackedScene" uid="uid://dsq1lag3r7s8o" path="res://scenes/left_controls.tscn" id="1_mnjuk"]
-[ext_resource type="Script" path="res://scripts/Controllers/UiController.cs" id="1_qu86p"]
+[ext_resource type="Script" uid="uid://lv7qnuefdjwq" path="res://scripts/Controllers/UiController.cs" id="1_qu86p"]
 [ext_resource type="PackedScene" uid="uid://beuvlb6jw45c4" path="res://scenes/sector_map.tscn" id="3_kiqkv"]
 [ext_resource type="PackedScene" uid="uid://2k3oc8qc1ib3" path="res://scenes/player_stats.tscn" id="4_6s5sd"]
 [ext_resource type="PackedScene" uid="uid://bom3mt03okom1" path="res://scenes/planet_ui.tscn" id="5_3owu6"]
@@ -24,13 +24,50 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_6hh77")
 mouse_filter = 2
 
 [node name="SectorMap" parent="." instance=ExtResource("3_kiqkv")]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="MiniMap" parent="." instance=ExtResource("3_kiqkv")]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -315.0
+offset_top = -151.0
+offset_right = -165.0
+offset_bottom = -1.0
+grow_horizontal = 0
+grow_vertical = 0
+SectorMapMode = false
 
 [node name="Stats" parent="." instance=ExtResource("4_6s5sd")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 1
 
 [node name="PlanetUi" parent="." instance=ExtResource("5_3owu6")]
-offset_left = 306.0
-offset_top = 438.0
-offset_right = 306.0
-offset_bottom = 438.0
-size_flags_vertical = 8
-mouse_filter = 2
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -222.5
+offset_top = -210.0
+offset_right = 222.5
+grow_horizontal = 2
+grow_vertical = 0

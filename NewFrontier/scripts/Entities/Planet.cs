@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using NewFrontier.scripts.helpers;
 using NewFrontier.scripts.Model;
 using NewFrontier.scripts.Model.Interfaces;
 
@@ -10,6 +11,7 @@ namespace NewFrontier.scripts.Entities;
 public partial class Planet : Node2D {
 	public const int Radius = 150;
 
+	public int SectorIndex { get; private set; }
 	public List<BuildingNode2D> Buildings = [];
 	private readonly bool[] _slotOccupiedStatus = new Boolean[12];
 	private Node _buildingsContainer;
@@ -21,8 +23,13 @@ public partial class Planet : Node2D {
 	private Area2D _selectionArea;
 
 	public bool MouseOver;
+
+	public bool[] OccupiedSlots => _slotOccupiedStatus;
 	
 	[Export] public PlanetType PlanetType = PlanetType.Earth;
+	public Vector2 GridPosition { get; private set; }
+	public Vector2I GridPositionI { get => new((int)GridPosition.X, (int)GridPosition.Y); }
+	
 
 	public override void _Ready() {
 		_buildingsContainer = GetNode<Node>("BuildingsContainer");
@@ -62,5 +69,11 @@ public partial class Planet : Node2D {
 			refinery.StartTimers();
 		}
 		return newBuilding;
+	}
+
+	public void Init(Vector2 gridCoord) {
+		Position = MapHelpers.GridCoordToGridPointPos(gridCoord);
+		GridPosition = gridCoord;
+		SectorIndex = MapHelpers.GetSectorIndexFromOffset(gridCoord);
 	}
 }

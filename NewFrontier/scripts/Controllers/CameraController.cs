@@ -11,7 +11,7 @@ public partial class CameraController : Camera2D {
 
 	[Export] public bool EnableEdgePanning = true;
 	public PlayerController PlayerControllerInstance;
-	[Export] public float Speed = 10.0f;
+	[Export] public float Speed = 20.0f;
 
 	[Export] public float ZoomSpeed = 0.1f;
 
@@ -72,10 +72,10 @@ public partial class CameraController : Camera2D {
 		var oldZoom = Zoom;
 		if (Input.IsActionJustPressed("WheelUp")) {
 			Zoom += new Vector2(ZoomSpeed, ZoomSpeed);
-			Zoom = Zoom.Clamp(new Vector2(0.5f, 0.5f), new Vector2(1.5f, 1.5f));
+			Zoom = Zoom.Clamp(new Vector2(0.5f, 0.5f), new Vector2(1.0f, 1.0f));
 		} else if (Input.IsActionJustPressed("WheelDown")) {
 			Zoom -= new Vector2(ZoomSpeed, ZoomSpeed);
-			Zoom = Zoom.Clamp(new Vector2(0.5f, 0.5f), new Vector2(1.5f, 1.5f));
+			Zoom = Zoom.Clamp(new Vector2(0.5f, 0.5f), new Vector2(1.0f, 1.0f));
 		}
 
 		if (inpx == 0 && inpy == 0 && oldZoom != Zoom) {

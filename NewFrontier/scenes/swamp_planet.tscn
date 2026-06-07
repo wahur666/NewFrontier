@@ -1,8 +1,8 @@
 [gd_scene load_steps=72 format=3 uid="uid://bm7rhlmjs1qir"]
 
-[ext_resource type="Script" path="res://scripts/Entities/Planet.cs" id="1_aiyyj"]
-[ext_resource type="Script" path="res://scripts/Entities/PlanetStats.cs" id="2_ekojl"]
-[ext_resource type="Script" path="res://scripts/Entities/PlanetBuildingScheme.cs" id="2_tlsra"]
+[ext_resource type="Script" uid="uid://ccmu1asxdxy8v" path="res://scripts/Entities/Planet.cs" id="1_aiyyj"]
+[ext_resource type="Script" uid="uid://blcyl442wxxkk" path="res://scripts/Entities/PlanetStats.cs" id="2_ekojl"]
+[ext_resource type="Script" uid="uid://bggqecigud6hj" path="res://scripts/Entities/PlanetBuildingScheme.cs" id="2_tlsra"]
 [ext_resource type="Texture2D" uid="uid://borppao1xbe71" path="res://gfx/swamp-planet.png" id="3_0hebh"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5umc8"]

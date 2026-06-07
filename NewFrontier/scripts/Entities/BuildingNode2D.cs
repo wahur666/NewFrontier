@@ -20,7 +20,7 @@ public partial class BuildingNode2D : Node2D, IBase, ISelectable, IBuildable {
 	public List<string> PreRequisites;
 
 	public Node2D Instance { get => this; }
-	public int[] Place { get; set; } = Array.Empty<int>();
+	public int[] Place { get; set; } = [];
 	public Planet Planet { get; set; }
 	public string BuildingName { get; set; }
 	public Sprite2D BuildingSprite { get; set; }

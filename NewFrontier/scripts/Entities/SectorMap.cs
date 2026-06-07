@@ -13,13 +13,21 @@ public partial class SectorMap : Control {
 	public Panel SectorPanel { get; private set; }
 
 	private Vector2 _sectorPanelGlobalPositionBottomLeft;
+
+	[Export] public bool SectorMapMode = true;
+
 	private MapGrid _mapGrid;
+
 	private PlayerController _playerController;
 
 	public override void _Ready() {
-		SectorPanel = GetNode<Panel>("Control/SectorPanel");
+		SectorPanel = GetNode<Panel>("Background/CenterContainer/Control/SectorPanel");
 		SectorPanel.Draw += SectorPanelOnDraw;
 		SetupSectorPanelConstants();
+	}
+
+	private void RemoveHandlers() {
+		SectorPanel.Draw -= SectorPanelOnDraw;
 	}
 
 	public override void _Process(double delta) {
@@ -30,7 +38,7 @@ public partial class SectorMap : Control {
 		_playerController = playerController;
 		_mapGrid = mapGrid;
 	}
-	
+
 	private void SetupSectorPanelConstants() {
 		_sectorPanelGlobalPosition = SectorPanel.GlobalPosition;
 		_sectorPanelSize = SectorPanel.Size;
@@ -40,20 +48,76 @@ public partial class SectorMap : Control {
 	public bool MouseOverSectorMap(Vector2 mousePosition) {
 		return AreaHelper.InRect(mousePosition, _sectorPanelGlobalPosition, _sectorPanelGlobalPositionBottomLeft);
 	}
-	
+
 	private void SectorPanelOnDraw() {
 		var shorterSide = Math.Min(SectorPanel.Size.X, SectorPanel.Size.Y);
 		var center = new Vector2(shorterSide, shorterSide) / 2;
 		var radius = shorterSide / 2;
 		SectorPanel.DrawArc(center, radius, 0, Mathf.Tau, 32, Colors.Azure, 2, true);
-		DrawSectors(SectorPanel);
+		if (SectorMapMode) {
+			DrawSectors(SectorPanel);
+		} else {
+			DrawMinimap(SectorPanel);
+		}
 	}
-	
+
+	private void DrawMinimap(CanvasItem sectorPanel) {
+		if (_mapGrid is null) {
+			RemoveHandlers();
+			throw new Exception($"{GetPath()} was not Initalized!!");
+		}
+
+		var currentSector = _playerController.CurrentSectorObj;
+		const float sectorDrawSize = 150f;
+		float sectorDrawUnitSize = Mathf.Round(sectorDrawSize / currentSector.Size / 2);
+		foreach (var gameNode in currentSector.SectorGameNodes()) {
+			var sectorPos = MapHelpers.GetPositionFromOffset(gameNode.PositionI);
+			if (gameNode.Occupied) {
+				sectorPanel.DrawRect(
+					new Rect2(sectorPos.col * sectorDrawUnitSize, sectorPos.row * sectorDrawUnitSize,
+						sectorDrawUnitSize, sectorDrawUnitSize),
+					Color.FromHtml("#0000FF")
+				);
+			}
+
+			if (gameNode.HasWormhole) {
+				sectorPanel.DrawRect(
+					new Rect2(sectorPos.col * sectorDrawUnitSize, sectorPos.row * sectorDrawUnitSize,
+						sectorDrawUnitSize, sectorDrawUnitSize),
+					Color.FromHtml("#00bcff")
+				);
+			}
+		}
+
+		foreach (var planet in _mapGrid.Planets.Where(p => p.SectorIndex == currentSector.Index)) {
+			var sectorPos = MapHelpers.GetPositionFromOffset(planet.GridPositionI);
+			var circleCenter = new Vector2(sectorPos.col * sectorDrawUnitSize, sectorPos.row * sectorDrawUnitSize);
+			sectorPanel.DrawCircle(circleCenter, sectorDrawUnitSize * 2, Color.FromHtml("#05df72"), true);
+			for (var index = 0; index < planet.OccupiedSlots.Length; index++) {
+				var slot = planet.OccupiedSlots[index];
+				if (slot) {
+					sectorPanel.DrawArc(circleCenter,
+						sectorDrawUnitSize * 2,
+						index * PlanetBuildingScheme.Slice - PlanetBuildingScheme.SliceOffset,
+						(index + 1) * PlanetBuildingScheme.Slice - PlanetBuildingScheme.SliceOffset,
+						6,
+						Color.FromHtml("#a65f00"),
+						3);
+				}
+			}
+		}
+	}
+
 	private void DrawSectors(CanvasItem sectorPanel) {
 		const int innerPointRadius = 4;
 		const int pointRadius = 7;
 		const int enemyPointRadius = 10;
 		const int selectorPointRadius = 12;
+
+		if (_mapGrid is null) {
+			RemoveHandlers();
+			throw new Exception($"{GetPath()} was not Initalized!!");
+		}
 
 		foreach (var sector in _mapGrid.Sectors.Where(sector => sector.Discovered)) {
 			switch (sector.SectorBuildingStatus) {
@@ -83,12 +147,14 @@ public partial class SectorMap : Control {
 			}
 
 			var midPoint = (sector1.SectorPosition + sector2.SectorPosition) / 2;
-			var color = mapGridWormhole.Highlighted ? Colors.White : mapGridWormhole.SectorJumpGateStatus switch {
-				SectorJumpGateStatus.AllyJumpGate => Colors.DodgerBlue,
-				SectorJumpGateStatus.EnemyJumpGate => Colors.Red,
-				SectorJumpGateStatus.NoJumpGate => Colors.Gray,
-				_ => Colors.Gray
-			};
+			var color = mapGridWormhole.Highlighted
+				? Colors.White
+				: mapGridWormhole.SectorJumpGateStatus switch {
+					SectorJumpGateStatus.AllyJumpGate => Colors.DodgerBlue,
+					SectorJumpGateStatus.EnemyJumpGate => Colors.Red,
+					SectorJumpGateStatus.NoJumpGate => Colors.Gray,
+					_ => Colors.Gray
+				};
 
 			if (sector1.Discovered) {
 				var pos = CalculatePointOnCircle(sector1.SectorPosition, midPoint, pointRadius);
@@ -104,12 +170,11 @@ public partial class SectorMap : Control {
 		sectorPanel.DrawArc(_playerController.CurrentSectorObj.SectorPosition, selectorPointRadius, 0, Mathf.Tau, 32,
 			Colors.White, 2);
 	}
-	
+
 	private static Vector2 CalculatePointOnCircle(Vector2 pos1, Vector2 pos2, float radius) {
 		var angle = pos1.AngleToPoint(pos2);
 		var x = radius * Mathf.Cos(angle);
 		var y = radius * Mathf.Sin(angle);
 		return new Vector2(x, y) + pos1;
 	}
-
 }

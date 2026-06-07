@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://dcsr7eg1ygh8i"]
 
-[ext_resource type="Script" path="res://scripts/UI/SelectionRect.cs" id="1_17xhe"]
-[ext_resource type="Script" path="res://scripts/Entities/Dreadnought.cs" id="1_s4nkp"]
+[ext_resource type="Script" uid="uid://bktturvhqjboe" path="res://scripts/UI/SelectionRect.cs" id="1_17xhe"]
+[ext_resource type="Script" uid="uid://dwkpxe5lli0ae" path="res://scripts/Entities/Dreadnought.cs" id="1_s4nkp"]
 [ext_resource type="Texture2D" uid="uid://m7s68cx42qj4" path="res://gfx/Dread_Fleet.tga" id="2_up0y7"]
 [ext_resource type="PackedScene" uid="uid://vbosmb4o44ao" path="res://scenes/single_laser.tscn" id="2_yygja"]
 [ext_resource type="Texture2D" uid="uid://b0fgpc5r0t1ex" path="res://gfx/aseprite/DreadCanon.png" id="4_wj2op"]

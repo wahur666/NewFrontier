@@ -114,13 +114,17 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		return BigShip ? MapHelpers.GridCoordToGridPointPos(position) : MapHelpers.GridCoordToGridCenterPos(position);
 	}
 
+	private Vector2 GetTargetPosition(GameNode node) {
+		return node.HasWormhole ? MapHelpers.NodeToPos(node) : GetTargetPosition(node.Position);
+	}
+
 	private void CanvasOnDraw() {
 		if (!Selected) {
 			return;
 		}
 		
 		var points = new List<Vector2> { Position, _targetDestination };
-		points.AddRange(_navPoints.Select(x => GetTargetPosition(x.Position)));
+		points.AddRange(_navPoints.Select(GetTargetPosition));
 		DrawPath(points, Colors.Aqua);
 	}
 
@@ -217,7 +221,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 			if (_navPoints.Count > 0) {
 				_moving = true;
 				var target = _navPoints.Dequeue();
-				_targetDestination = GetTargetPosition(target.Position);
+				_targetDestination = GetTargetPosition(target);
 				if (!target.HasWormhole || _navPoints.Count <= 0 || !_navPoints.Peek().HasWormhole ||
 				    _navPoints.Peek().SectorIndex == target.SectorIndex) {
 					return;
@@ -316,7 +320,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
 			var target = _navPoints.Dequeue();
-			_targetDestination = GetTargetPosition(target.Position);
+			_targetDestination = GetTargetPosition(target);
 			var sectorIndex = MapHelpers.GetSectorIndexFromOffset(MapHelpers.PosToGrid(_targetDestination));
 			PlayerController.MarkSectorDiscovered(sectorIndex);
 			_currentTravelTime = 0;
@@ -339,7 +343,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		GlobalPosition = _targetDestination;
 		_currentTravelTime = 0;
 		var target = _navPoints.Dequeue();
-		_targetDestination = GetTargetPosition(target.Position);
+		_targetDestination = GetTargetPosition(target);
 		Rotation = GlobalPosition.AngleToPoint(_targetDestination) + (Mathf.Pi / 2);
 		_travelState = TravelState.EndTraveling;
 		GD.Print("End traveling");
@@ -351,7 +355,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
 			if (_navPoints.Count > 0) {
 				var target = _navPoints.Dequeue();
-				_targetDestination = GetTargetPosition(target.Position);
+				_targetDestination = GetTargetPosition(target);
 			}
 		} else {
 			var scale = Mathf.Clamp(1 - (GlobalPosition.DistanceTo(_targetDestination) / _jumpDistance), 0.1f, 1);

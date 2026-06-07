@@ -257,7 +257,7 @@ public partial class PlayerController : Node {
 				return;
 			}
 
-			var path = _mapGrid.Navigation.FindPath(start, end, disableOptimisation: true).ToList();
+			var path = _mapGrid.Navigation.FindPath(start, end).ToList();
 			_pathCache = new(unitNode2D, unitNode2D.GridPosition(), sector, path);
 
 			var wormholes = _pathCache.path.Where(node => node.HasWormhole).ToList();

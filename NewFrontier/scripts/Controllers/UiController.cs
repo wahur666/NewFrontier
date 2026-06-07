@@ -20,12 +20,14 @@ public partial class UiController : CanvasLayer {
 	public PlayerStatsUi PlayerStatsUi;
 	public PlanetUi PlanetUi;
 	public SectorMap SectorMap;
+	public SectorMap MiniMap;
 
 	public override void _Ready() {
 		leftControls = GetNode<LeftControls>("LeftControls");
 		PlayerStatsUi = GetNode<PlayerStatsUi>("Stats");
 		Canvas = GetNode<Node2D>("../Canvas");
 		SectorMap = GetNode<SectorMap>("SectorMap");
+		MiniMap = GetNode<SectorMap>("MiniMap");
 		SelectionPanel = GetNode<Panel>("SelectionRect");
 		PlanetUi = GetNode<PlanetUi>("PlanetUi");
 		SetupLeftPanelConstants();
@@ -36,6 +38,7 @@ public partial class UiController : CanvasLayer {
 		_playerController = playerController;
 		leftControls.Init(playerController);
 		SectorMap.Init(playerController, mapGrid);
+		MiniMap.Init(playerController, mapGrid);
 		_mapGrid = mapGrid;
 	}
 

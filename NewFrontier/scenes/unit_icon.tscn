@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://0u1iorittqc2"]
 
-[ext_resource type="Script" path="res://scripts/Entities/UnitIcon.cs" id="1_btw4j"]
+[ext_resource type="Script" uid="uid://dmp5yvs80mfn3" path="res://scripts/Entities/UnitIcon.cs" id="1_btw4j"]
 [ext_resource type="Texture2D" uid="uid://pa4jdpbxy2wg" path="res://gfx/aseprite/placeholder.png" id="2_t3106"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r3hev"]

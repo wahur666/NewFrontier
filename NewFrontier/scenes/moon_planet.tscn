@@ -1,8 +1,8 @@
 [gd_scene load_steps=72 format=3 uid="uid://b6vgks5gjc3bk"]
 
-[ext_resource type="Script" path="res://scripts/Entities/Planet.cs" id="1_m56hy"]
-[ext_resource type="Script" path="res://scripts/Entities/PlanetStats.cs" id="2_hym0v"]
-[ext_resource type="Script" path="res://scripts/Entities/PlanetBuildingScheme.cs" id="2_o7flg"]
+[ext_resource type="Script" uid="uid://ccmu1asxdxy8v" path="res://scripts/Entities/Planet.cs" id="1_m56hy"]
+[ext_resource type="Script" uid="uid://blcyl442wxxkk" path="res://scripts/Entities/PlanetStats.cs" id="2_hym0v"]
+[ext_resource type="Script" uid="uid://bggqecigud6hj" path="res://scripts/Entities/PlanetBuildingScheme.cs" id="2_o7flg"]
 [ext_resource type="Texture2D" uid="uid://dqef0of0x6g32" path="res://gfx/moon-planet.png" id="3_fx735"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7h6gr"]
