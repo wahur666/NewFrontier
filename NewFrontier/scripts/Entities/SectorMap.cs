@@ -16,10 +16,7 @@ public partial class SectorMap : Control {
 
 	[Export] public bool SectorMapMode = true;
 
-	private MapGrid _mapGrid {
-		get;
-		set;
-	}
+	private MapGrid _mapGrid;
 
 	private PlayerController _playerController;
 
@@ -64,10 +61,50 @@ public partial class SectorMap : Control {
 		}
 	}
 
-	private void DrawMinimap(Panel sectorPanel) {
+	private void DrawMinimap(CanvasItem sectorPanel) {
 		if (_mapGrid is null) {
 			RemoveHandlers();
 			throw new Exception($"{GetPath()} was not Initalized!!");
+		}
+
+		var currentSector = _playerController.CurrentSectorObj;
+		const float sectorDrawSize = 150f;
+		float sectorDrawUnitSize = Mathf.Round(sectorDrawSize / currentSector.Size / 2);
+		foreach (var gameNode in currentSector.SectorGameNodes()) {
+			var sectorPos = MapHelpers.GetPositionFromOffset(gameNode.PositionI);
+			if (gameNode.Occupied) {
+				sectorPanel.DrawRect(
+					new Rect2(sectorPos.col * sectorDrawUnitSize, sectorPos.row * sectorDrawUnitSize,
+						sectorDrawUnitSize, sectorDrawUnitSize),
+					Color.FromHtml("#0000FF")
+				);
+			}
+
+			if (gameNode.HasWormhole) {
+				sectorPanel.DrawRect(
+					new Rect2(sectorPos.col * sectorDrawUnitSize, sectorPos.row * sectorDrawUnitSize,
+						sectorDrawUnitSize, sectorDrawUnitSize),
+					Color.FromHtml("#00bcff")
+				);
+			}
+		}
+
+		foreach (var planet in _mapGrid.Planets.Where(p => p.SectorIndex == currentSector.Index)) {
+			var sectorPos = MapHelpers.GetPositionFromOffset(planet.GridPositionI);
+			var circleCenter = new Vector2(sectorPos.col * sectorDrawUnitSize, sectorPos.row * sectorDrawUnitSize);
+			sectorPanel.DrawCircle(circleCenter, sectorDrawUnitSize * 2, Color.FromHtml("#05df72"), true);
+			for (var index = 0; index < planet.OccupiedSlots.Length; index++) {
+				var slot = planet.OccupiedSlots[index];
+				if (slot) {
+					sectorPanel.DrawArc(circleCenter,
+						sectorDrawUnitSize * 2,
+						index * PlanetBuildingScheme.Slice - PlanetBuildingScheme.SliceOffset,
+						(index + 1) * PlanetBuildingScheme.Slice - PlanetBuildingScheme.SliceOffset,
+						6,
+						Color.FromHtml("#a65f00"),
+						3);
+				}
+			}
 		}
 	}
 
@@ -81,7 +118,7 @@ public partial class SectorMap : Control {
 			RemoveHandlers();
 			throw new Exception($"{GetPath()} was not Initalized!!");
 		}
-		
+
 		foreach (var sector in _mapGrid.Sectors.Where(sector => sector.Discovered)) {
 			switch (sector.SectorBuildingStatus) {
 				case SectorBuildingStatus.NoBuilding:

@@ -86,6 +86,15 @@ public class MapHelpers {
 		return (byte)index;
 	}
 
+	public static (int col, int row, int index) GetPositionFromOffset(Vector2I vector2) {
+		return GetPositionFromOffset(vector2.X, vector2.Y);
+	}
+
+	public static (int col, int row, int index) GetPositionFromOffset(int c, int r) {
+		GetPositionFromOffset(c, r, out var outCol, out var outRow, out var outIndex);
+		return (outCol, outRow, outIndex);
+	}
+	
 	public static void GetPositionFromOffset(int col, int row, out int col2, out int row2, out int index) {
 		const int chunkSize = 128;
 		const int colCount = 4;

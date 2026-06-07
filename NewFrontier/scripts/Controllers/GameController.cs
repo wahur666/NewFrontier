@@ -17,7 +17,6 @@ public partial class GameController : Node {
 		var player = _playerControllerScene.Instantiate();
 		AddChild(player);
 		_mapGrid = GetNode<MapGrid>("../MapGrid");
-		_mapGrid.SetBlocking(new Vector2(12, 12), 4);
 		CreatePlanet(new Vector2(14, 14));
 		_mapGrid.CreateWormholes(new Vector2(19, 19), 0, new Vector2(29, 23), 1);
 		_mapGrid.CreateWormholes(new Vector2(25, 25), 0, new Vector2(25, 25), 2);
@@ -27,8 +26,9 @@ public partial class GameController : Node {
 	}
 
 	private void CreatePlanet(Vector2 gridCoord) {
+		_mapGrid.SetBlocking(gridCoord - new Vector2(2, 2), 4);
 		var planet = _planetScene.Instantiate<Planet>();
-		planet.Position = MapHelpers.GridCoordToGridPointPos(gridCoord);
+		planet.Init(gridCoord);
 		AddChild(planet);
 		_mapGrid.Planets.Add(planet);
 	}
