@@ -7,10 +7,20 @@ namespace NewFrontier.scripts.helpers;
 public class MapHelpers {
 	public const int DrawSize = 80;
 
+	/// <summary>
+	/// Get the grid coordinate relative to the top left edge
+	/// </summary>
+	/// <param name="gridCoordinate"></param>
+	/// <returns></returns>
 	public static Vector2 GridCoordToGridPointPos(Vector2 gridCoordinate) {
 		return gridCoordinate * DrawSize;
 	}
 
+	/// <summary>
+	/// Get the grid coordinate relative to the center
+	/// </summary>
+	/// <param name="gridCoordinate"></param>
+	/// <returns></returns>
 	public static Vector2 GridCoordToGridCenterPos(Vector2 gridCoordinate) {
 		return (gridCoordinate * DrawSize) + new Vector2(DrawSize / 2f, DrawSize / 2f);
 	}

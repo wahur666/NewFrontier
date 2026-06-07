@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Godot;
 using NewFrontier.scripts.Model;
@@ -37,6 +38,7 @@ public partial class PlanetUi : Control {
 			PlanetType.Moon => "Moon",
 			PlanetType.GasGiant => "Gas Giant",
 			PlanetType.Swamp => "Swamp Planet",
+			_ => throw new ArgumentOutOfRangeException()
 		};
 		_oreContainer.UpdateResourceLabel(planet.PlanetStats.CurrentOre, planet.PlanetStats.MaxOre);
 		_gasContainer.UpdateResourceLabel(planet.PlanetStats.CurrentGas, planet.PlanetStats.MaxGas);
