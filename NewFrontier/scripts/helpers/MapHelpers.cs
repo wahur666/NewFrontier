@@ -81,37 +81,23 @@ public class MapHelpers {
 		return GetSectorIndexFromOffset((int)pos.X, (int)pos.Y);
 	}
 
+	public readonly record struct ChunkPosition(int Col, int Row, int Index);
+
 	private static byte GetSectorIndexFromOffset(int col, int row) {
-		GetPositionFromOffset(col, row, out _, out _, out var index);
-		return (byte)index;
+		return (byte)GetPositionFromOffset(col, row).Index;
 	}
 
-	public static (int col, int row, int index) GetPositionFromOffset(Vector2I vector2) {
+	public static ChunkPosition GetPositionFromOffset(Vector2I vector2) {
 		return GetPositionFromOffset(vector2.X, vector2.Y);
 	}
 
-	public static (int col, int row, int index) GetPositionFromOffset(int c, int r) {
-		GetPositionFromOffset(c, r, out var outCol, out var outRow, out var outIndex);
-		return (outCol, outRow, outIndex);
-	}
-	
-	public static void GetPositionFromOffset(int col, int row, out int col2, out int row2, out int index) {
+	public static ChunkPosition GetPositionFromOffset(int col, int row) {
 		const int chunkSize = 128;
-		const int colCount = 4;
-
-		var ocol = col % chunkSize;
-		var orow = row % chunkSize;
-
-		var xOffset = col - ocol;
-		var yOffset = row - orow;
-
-		var colIndex = xOffset / chunkSize;
-		var rowIndex = yOffset / chunkSize;
-
-		// Calculate the final index
-		index = (rowIndex * colCount) + colIndex;
-
-		row2 = orow;
-		col2 = ocol;
+		const int chunksPerRow = 4;
+		return new ChunkPosition(
+			Col: col % chunkSize,
+			Row: row % chunkSize,
+			Index: row / chunkSize * chunksPerRow + col / chunkSize
+		);
 	}
 }

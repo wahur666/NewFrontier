@@ -74,7 +74,7 @@ public partial class SectorMap : Control {
 			var sectorPos = MapHelpers.GetPositionFromOffset(gameNode.PositionI);
 			if (gameNode.Occupied) {
 				sectorPanel.DrawRect(
-					new Rect2(sectorPos.col * sectorDrawUnitSize, sectorPos.row * sectorDrawUnitSize,
+					new Rect2(sectorPos.Col * sectorDrawUnitSize, sectorPos.Row * sectorDrawUnitSize,
 						sectorDrawUnitSize, sectorDrawUnitSize),
 					Color.FromHtml("#0000FF")
 				);
@@ -82,7 +82,7 @@ public partial class SectorMap : Control {
 
 			if (gameNode.HasWormhole) {
 				sectorPanel.DrawRect(
-					new Rect2(sectorPos.col * sectorDrawUnitSize, sectorPos.row * sectorDrawUnitSize,
+					new Rect2(sectorPos.Col * sectorDrawUnitSize, sectorPos.Row * sectorDrawUnitSize,
 						sectorDrawUnitSize, sectorDrawUnitSize),
 					Color.FromHtml("#00bcff")
 				);
@@ -91,7 +91,7 @@ public partial class SectorMap : Control {
 
 		foreach (var planet in _mapGrid.Planets.Where(p => p.SectorIndex == currentSector.Index)) {
 			var sectorPos = MapHelpers.GetPositionFromOffset(planet.GridPositionI);
-			var circleCenter = new Vector2(sectorPos.col * sectorDrawUnitSize, sectorPos.row * sectorDrawUnitSize);
+			var circleCenter = new Vector2(sectorPos.Col * sectorDrawUnitSize, sectorPos.Row * sectorDrawUnitSize);
 			sectorPanel.DrawCircle(circleCenter, sectorDrawUnitSize * 2, Color.FromHtml("#05df72"), true);
 			for (var index = 0; index < planet.OccupiedSlots.Length; index++) {
 				var slot = planet.OccupiedSlots[index];
