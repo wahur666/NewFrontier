@@ -97,10 +97,10 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		_mapGrid = mapGrid;
 		
 		if (BigShip) {
-			var originPos = MapHelpers.PosToGridPoint(GlobalPosition);
+			var originPos = MapHelpers.WorldPointToNearestGridLine(GlobalPosition);
 			_currentNodes = FourDirections.Select(x => x + originPos).Select(x => _mapGrid.GetGameNode(x)).ToList();
 		} else {
-			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
+			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.WorldPointToGridCell(GlobalPosition))];
 		}
 		_currentNodes.ForEach(x => x.Occupied = true);
 	}
@@ -111,11 +111,11 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	/// <param name="position"></param>
 	/// <returns></returns>
 	private Vector2 GetTargetPosition(Vector2 position) {
-		return BigShip ? MapHelpers.GridCoordToGridPointPos(position) : MapHelpers.GridCoordToGridCenterPos(position);
+		return BigShip ? MapHelpers.GridLineToWorldPoint(position) : MapHelpers.GridCellToWorldCenter(position);
 	}
 
 	private Vector2 GetTargetPosition(GameNode node) {
-		return node.HasWormhole ? MapHelpers.NodeToPos(node) : GetTargetPosition(node.Position);
+		return node.HasWormhole ? MapHelpers.GridCellToWorldCenter(node.Position) : GetTargetPosition(node.Position);
 	}
 
 	private void CanvasOnDraw() {
@@ -147,10 +147,10 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	{
 		_currentNodes.ForEach(x => x.Occupied = false);
 		if (BigShip) {
-			var originPos = MapHelpers.PosToGridPoint(GlobalPosition);
+			var originPos = MapHelpers.WorldPointToNearestGridLine(GlobalPosition);
 			_currentNodes = FourDirections.Select(x => x + originPos).Select(x => _mapGrid.GetGameNode(x)).ToList();
 		} else {
-			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.PosToGrid(GlobalPosition))];
+			_currentNodes = [_mapGrid.GetGameNode(MapHelpers.WorldPointToGridCell(GlobalPosition))];
 		}
 		_currentNodes.ForEach(x => x.Occupied = true);
 	}
@@ -241,11 +241,11 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	}
 
 	public Vector2 GridPosition() {
-		return BigShip ? MapHelpers.PosToGridPoint(GlobalPosition) : MapHelpers.PosToGrid(GlobalPosition);
+		return BigShip ? MapHelpers.WorldPointToNearestGridLine(GlobalPosition) : MapHelpers.WorldPointToGridCell(GlobalPosition);
 	}
 	
 	public Vector2 GridPosition(Vector2 position) {
-		return BigShip ? MapHelpers.PosToGridPoint(position) : MapHelpers.PosToGrid(position);
+		return BigShip ? MapHelpers.WorldPointToNearestGridLine(position) : MapHelpers.WorldPointToGridCell(position);
 	}
 
 	private void MoveToTarget(double delta, float speed = 1) {
@@ -321,7 +321,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 		if (GlobalPosition.DistanceTo(_targetDestination) < 5) {
 			var target = _navPoints.Dequeue();
 			_targetDestination = GetTargetPosition(target);
-			var sectorIndex = MapHelpers.GetSectorIndexFromOffset(MapHelpers.PosToGrid(_targetDestination));
+			var sectorIndex = MapHelpers.GlobalGridToSectorIndex(MapHelpers.WorldPointToGridCell(_targetDestination));
 			PlayerController.MarkSectorDiscovered(sectorIndex);
 			_currentTravelTime = 0;
 			_travelState = TravelState.Traveling;

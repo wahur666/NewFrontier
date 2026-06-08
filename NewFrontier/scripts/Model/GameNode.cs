@@ -22,7 +22,7 @@ public class GameNode(Vector2 pos) {
 		return !Blocking && PreOccupied is null && !Occupied && !HasWormhole;
 	}
 
-	public byte SectorIndex => MapHelpers.GetSectorIndexFromOffset(Position);
+	public byte SectorIndex => MapHelpers.GlobalGridToSectorIndex(Position);
 
 	public bool Equals(GameNode node) {
 		return Position.Equals(node.Position);
@@ -54,7 +54,7 @@ public class GameNode(Vector2 pos) {
 	public void SetBuilding(BuildingNode2D buildingNode2D, bool attach) {
 		Building = buildingNode2D;
 		if (attach) {
-			buildingNode2D.Position = MapHelpers.GridCoordToGridCenterPos(Position);
+			buildingNode2D.Position = MapHelpers.GridCellToWorldCenter(Position);
 		}
 	}
 }

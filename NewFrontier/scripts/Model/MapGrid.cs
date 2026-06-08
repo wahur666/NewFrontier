@@ -113,13 +113,13 @@ public partial class MapGrid : Node2D {
 
 
 	public void CreateWormholes(Vector2 position1, int sector1, Vector2 position2, int sector2) {
-		var pos1 = MapHelpers.CalculateOffset(position1, sector1);
-		var pos2 = MapHelpers.CalculateOffset(position2, sector2);
+		var pos1 = MapHelpers.SectorLocalGridToGlobalGrid(position1, sector1);
+		var pos2 = MapHelpers.SectorLocalGridToGlobalGrid(position2, sector2);
 		var w1 = _wormholeScene.Instantiate<Wormhole>();
-		w1.Position = MapHelpers.GridCoordToGridPointPos(pos1);
+		w1.Position = MapHelpers.GridLineToWorldPoint(pos1);
 		AddChild(w1);
 		var w2 = _wormholeScene.Instantiate<Wormhole>();
-		w2.Position = MapHelpers.GridCoordToGridPointPos(pos2);
+		w2.Position = MapHelpers.GridLineToWorldPoint(pos2);
 		AddChild(w2);
 
 		var w1Node = SetupWormholeGameNode(position1, sector1);
@@ -137,7 +137,7 @@ public partial class MapGrid : Node2D {
 	}
 
 	private GameNode SetupWormholeGameNode(Vector2 position, int sector) {
-		var offset = MapHelpers.CalculateOffset(position, sector);
+		var offset = MapHelpers.SectorLocalGridToGlobalGrid(position, sector);
 		var gameNode = new GameNode(offset - new Vector2(0.5f, 0.5f)) {
 			HasWormhole = true
 		};
@@ -182,7 +182,7 @@ public partial class MapGrid : Node2D {
 	}
 
 	public GameNode GetGameNode(Vector2 positon, int sector) {
-		var offset = MapHelpers.CalculateOffset(positon, sector);
+		var offset = MapHelpers.SectorLocalGridToGlobalGrid(positon, sector);
 		return GridLayer[offset.X, offset.Y];
 	}
 
@@ -191,7 +191,7 @@ public partial class MapGrid : Node2D {
 	}
 
 	public Vector2? FreeSpace(Vector2 mousePos, int wide, bool wormhole = false) {
-		var gridPos = MapHelpers.PosToGrid(mousePos);
+		var gridPos = MapHelpers.WorldPointToGridCell(mousePos);
 		if (wide == 1) {
 			var node = GetGameNode(gridPos);
 			return !node.Occupied && !node.Blocking && !node.HasWormhole ? gridPos : null;

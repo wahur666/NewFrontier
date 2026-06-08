@@ -34,11 +34,11 @@ public partial class UiController : CanvasLayer {
 	}
 
 
-	public void Init(PlayerController playerController, MapGrid mapGrid) {
+	public void Init(PlayerController playerController, CameraController cameraController, MapGrid mapGrid) {
 		_playerController = playerController;
 		leftControls.Init(playerController);
-		SectorMap.Init(playerController, mapGrid);
-		MiniMap.Init(playerController, mapGrid);
+		SectorMap.Init(playerController, cameraController, mapGrid);
+		MiniMap.Init(playerController, cameraController, mapGrid);
 		_mapGrid = mapGrid;
 	}
 

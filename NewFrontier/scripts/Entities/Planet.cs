@@ -72,8 +72,8 @@ public partial class Planet : Node2D {
 	}
 
 	public void Init(Vector2 gridCoord) {
-		Position = MapHelpers.GridCoordToGridPointPos(gridCoord);
+		Position = MapHelpers.GridLineToWorldPoint(gridCoord);
 		GridPosition = gridCoord;
-		SectorIndex = MapHelpers.GetSectorIndexFromOffset(gridCoord);
+		SectorIndex = MapHelpers.GlobalGridToSectorIndex(gridCoord);
 	}
 }

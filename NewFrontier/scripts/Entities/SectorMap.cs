@@ -19,6 +19,8 @@ public partial class SectorMap : Control {
 	private MapGrid _mapGrid;
 
 	private PlayerController _playerController;
+	private CameraController _cameraController;
+	private float SectorDrawSize => Size.X;
 
 	public override void _Ready() {
 		SectorPanel = GetNode<Panel>("Background/CenterContainer/Control/SectorPanel");
@@ -34,8 +36,9 @@ public partial class SectorMap : Control {
 		SectorPanel.QueueRedraw();
 	}
 
-	public void Init(PlayerController playerController, MapGrid mapGrid) {
+	public void Init(PlayerController playerController, CameraController cameraController, MapGrid mapGrid) {
 		_playerController = playerController;
+		_cameraController = cameraController;
 		_mapGrid = mapGrid;
 	}
 
@@ -68,13 +71,12 @@ public partial class SectorMap : Control {
 		}
 
 		var currentSector = _playerController.CurrentSectorObj;
-		const float sectorDrawSize = 150f;
-		float sectorDrawUnitSize = Mathf.Round(sectorDrawSize / currentSector.Size / 2);
+		float sectorDrawUnitSize = Mathf.Round(SectorDrawSize / currentSector.Size / 2);
 		foreach (var gameNode in currentSector.SectorGameNodes()) {
-			var sectorPos = MapHelpers.GetPositionFromOffset(gameNode.PositionI);
+			var sectorPos = MapHelpers.GlobalGridToSectorLocalGrid(gameNode.PositionI);
 			if (gameNode.Occupied) {
 				sectorPanel.DrawRect(
-					new Rect2(sectorPos.Col * sectorDrawUnitSize, sectorPos.Row * sectorDrawUnitSize,
+					new Rect2(sectorPos.Position.X * sectorDrawUnitSize, sectorPos.Position.Y * sectorDrawUnitSize,
 						sectorDrawUnitSize, sectorDrawUnitSize),
 					Color.FromHtml("#0000FF")
 				);
@@ -82,7 +84,7 @@ public partial class SectorMap : Control {
 
 			if (gameNode.HasWormhole) {
 				sectorPanel.DrawRect(
-					new Rect2(sectorPos.Col * sectorDrawUnitSize, sectorPos.Row * sectorDrawUnitSize,
+					new Rect2(sectorPos.Position.X * sectorDrawUnitSize, sectorPos.Position.Y * sectorDrawUnitSize,
 						sectorDrawUnitSize, sectorDrawUnitSize),
 					Color.FromHtml("#00bcff")
 				);
@@ -90,8 +92,8 @@ public partial class SectorMap : Control {
 		}
 
 		foreach (var planet in _mapGrid.Planets.Where(p => p.SectorIndex == currentSector.Index)) {
-			var sectorPos = MapHelpers.GetPositionFromOffset(planet.GridPositionI);
-			var circleCenter = new Vector2(sectorPos.Col * sectorDrawUnitSize, sectorPos.Row * sectorDrawUnitSize);
+			var sectorPos = MapHelpers.GlobalGridToSectorLocalGrid(planet.GridPositionI);
+			var circleCenter = new Vector2((sectorPos.Position.X + 0.5f) * sectorDrawUnitSize, (sectorPos.Position.Y + 0.5f) * sectorDrawUnitSize);
 			sectorPanel.DrawCircle(circleCenter, sectorDrawUnitSize * 2, Color.FromHtml("#05df72"), true);
 			for (var index = 0; index < planet.OccupiedSlots.Length; index++) {
 				var slot = planet.OccupiedSlots[index];
@@ -106,6 +108,19 @@ public partial class SectorMap : Control {
 				}
 			}
 		}
+
+		var rect = _cameraController.GetVisibleWorldRect();
+
+		var sectorOffset = MapHelpers.SectorLocalGridToGlobalGrid(0, 0, currentSector.Index);
+		var rectGridPosition = (rect.Position / MapHelpers.DrawSize) - sectorOffset;
+		var rectGridSize = rect.Size / MapHelpers.DrawSize;
+
+		var newRect = new Rect2(
+			rectGridPosition * sectorDrawUnitSize,
+			rectGridSize * sectorDrawUnitSize
+		);
+
+		sectorPanel.DrawRect(newRect, Colors.White, false, 1);
 	}
 
 	private void DrawSectors(CanvasItem sectorPanel) {

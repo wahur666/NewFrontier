@@ -48,10 +48,10 @@ public static class BuildHelper {
 
 	private static void CalculateBuildingGridPlace(IBuildable buildable, MapGrid mapGrid, Vector2 pos) {
 		if (buildable.Wide == 1) {
-			var gridPos = MapHelpers.PosToGrid(pos);
-			buildable.Instance.GlobalPosition = MapHelpers.GridCoordToGridCenterPos(gridPos);
+			var gridPos = MapHelpers.WorldPointToGridCell(pos);
+			buildable.Instance.GlobalPosition = MapHelpers.GridCellToWorldCenter(gridPos);
 		} else if (buildable.Wide == 2) {
-			var gridPos = MapHelpers.PosToGrid(pos);
+			var gridPos = MapHelpers.WorldPointToGridCell(pos);
 			if (gridPos.X % 2 != 1) {
 				gridPos += new Vector2I(1, 0);
 			}
@@ -60,7 +60,7 @@ public static class BuildHelper {
 				gridPos += new Vector2I(0, 1);
 			}
 
-			buildable.Instance.GlobalPosition = MapHelpers.GridCoordToGridPointPos(gridPos);
+			buildable.Instance.GlobalPosition = MapHelpers.GridLineToWorldPoint(gridPos);
 		} else {
 			buildable.Instance.GlobalPosition = pos;
 		}
@@ -68,7 +68,7 @@ public static class BuildHelper {
 
 	private static void CalculateBuildingWormholePlace(IBuildable buildable, MapGrid mapGrid, Vector2 pos) {
 		buildable.Instance.GlobalPosition = pos;
-		var gridPos = MapHelpers.PosToGrid(pos);
+		var gridPos = MapHelpers.WorldPointToGridCell(pos);
 		var node = mapGrid.GetGameNode(gridPos);
 		if (node is not null && node.HasWormhole) {
 			if (gridPos.X % 2 != 1) {
@@ -79,7 +79,7 @@ public static class BuildHelper {
 				gridPos += new Vector2I(0, 1);
 			}
 
-			buildable.Instance.GlobalPosition = MapHelpers.GridCoordToGridPointPos(gridPos);
+			buildable.Instance.GlobalPosition = MapHelpers.GridLineToWorldPoint(gridPos);
 		} else {
 			buildable.Instance.GlobalPosition = pos;
 		}

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://puh55sbrd833"]
+[gd_scene format=3 uid="uid://puh55sbrd833"]
 
 [ext_resource type="PackedScene" uid="uid://dsq1lag3r7s8o" path="res://scenes/left_controls.tscn" id="1_mnjuk"]
 [ext_resource type="Script" uid="uid://lv7qnuefdjwq" path="res://scripts/Controllers/UiController.cs" id="1_qu86p"]
@@ -14,16 +14,16 @@ border_width_right = 3
 border_width_bottom = 3
 border_color = Color(0, 0.501961, 0.12549, 1)
 
-[node name="Ui" type="CanvasLayer"]
+[node name="Ui" type="CanvasLayer" unique_id=1946215276]
 script = ExtResource("1_qu86p")
 
-[node name="SelectionRect" type="Panel" parent="."]
+[node name="SelectionRect" type="Panel" parent="." unique_id=1901326561]
 theme_override_styles/panel = SubResource("StyleBoxFlat_6hh77")
 
-[node name="LeftControls" parent="." instance=ExtResource("1_mnjuk")]
+[node name="LeftControls" parent="." unique_id=561302969 instance=ExtResource("1_mnjuk")]
 mouse_filter = 2
 
-[node name="SectorMap" parent="." instance=ExtResource("3_kiqkv")]
+[node name="SectorMap" parent="." unique_id=1034836628 instance=ExtResource("3_kiqkv")]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -36,7 +36,7 @@ offset_bottom = 0.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="MiniMap" parent="." instance=ExtResource("3_kiqkv")]
+[node name="MiniMap" parent="." unique_id=4298846 instance=ExtResource("3_kiqkv")]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -50,7 +50,7 @@ grow_horizontal = 0
 grow_vertical = 0
 SectorMapMode = false
 
-[node name="Stats" parent="." instance=ExtResource("4_6s5sd")]
+[node name="Stats" parent="." unique_id=1364612391 instance=ExtResource("4_6s5sd")]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_bottom = 0.0
@@ -60,7 +60,7 @@ offset_bottom = 0.0
 grow_horizontal = 0
 grow_vertical = 1
 
-[node name="PlanetUi" parent="." instance=ExtResource("5_3owu6")]
+[node name="PlanetUi" parent="." unique_id=416788713 instance=ExtResource("5_3owu6")]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0

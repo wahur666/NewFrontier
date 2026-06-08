@@ -52,7 +52,7 @@ public partial class PlayerController : Node {
 		_camera.PlayerControllerInstance = this;
 		_mapGrid = GetNode<MapGrid>("../../MapGrid");
 		_uiController = GetNode<UiController>("../../Ui");
-		_uiController.Init(this, _mapGrid);
+		_uiController.Init(this, _camera, _mapGrid);
 		CreateStartingUnits();
 		_camera.CenterOnGridPosition(new Vector2(12, 17));
 		CurrentSector = 0;
@@ -87,6 +87,10 @@ public partial class PlayerController : Node {
 				}
 			} else if (_uiController.SectorMap.MouseOverSectorMap(_mousePosition)) {
 				CheckSectorMapClick(_mousePosition);
+			} else if (_uiController.MiniMap.MouseOverSectorMap(_mousePosition)) {
+				_miniMapDragging = true;
+				_camera.EnableEdgePanning = false;
+				CheckMiniMapClick(_mousePosition);
 			} else if (_mapGrid.Wormholes.Any(x => x.MousePointerIsOver)) {
 				_wormholeClick = true;
 				SwitchCameraToJoinedWormhole();
@@ -114,6 +118,13 @@ public partial class PlayerController : Node {
 				MoveToPoint(units, _camera.GetGlobalMousePosition());
 			}
 		} else if (Input.IsActionJustReleased("LMB")) {
+			if (_miniMapDragging) {
+				_miniMapDragging = false;
+				_camera.EnableEdgePanning = true;
+				_wormholeClick = false;
+				return;
+			}
+
 			_dragEnd = _camera.GetGlobalMousePosition();
 			_dragEndV = _mousePosition;
 			_dragging = false;
@@ -129,6 +140,10 @@ public partial class PlayerController : Node {
 			_wormholeClick = false;
 		}
 
+
+		if (_miniMapDragging) {
+			CheckMiniMapClick(_mousePosition);
+		}
 
 		if (_dragging) {
 			_dragEnd = _camera.GetGlobalMousePosition();
@@ -153,7 +168,7 @@ public partial class PlayerController : Node {
 		var sector = _mapGrid.Sectors.Where(x => x.Discovered).ToList()
 			.Find(x => Math.Abs((x.SectorPosition + sectorPanelGlobalPosition - mousePosition).Length()) < 10);
 		var endPosition = _mapGrid.FindFreePosition(_mapGrid.GetGameNode(sector.CenterPosition()), false).First().PositionI;
-		var targetGlobalPosition = MapHelpers.GridCoordToGridPointPos(endPosition);
+		var targetGlobalPosition = MapHelpers.GridLineToWorldPoint(endPosition);
 		MoveToPoint(units, targetGlobalPosition);
 	}
 
@@ -205,6 +220,20 @@ public partial class PlayerController : Node {
 		CurrentSector = sector.Index;
 		_camera.Position = sector.CameraPosition;
 	}
+	
+	private void CheckMiniMapClick(Vector2 mousePosition) {
+		var sectorPanelGlobalPosition = _uiController.MiniMap.SectorPanel.GlobalPosition;
+		var sectorPanelSize = _uiController.MiniMap.SectorPanel.Size;
+		var panelLocalPosition = (mousePosition - sectorPanelGlobalPosition).Clamp(Vector2.Zero, sectorPanelSize);
+		var scaledPosition = panelLocalPosition / sectorPanelSize;
+		var sectorWorldOffset = MapHelpers.GridLineToWorldPoint(
+			MapHelpers.SectorLocalGridToGlobalGrid(Vector2.Zero, _currentSector)
+		);
+		var sectorWorldSize = CurrentSectorObj.Size * 2 * MapHelpers.DrawSize;
+		CurrentSectorObj.CameraPosition = new Vector2(sectorWorldSize, sectorWorldSize) * scaledPosition + sectorWorldOffset;
+		_camera.Position = CurrentSectorObj.CameraPosition;
+	}
+
 
 	private void DrawArea(bool s = true) {
 		var panel = _uiController.SelectionPanel;
@@ -433,14 +462,14 @@ public partial class PlayerController : Node {
 			return;
 		}
 
-		var mouseEndVector = MapHelpers.PosToGrid(mouseGlobalPosition);
+		var mouseEndVector = MapHelpers.WorldPointToGridCell(mouseGlobalPosition);
 		var mouseEndNode = _mapGrid.GridLayer[mouseEndVector.X, mouseEndVector.Y];
 		if (mouseEndNode is null) {
 			return;
 		}
 
 		var unitSectors = units
-			.Select(x => MapHelpers.GetSectorIndexFromOffset(x.GridPosition(x.GlobalPosition)))
+			.Select(x => MapHelpers.GlobalGridToSectorIndex(x.GridPosition(x.GlobalPosition)))
 			.ToHashSet();
 		if (mouseEndNode.HasWormhole) {
 			if (unitSectors.Count > 1) {
@@ -462,8 +491,8 @@ public partial class PlayerController : Node {
 			var startVector2 = unitNode2D.GridPosition(unitNode2D.GlobalPosition);
 			var start = _mapGrid.GridLayer[(int)startVector2.X, (int)startVector2.Y];
 			var endVector = unitNode2D.BigShip
-				? MapHelpers.PosToGridPoint(mouseGlobalPosition)
-				: MapHelpers.PosToGrid(mouseGlobalPosition);
+				? MapHelpers.WorldPointToNearestGridLine(mouseGlobalPosition)
+				: MapHelpers.WorldPointToGridCell(mouseGlobalPosition);
 			var end = _mapGrid.GridLayer[endVector.X, endVector.Y];
 
 			if (end.HasWormhole) {
@@ -576,10 +605,10 @@ public partial class PlayerController : Node {
 
 		var gridPos = freeSpace.Value;
 		if (building.Wide == 1) {
-			building.GlobalPosition = MapHelpers.GridCoordToGridCenterPos(gridPos);
+			building.GlobalPosition = MapHelpers.GridCellToWorldCenter(gridPos);
 			_mapGrid[(int)gridPos.X, (int)gridPos.Y].Occupied = true;
 		} else if (buildingNode2D.Wide == 2) {
-			building.GlobalPosition = MapHelpers.GridCoordToGridPointPos(freeSpace.Value);
+			building.GlobalPosition = MapHelpers.GridLineToWorldPoint(freeSpace.Value);
 			_mapGrid[(int)gridPos.X - 1, (int)gridPos.Y - 1].Occupied = true;
 			_mapGrid[(int)gridPos.X - 1, (int)gridPos.Y].Occupied = true;
 			_mapGrid[(int)gridPos.X, (int)gridPos.Y - 1].Occupied = true;
@@ -601,6 +630,7 @@ public partial class PlayerController : Node {
 	private Vector2 _dragStartV;
 	private Vector2 _mousePosition;
 	private bool _dragging;
+	private bool _miniMapDragging;
 
 	#endregion
 
@@ -609,7 +639,7 @@ public partial class PlayerController : Node {
 			if (_selectedObjects[0] is Refinery refinery) {
 				var harvester =
 					FactionController.Terran.CreateHarvester(
-						MapHelpers.PosToGrid(refinery.BuildLocation.GlobalPosition),
+						MapHelpers.WorldPointToGridCell(refinery.BuildLocation.GlobalPosition),
 						this, _uiController,
 						_mapGrid);
 				this._units.Add(harvester);

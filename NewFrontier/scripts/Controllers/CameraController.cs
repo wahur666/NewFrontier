@@ -20,6 +20,12 @@ public partial class CameraController : Camera2D {
 		_uiController = GetNode<UiController>("../Ui");
 	}
 
+	public Rect2 GetVisibleWorldRect() {
+		var size = GetViewport().GetVisibleRect().Size / Zoom;
+		var topLeft = GetScreenCenterPosition() - size / 2f;
+		return new Rect2(topLeft, size);
+	}
+	
 	public override void _Notification(int what) {
 		if (what == MainLoop.NotificationApplicationFocusOut) {
 			EnableEdgePanning = false;
@@ -33,7 +39,7 @@ public partial class CameraController : Camera2D {
 	}
 
 	public void CenterOnGridPosition(Vector2 pos) {
-		CenterOnPosition(MapHelpers.GridCoordToGridCenterPos(pos));
+		CenterOnPosition(MapHelpers.GridCellToWorldCenter(pos));
 	}
 
 	public void CenterOnPosition(Vector2 pos) {
@@ -82,7 +88,7 @@ public partial class CameraController : Camera2D {
 			return;
 		}
 
-		var offset = MapHelpers.CalculateOffset(0, 0, PlayerControllerInstance.CurrentSector) * MapHelpers.DrawSize;
+		var offset = MapHelpers.SectorLocalGridToGlobalGrid(0, 0, PlayerControllerInstance.CurrentSector) * MapHelpers.DrawSize;
 		var diameter = _mapGrid.RealMapSize * MapHelpers.DrawSize;
 		var radius = diameter / 2;
 		var center = new Vector2(radius, radius) + offset;

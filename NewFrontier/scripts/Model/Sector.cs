@@ -15,7 +15,7 @@ public class Sector {
 	/// </summary>
 	public readonly byte Size;
 
-	public Vector2 CameraPosition;
+	public Vector2 CameraPosition { get; set; }
 	public bool Discovered = true;
 
 	public bool EnemyInSector;
@@ -40,7 +40,7 @@ public class Sector {
 		SectorPosition = sectorPosition;
 		Index = index;
 		CameraPosition =
-			MapHelpers.GridCoordToGridCenterPos(MapHelpers.CalculateOffset(new Vector2(size - 1, size - 1), index));
+			MapHelpers.GridCellToWorldCenter(MapHelpers.SectorLocalGridToGlobalGrid(new Vector2(size - 1, size - 1), index));
 		CreateSector();
 	}
 
@@ -56,7 +56,7 @@ public class Sector {
 		for (var i = 0; i < diameter + 1; i++) {
 			for (var j = 0; j < diameter + 1; j++) {
 				if (AreaHelper.IsVector2InsideCircle(new Vector2(i + 0.5f, j + 0.5f), center, radius + 0.5f)) {
-					var offset = MapHelpers.CalculateOffset(i, j, Index);
+					var offset = MapHelpers.SectorLocalGridToGlobalGrid(i, j, Index);
 					_map[offset.X, offset.Y] = new GameNode(offset);
 				}
 			}
@@ -71,7 +71,7 @@ public class Sector {
 		for (var i = 0; i < diameter + 1; i++) {
 			for (var j = 0; j < diameter + 1; j++) {
 				if (AreaHelper.IsVector2InsideCircle(new Vector2(i + 0.5f, j + 0.5f), center, radius + 0.5f)) {
-					var offset = MapHelpers.CalculateOffset(i, j, Index);
+					var offset = MapHelpers.SectorLocalGridToGlobalGrid(i, j, Index);
 					nodes.Add(_map[offset.X, offset.Y]); 
 				}
 			}
@@ -84,7 +84,7 @@ public class Sector {
 		var diameter = (Size * 2) - 1;
 		for (var i = 0; i < diameter; i++) {
 			for (var j = 0; j < diameter; j++) {
-				var offset = MapHelpers.CalculateOffset(i, j, Index);
+				var offset = MapHelpers.SectorLocalGridToGlobalGrid(i, j, Index);
 				var item = _map[offset.X, offset.Y];
 				if (item is not null) {
 					SetupNeighbours(item);
@@ -108,7 +108,7 @@ public class Sector {
 
 		foreach (var direction in directions) {
 			var newPos = node.Position + direction;
-			var offset = MapHelpers.CalculateOffset(0, 0, Index);
+			var offset = MapHelpers.SectorLocalGridToGlobalGrid(0, 0, Index);
 			if (newPos.X < offset.X || newPos.Y < offset.Y || newPos.X > offset.X + diameter - 1 ||
 			    newPos.Y > offset.Y + diameter - 1) {
 				continue;
@@ -122,6 +122,6 @@ public class Sector {
 	}
 
 	public Vector2 CenterPosition() {
-		return MapHelpers.CalculateOffset(new Vector2(Size - 1, Size - 1), Index);
+		return MapHelpers.SectorLocalGridToGlobalGrid(new Vector2(Size - 1, Size - 1), Index);
 	}
 }
