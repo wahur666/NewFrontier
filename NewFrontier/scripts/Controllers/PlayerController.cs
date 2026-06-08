@@ -224,14 +224,27 @@ public partial class PlayerController : Node {
 	private void CheckMiniMapClick(Vector2 mousePosition) {
 		var sectorPanelGlobalPosition = _uiController.MiniMap.SectorPanel.GlobalPosition;
 		var sectorPanelSize = _uiController.MiniMap.SectorPanel.Size;
-		var panelLocalPosition = (mousePosition - sectorPanelGlobalPosition).Clamp(Vector2.Zero, sectorPanelSize);
+		var panelLocalPosition = ClampToMiniMapCircle(mousePosition - sectorPanelGlobalPosition, sectorPanelSize);
 		var scaledPosition = panelLocalPosition / sectorPanelSize;
 		var sectorWorldOffset = MapHelpers.GridLineToWorldPoint(
 			MapHelpers.SectorLocalGridToGlobalGrid(Vector2.Zero, _currentSector)
 		);
 		var sectorWorldSize = CurrentSectorObj.Size * 2 * MapHelpers.DrawSize;
-		CurrentSectorObj.CameraPosition = new Vector2(sectorWorldSize, sectorWorldSize) * scaledPosition + sectorWorldOffset;
-		_camera.Position = CurrentSectorObj.CameraPosition;
+		_camera.SetBoundedPosition(new Vector2(sectorWorldSize, sectorWorldSize) * scaledPosition + sectorWorldOffset);
+		CurrentSectorObj.CameraPosition = _camera.Position;
+	}
+
+	private static Vector2 ClampToMiniMapCircle(Vector2 panelLocalPosition, Vector2 sectorPanelSize) {
+		var diameter = Math.Min(sectorPanelSize.X, sectorPanelSize.Y);
+		var radius = diameter / 2f;
+		var center = new Vector2(radius, radius);
+		var fromCenter = panelLocalPosition - center;
+
+		if (fromCenter.LengthSquared() <= radius * radius) {
+			return panelLocalPosition;
+		}
+
+		return center + fromCenter.Normalized() * radius;
 	}
 
 

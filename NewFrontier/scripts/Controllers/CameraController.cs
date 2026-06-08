@@ -46,6 +46,33 @@ public partial class CameraController : Camera2D {
 		Position = pos;
 	}
 
+	public void SetBoundedPosition(Vector2 position) {
+		Position = ClampPositionToCurrentSector(position);
+	}
+
+	public Vector2 ClampPositionToCurrentSector(Vector2 position) {
+		if (_mapGrid is null || PlayerControllerInstance is null) {
+			return position;
+		}
+
+		var offset = MapHelpers.SectorLocalGridToGlobalGrid(0, 0, PlayerControllerInstance.CurrentSector) * MapHelpers.DrawSize;
+		var diameter = _mapGrid.RealMapSize * MapHelpers.DrawSize;
+		var radius = diameter / 2;
+		var center = new Vector2(radius, radius) + offset;
+		var size = GetViewport().GetVisibleRect().Size / Zoom * 0.9f;
+		var a = radius - (size.X / 2);
+		var b = radius - (size.Y / 2);
+
+		if (a > 0 && b > 0 && AreaHelper.IsPointOutsideEllipse(center, a, b, position)) {
+			var fromCenter = position - center;
+			var ellipseScale = Mathf.Sqrt(Mathf.Pow(fromCenter.X / a, 2) + Mathf.Pow(fromCenter.Y / b, 2));
+			position = center + fromCenter / ellipseScale;
+		}
+
+		return position.Clamp((DisplayServer.WindowGetSize() / 2) + offset,
+			new Vector2(diameter, diameter) - (DisplayServer.WindowGetSize() / 2) + offset);
+	}
+
 	public override void _Process(double delta) {
 		var inpx = 0;
 		var inpy = 0;
@@ -88,20 +115,7 @@ public partial class CameraController : Camera2D {
 			return;
 		}
 
-		var offset = MapHelpers.SectorLocalGridToGlobalGrid(0, 0, PlayerControllerInstance.CurrentSector) * MapHelpers.DrawSize;
-		var diameter = _mapGrid.RealMapSize * MapHelpers.DrawSize;
-		var radius = diameter / 2;
-		var center = new Vector2(radius, radius) + offset;
-		var size = GetViewport().GetVisibleRect().Size / Zoom * 0.9f;
-		var a = radius - (size.X / 2);
-		var b = radius - (size.Y / 2);
 		Position += new Vector2(inpx * Speed, inpy * Speed);
-
-		while (AreaHelper.IsPointOutsideEllipse(center, a, b, Position)) {
-			Position += (center - Position).Normalized();
-		}
-
-		Position = Position.Clamp((DisplayServer.WindowGetSize() / 2) + offset,
-			new Vector2(diameter, diameter) - (DisplayServer.WindowGetSize() / 2) + offset);
+		SetBoundedPosition(Position);
 	}
 }
