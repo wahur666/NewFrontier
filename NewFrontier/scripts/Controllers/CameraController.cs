@@ -55,13 +55,18 @@ public partial class CameraController : Camera2D {
 			return position;
 		}
 
-		var offset = MapHelpers.SectorLocalGridToGlobalGrid(0, 0, PlayerControllerInstance.CurrentSector) * MapHelpers.DrawSize;
-		var diameter = _mapGrid.RealMapSize * MapHelpers.DrawSize;
-		var radius = diameter / 2;
+		var offset = MapHelpers.GridLineToWorldPoint(
+			MapHelpers.SectorLocalGridToGlobalGrid(0, 0, PlayerControllerInstance.CurrentSector)
+		);
+		var radius = (PlayerControllerInstance.CurrentSectorObj.Size - 0.5f) * MapHelpers.DrawSize;
 		var center = new Vector2(radius, radius) + offset;
-		var size = GetViewport().GetVisibleRect().Size / Zoom * 0.9f;
-		var a = radius - (size.X / 2);
-		var b = radius - (size.Y / 2);
+		var halfViewSize = GetViewport().GetVisibleRect().Size / Zoom * 0.45f;
+		var a = radius - halfViewSize.X;
+		var b = radius - halfViewSize.Y;
+
+		if (a <= 0 || b <= 0) {
+			return center;
+		}
 
 		if (a > 0 && b > 0 && AreaHelper.IsPointOutsideEllipse(center, a, b, position)) {
 			var fromCenter = position - center;
@@ -69,8 +74,7 @@ public partial class CameraController : Camera2D {
 			position = center + fromCenter / ellipseScale;
 		}
 
-		return position.Clamp((DisplayServer.WindowGetSize() / 2) + offset,
-			new Vector2(diameter, diameter) - (DisplayServer.WindowGetSize() / 2) + offset);
+		return position.Clamp(center - new Vector2(a, b), center + new Vector2(a, b));
 	}
 
 	public override void _Process(double delta) {
@@ -112,6 +116,7 @@ public partial class CameraController : Camera2D {
 		}
 
 		if (inpx == 0 && inpy == 0 && oldZoom != Zoom) {
+			SetBoundedPosition(Position);
 			return;
 		}
 
