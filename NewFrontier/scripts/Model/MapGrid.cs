@@ -248,7 +248,7 @@ public partial class MapGrid : Node2D {
 		}
 	}
 
-	public List<GameNode> FindFreePosition(GameNode end, bool bigShip) {
+	public List<GameNode> FindFreePosition(GameNode end, bool bigShip, UnitNode2D ignoredUnit = null) {
 		List<GameNode> nodes = GetSector(end.SectorIndex).SectorGameNodes().ToList();
 		nodes.Sort((a, b) => a.Distance(end).CompareTo(b.Distance(end)));
 
@@ -264,16 +264,28 @@ public partial class MapGrid : Node2D {
 
 				foreach (var nodez in directions.Select(direction =>
 							 direction.Select(x => x + pos).Select(x => this[x.X, x.Y]).ToList())) {
-					if (nodez.All(x => x is not null && x.FreeNode())) {
+					if (nodez.All(x => FreeForUnit(x, ignoredUnit))) {
 						return nodez;
 					}
 				}
 			}
 		} else {
-			var node = nodes.FirstOrDefault(node => node.FreeNode());
+			var node = nodes.FirstOrDefault(node => FreeForUnit(node, ignoredUnit));
 			return node is not null ? [node] : [];
 		}
 
 		return [];
+	}
+
+	private static bool FreeForUnit(GameNode node, UnitNode2D ignoredUnit) {
+		if (node is null || node.Blocking || node.HasWormhole) {
+			return false;
+		}
+
+		if (node.PreOccupied is not null && node.PreOccupied != ignoredUnit) {
+			return false;
+		}
+
+		return !node.Occupied || ignoredUnit?.CurrentNodes.Contains(node) == true;
 	}
 }

@@ -495,7 +495,7 @@ public partial class PlayerController : Node {
 		}
 
 		foreach (var unitNode2D in units) {
-			if (mouseEndNode.PreOccupied is not null && mouseEndNode.PreOccupied == unitNode2D) {
+			if (!unitNode2D.BigShip && mouseEndNode.PreOccupied is not null && mouseEndNode.PreOccupied == unitNode2D) {
 				continue;
 			}
 
@@ -515,7 +515,7 @@ public partial class PlayerController : Node {
 				end = arr[random.Next(arr.Length)];
 			}
 
-			List<GameNode> nodes = _mapGrid.FindFreePosition(end, unitNode2D.BigShip);
+			List<GameNode> nodes = _mapGrid.FindFreePosition(end, unitNode2D.BigShip, unitNode2D);
 			if (nodes.Count > 0) {
 				nodes.ForEach(x => x.PreOccupied = unitNode2D);
 				end = nodes[^1];

@@ -31,6 +31,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	private ProgressBar _healthBar;
 
 	private List<GameNode> _currentNodes;
+	public IReadOnlyList<GameNode> CurrentNodes => _currentNodes;
 	
 	private static readonly Vector2[] FourDirections = [Vector2.Zero, new Vector2(-1, 0), new Vector2(0, -1), -Vector2.One];
 
