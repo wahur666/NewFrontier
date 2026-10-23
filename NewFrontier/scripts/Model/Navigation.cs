@@ -10,12 +10,18 @@ public record PriorityNode(GameNode Node, float Priority);
 
 public class Navigation {
 	private readonly MapGrid _mapGrid;
+	private static readonly Vector2I[] BigShipFootprint = [
+		Vector2I.Zero,
+		new(-1, 0),
+		new(0, -1),
+		-Vector2I.One
+	];
 
 	public Navigation(MapGrid mapGrid) {
 		_mapGrid = mapGrid;
 	}
 
-	public IEnumerable<GameNode> FindPath(GameNode start, GameNode end, bool disableOptimisation = true) {
+	public IEnumerable<GameNode> FindPath(GameNode start, GameNode end, bool disableOptimisation = true, bool bigShip = false) {
 		var frontier = new Heap<PriorityNode>((a, b) => b.Priority.CompareTo(a.Priority));
 		frontier.Add(new PriorityNode(start, 0));
 		var cameFrom = new Dictionary<GameNode, GameNode>();
@@ -29,7 +35,7 @@ public class Navigation {
 			}
 
 			foreach (var next in current.Node.Neighbours.Keys) {
-				if (next.Blocking) {
+				if (!CanUseNode(next, bigShip)) {
 					continue;
 				}
 
@@ -48,6 +54,30 @@ public class Navigation {
 
 		var path = RetracePath(start, end, cameFrom);
 		return disableOptimisation ? path : OptimisePath(path);
+	}
+
+	private bool CanUseNode(GameNode node, bool bigShip) {
+		if (node.Blocking) {
+			return false;
+		}
+
+		if (!bigShip || node.HasWormhole) {
+			return true;
+		}
+
+		var position = node.PositionI;
+		return BigShipFootprint
+			.Select(offset => new Vector2I(position.X + offset.X, position.Y + offset.Y))
+			.All(positionInGrid =>
+				IsInsideGrid(positionInGrid)
+				&& _mapGrid[positionInGrid.X, positionInGrid.Y] is { Blocking: false });
+	}
+
+	private bool IsInsideGrid(Vector2I position) {
+		return position.X >= 0
+		       && position.Y >= 0
+		       && position.X < _mapGrid.GridLayer.GetLength(0)
+		       && position.Y < _mapGrid.GridLayer.GetLength(1);
 	}
 
 	private static IEnumerable<GameNode> RetracePath(GameNode start, GameNode end,

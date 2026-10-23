@@ -24,6 +24,13 @@ public partial class MapGrid : Node2D {
 		-Vector2.One
 	];
 
+	private static readonly Vector2I[] BigShipFootprintWithAnchorLast = [
+		new(-1, 0),
+		new(0, -1),
+		-Vector2I.One,
+		Vector2I.Zero
+	];
+
 
 	/// <summary>
 	///     Map representation, it can store at most 16 sectors, in a 4x4 grid of at most 128x128 sectors
@@ -255,18 +262,12 @@ public partial class MapGrid : Node2D {
 		if (bigShip) {
 			foreach (var node in nodes) {
 				var pos = node.PositionI;
-				List<List<Vector2I>> directions = [
-					[new(-1, -1), new(-1, 0), new(0, -1), new(0, 0)],
-					[new(-1, 0), new(-1, 1), new(0, 0), new(0, 1)],
-					[new(0, -1), new(0, 0), new(1, -1), new(1, 0)],
-					[new(0, 0), new(0, 1), new(1, 0), new(1, 1)]
-				];
-
-				foreach (var nodez in directions.Select(direction =>
-							 direction.Select(x => x + pos).Select(x => this[x.X, x.Y]).ToList())) {
-					if (nodez.All(x => FreeForUnit(x, ignoredUnit))) {
-						return nodez;
-					}
+				var nodez = BigShipFootprintWithAnchorLast
+					.Select(direction => direction + pos)
+					.Select(GetGameNodeOrNull)
+					.ToList();
+				if (nodez.All(x => FreeForUnit(x, ignoredUnit))) {
+					return nodez;
 				}
 			}
 		} else {
@@ -275,6 +276,17 @@ public partial class MapGrid : Node2D {
 		}
 
 		return [];
+	}
+
+	private GameNode GetGameNodeOrNull(Vector2I position) {
+		if (position.X < 0
+		    || position.Y < 0
+		    || position.X >= GridLayer.GetLength(0)
+		    || position.Y >= GridLayer.GetLength(1)) {
+			return null;
+		}
+
+		return GetGameNode(position);
 	}
 
 	private static bool FreeForUnit(GameNode node, UnitNode2D ignoredUnit) {

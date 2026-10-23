@@ -1,4 +1,4 @@
-[gd_scene load_steps=72 format=3 uid="uid://1t4s5btcems5"]
+[gd_scene format=3 uid="uid://1t4s5btcems5"]
 
 [ext_resource type="Script" uid="uid://ccmu1asxdxy8v" path="res://scripts/Entities/Planet.cs" id="1_1nk8g"]
 [ext_resource type="Texture2D" uid="uid://cn4yrl4amdien" path="res://gfx/wet-planet.png" id="1_rg5fr"]
@@ -467,39 +467,39 @@ radius = 130.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_4rvwd"]
 radius = 165.0
 
-[node name="WetPlanet" type="Node2D" groups=["planet"]]
+[node name="WetPlanet" type="Node2D" unique_id=1235245366 groups=["planet"]]
 script = ExtResource("1_1nk8g")
 
-[node name="Stats" type="Node" parent="."]
+[node name="Stats" type="Node" parent="." unique_id=1487476526]
 script = ExtResource("2_ajj6s")
 MaxOre = 2500
 MaxGas = 2500
 MaxCrew = 3500
 
-[node name="PlanetBuildingScheme" type="Node2D" parent="."]
+[node name="PlanetBuildingScheme" type="Node2D" parent="." unique_id=1945990373]
 script = ExtResource("2_5foyr")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=507795339]
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_mom51")
 autoplay = "default"
 frame_progress = 0.317065
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-visible = false
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=2033518208]
 collision_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=454895997]
+visible = false
 shape = SubResource("CircleShape2D_q541v")
 
-[node name="SelectionArea" type="Area2D" parent="."]
+[node name="SelectionArea" type="Area2D" parent="." unique_id=158507080]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SelectionArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SelectionArea" unique_id=1505231688]
 visible = false
 shape = SubResource("CircleShape2D_4rvwd")
 
-[node name="BuildingsContainer" type="Node" parent="."]
+[node name="BuildingsContainer" type="Node" parent="." unique_id=516141961]
 
-[node name="ResourceTimer" type="Timer" parent="."]
+[node name="ResourceTimer" type="Timer" parent="." unique_id=1828005984]
 wait_time = 30.0
 autostart = true

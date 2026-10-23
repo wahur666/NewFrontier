@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dcsr7eg1ygh8i"]
+[gd_scene format=3 uid="uid://dcsr7eg1ygh8i"]
 
 [ext_resource type="Script" uid="uid://bktturvhqjboe" path="res://scripts/UI/SelectionRect.cs" id="1_17xhe"]
 [ext_resource type="Script" uid="uid://dwkpxe5lli0ae" path="res://scripts/Entities/Dreadnought.cs" id="1_s4nkp"]
@@ -15,12 +15,12 @@ atlas = ExtResource("2_up0y7")
 region = Rect2(128, 0, 128, 128)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qmsvf"]
-radius = 64.0078
+radius = 65.00769
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mgm5s"]
 bg_color = Color(0, 0.745098, 0, 1)
 
-[node name="Dreadnought" type="CharacterBody2D"]
+[node name="Dreadnought" type="CharacterBody2D" unique_id=516511813]
 collision_mask = 2
 script = ExtResource("1_s4nkp")
 BulletScene = ExtResource("2_yygja")
@@ -30,31 +30,31 @@ Icon = SubResource("AtlasTexture_ok7ex")
 MaxHealth = 25
 CurrentHealth = 25
 
-[node name="SelectionRect" type="TextureRect" parent="."]
+[node name="SelectionRect" type="TextureRect" parent="." unique_id=1934083023]
 offset_left = -26.0
 offset_top = -69.0
 offset_right = 26.0
 offset_bottom = 69.0
 script = ExtResource("1_17xhe")
 
-[node name="Base" type="Sprite2D" parent="."]
+[node name="Base" type="Sprite2D" parent="." unique_id=2029564769]
 position = Vector2(-3, 0)
 texture = ExtResource("2_up0y7")
 hframes = 2
 vframes = 2
 
-[node name="Stripe" type="Sprite2D" parent="."]
+[node name="Stripe" type="Sprite2D" parent="." unique_id=1462920620]
 modulate = Color(0.878431, 0.105882, 0.741176, 1)
 position = Vector2(-3, 0)
 texture = SubResource("AtlasTexture_6v4ov")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=9869522]
 visible = false
 shape = SubResource("CircleShape2D_qmsvf")
 
-[node name="Node2D" type="Node2D" parent="."]
+[node name="Node2D" type="Node2D" parent="." unique_id=1030043678]
 
-[node name="Healthbar" type="ProgressBar" parent="Node2D"]
+[node name="Healthbar" type="ProgressBar" parent="Node2D" unique_id=976810756]
 top_level = true
 offset_left = -50.0
 offset_top = -85.0
@@ -64,32 +64,32 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_mgm5s")
 value = 100.0
 show_percentage = false
 
-[node name="Canons" type="Node2D" parent="."]
+[node name="Canons" type="Node2D" parent="." unique_id=473123701]
 
-[node name="Cannon1" type="Sprite2D" parent="Canons"]
+[node name="Cannon1" type="Sprite2D" parent="Canons" unique_id=936302252]
 position = Vector2(0, -19)
 texture = ExtResource("4_wj2op")
 offset = Vector2(0, -2)
 
-[node name="Marker" type="Marker2D" parent="Canons/Cannon1"]
+[node name="Marker" type="Marker2D" parent="Canons/Cannon1" unique_id=1609018226]
 position = Vector2(0, -9)
 
-[node name="Cannon2" type="Sprite2D" parent="Canons"]
+[node name="Cannon2" type="Sprite2D" parent="Canons" unique_id=545186379]
 position = Vector2(0, 43)
 texture = ExtResource("4_wj2op")
 offset = Vector2(0, -2)
 
-[node name="Marker" type="Marker2D" parent="Canons/Cannon2"]
+[node name="Marker" type="Marker2D" parent="Canons/Cannon2" unique_id=1259001573]
 position = Vector2(0, -9)
 
-[node name="Cannon3" type="Sprite2D" parent="Canons"]
+[node name="Cannon3" type="Sprite2D" parent="Canons" unique_id=799407410]
 position = Vector2(0, -3)
 texture = ExtResource("4_wj2op")
 offset = Vector2(0, -2)
 
-[node name="Marker" type="Marker2D" parent="Canons/Cannon3"]
+[node name="Marker" type="Marker2D" parent="Canons/Cannon3" unique_id=1011564345]
 position = Vector2(0, -9)
 
-[node name="Bullets" type="Node" parent="."]
+[node name="Bullets" type="Node" parent="." unique_id=1391688380]
 
-[node name="AttackTimer" type="Timer" parent="."]
+[node name="AttackTimer" type="Timer" parent="." unique_id=440770273]

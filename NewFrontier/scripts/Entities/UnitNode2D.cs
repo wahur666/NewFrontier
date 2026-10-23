@@ -14,7 +14,8 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	private double _currentTravelTime;
 	private float _jumpDistance;
 	private bool _moving;
-
+	private CollisionShape2D _collisionShape2D;
+	
 	private Queue<GameNode> _navPoints = new();
 	protected PlayerController PlayerController;
 	private bool _rotatedCorrectly;
@@ -78,6 +79,8 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 
 	public Node2D Instance { get => this; }
 
+	public float CollisionShapeRadius => ((CircleShape2D)_collisionShape2D.Shape).Radius;
+	
 	public void Destroy() {
 		PlayerController.RemoveUnit(this);
 		QueueFree();
@@ -86,6 +89,7 @@ public partial class UnitNode2D : CharacterBody2D, IBase, ISelectable {
 	public override void _Ready() {
 		SelectionRect = GetNode<SelectionRect>("SelectionRect");
 		_healthBar = GetNode<ProgressBar>("Node2D/Healthbar");
+		_collisionShape2D = GetNode<CollisionShape2D>("CollisionShape2D");
 		_targetDestination = Position;
 	}
 

@@ -29,6 +29,9 @@ public partial class Planet : Node2D {
 	[Export] public PlanetType PlanetType = PlanetType.Earth;
 	public Vector2 GridPosition { get; private set; }
 	public Vector2I GridPositionI { get => new((int)GridPosition.X, (int)GridPosition.Y); }
+	private CollisionShape2D _collisionShape2D;
+
+	public float CollisionShapeRadius => ((CircleShape2D)_collisionShape2D.Shape).Radius;
 	
 
 	public override void _Ready() {
@@ -41,6 +44,7 @@ public partial class Planet : Node2D {
 		_planetBuildingScheme.Radius = Radius;
 		_resourceTimer = GetNode<Timer>("ResourceTimer");
 		_resourceTimer.Timeout += ResourceTimerOnTimeout;
+		_collisionShape2D = GetNode<CollisionShape2D>("StaticBody2D/CollisionShape2D");
 	}
 
 	private void ResourceTimerOnTimeout() {

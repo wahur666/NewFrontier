@@ -299,7 +299,7 @@ public partial class PlayerController : Node {
 				return;
 			}
 
-			var path = _mapGrid.Navigation.FindPath(start, end).ToList();
+			var path = _mapGrid.Navigation.FindPath(start, end, bigShip: unitNode2D.BigShip).ToList();
 			_pathCache = new(unitNode2D, unitNode2D.GridPosition(), sector, path);
 
 			var wormholes = _pathCache.path.Where(node => node.HasWormhole).ToList();
@@ -468,6 +468,8 @@ public partial class PlayerController : Node {
 		UpdateUi();
 	}
 
+	private bool _useWorldSpacePathOptimization = true;
+	
 	private void MoveToPoint(UnitNode2D unit, Vector2 mouseGlobalPosition) => MoveToPoint([unit], mouseGlobalPosition);
 
 	private void MoveToPoint(List<UnitNode2D> units, Vector2 mouseGlobalPosition) {
@@ -531,12 +533,70 @@ public partial class PlayerController : Node {
 			var path = new List<GameNode>();
 			if (start is not null) {
 				path = _mapGrid.Navigation
-					.FindPath(start, end)
+					.FindPath(start, end, bigShip: unitNode2D.BigShip)
 					.ToList();
 			}
-
+			if (_useWorldSpacePathOptimization && path.Count > 2) {
+				path = WorldSpacePathOptimization(path, unitNode2D);
+			}
 			unitNode2D.SetNavigation(path);
 		}
+	}
+
+	public List<GameNode> WorldSpacePathOptimization(List<GameNode> path, UnitNode2D unit) {
+		var planets = _mapGrid.Planets;
+		// This is a degenerate situation should not happen
+		if (planets.Count == 0) {
+			return path;
+		}
+
+		var planetCollisionRadius = planets[0].CollisionShapeRadius;
+		var unitCollisionRadius = unit.CollisionShapeRadius;
+		var targetRadius = planetCollisionRadius + unitCollisionRadius + 5f;
+
+		List<GameNode> result = [path[0]];
+		var start = 0;
+		while (start < path.Count - 1) {
+			var next = path.Count - 1;
+			while (next > start + 1 && !HasClearWorldSpacePath(path[start], path[next], unit, targetRadius)) {
+				next -= 1;
+			}
+
+			if (next == start) {
+				return path;
+			}
+
+			result.Add(path[next]);
+			start = next;
+		}
+
+		return result;
+	}
+
+	private bool HasClearWorldSpacePath(GameNode node1, GameNode node2, UnitNode2D unit, float targetRadius) {
+		if (node1.HasWormhole || node2.HasWormhole || node1.SectorIndex != node2.SectorIndex) {
+			return false;
+		}
+
+		var start = GetUnitTargetPosition(node1, unit);
+		var end = GetUnitTargetPosition(node2, unit);
+		return _mapGrid.Planets.All(planet =>
+			DistanceToSegment(planet.GlobalPosition, start, end) > targetRadius);
+	}
+
+	private static Vector2 GetUnitTargetPosition(GameNode node, UnitNode2D unit) {
+		return unit.BigShip ? MapHelpers.GridLineToWorldPoint(node.Position) : MapHelpers.GridCellToWorldCenter(node.Position);
+	}
+
+	private static float DistanceToSegment(Vector2 point, Vector2 start, Vector2 end) {
+		var segment = end - start;
+		var segmentLengthSquared = segment.LengthSquared();
+		if (segmentLengthSquared == 0) {
+			return point.DistanceTo(start);
+		}
+
+		var projection = Mathf.Clamp((point - start).Dot(segment) / segmentLengthSquared, 0f, 1f);
+		return point.DistanceTo(start + segment * projection);
 	}
 
 	public int AvailableOreStorage() {
